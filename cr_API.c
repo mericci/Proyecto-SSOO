@@ -71,3 +71,43 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
 }
 
+
+int cr_write(crFILE* file_desc, void* buffer, int nbytes)
+{
+    /*Funcion para escribir archivos. Escribe en el archivo descrito por file desc los nbytes que se encuentren en la direccion indicada ´
+    por buffer. Retorna la cantidad de Byte escritos en el archivo. Si se produjo un error porque no pudo seguir
+    escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede ser ´
+    menor a nbytes (incluso 0) */
+
+}
+
+
+int cr_close(crFILE* file_desc)
+{
+    /* Funcion para cerrar archivos. Cierra el archivo indicado por ´
+    file desc. Debe garantizar que cuando esta funcion retorna, el archivo se encuentra actualizado en disco */
+}
+
+
+int cr_rm(char* path)
+{
+    /* Funcion para borrar archivos. Elimina el archivo referenciado por la ruta ´ path
+    del directorio correspondiente. Los bloques que estaban siendo usados por el archivo deben quedar libres */
+}
+
+
+int cr_unload(char* orig, char* dest)
+{
+    /* Funcion que se encarga de copiar un archivo o un ´ arbol ´
+    de directorios (es decir, un directorio y todos sus contenidos) del disco, referenciado por orig, hacia un nuevo
+    archivo o directorio de ruta dest en su computador  */
+
+}
+
+
+int cr_load(char* orig)
+{
+    /*Funcion que se encarga de copiar un archivo o ´ arbol de directorios, referen- ´
+    ciado por orig al disco. En caso de que un archivo sea demasiado pesado para el disco, se debe escribir todo
+    lo posible hasta acabar el espacio disponible */
+}
