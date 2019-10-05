@@ -13,7 +13,6 @@ void cr_mount(char* diskname)
     /* Funcion para montar el disco. Establece como variable global la ´
     ruta local donde se encuentra el archivo .bin correspondiente al disco */
 
-
     char* path = realpath(diskname, NULL);
     DISK_PATH = path;
 }
