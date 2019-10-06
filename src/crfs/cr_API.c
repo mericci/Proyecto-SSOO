@@ -8,57 +8,6 @@
 #include "../util/util.h"
 
 
-//FUNCIONES EXTRA
-
-//toma un numero base 10 y lo guarda en binario en bin_array
-void dec_to_bin(int decimal, int* bin_array){
-    int current_result = decimal;
-    for (int i = 0; i < 8; i++) {
-  
-        if (current_result == 1) {
-            bin_array[i] = 1;
-        } else if (current_result == 0) {
-            bin_array[i] = 0;
-        } else {
-            bin_array[i] = current_result % 2;
-            current_result = current_result / 2;
-
-        }
-    }
-}
-
-//retorna el numero del primer bloque que esta libre
-int first_free_block() {
-    FILE* disk_file = fopen(DISK_PATH, "rb");
-    unsigned char buffer[1024];
-    int current_block = 0;
-    int byte_number;
-    int bin_array[8];
-    fseek(disk_file, 1024, SEEK_SET);
-    for (int bitmap_index = 1; bitmap_index <= 128; bitmap_index++) {
-        fread(buffer, 1, 1024, disk_file);
-        for (int i = 0; i < 1024; i++) {
-            byte_number = buffer[i];
-            dec_to_bin(byte_number, bin_array);
-            for (int b = 7; b >= 0; b--) {
-                if (bin_array[b] == 0) {
-                    fclose(disk_file);
-                    return current_block;
-                }
-                current_block ++;
-            }
-        }
-
-        fseek(disk_file, 1024, SEEK_CUR);
-
-    }
-
-    fclose(disk_file);
-
-    return -1;
-
-}
-
 // FUNCIONES GENERALES
 
 void cr_mount(char* diskname)
@@ -176,10 +125,19 @@ crFILE* cr_open(char* path, char mode)
     /*  Funcion para abrir un archivo. Si ´ mode es ‘r’, busca
     el archivo en la ruta path y retorna un crFILE* que lo representa. Si mode es ‘w’, se verifica que el archivo
     no exista en la ruta especificada y se retorna un nuevo crFILE* que lo representa.*/
-    if('r' == mode)
+    crFILE* nuevo_archivo = malloc(sizeof(crFILE));
+    if(mode == 'r')
     {
-        if(cr_exists(DISK_PATH))
+        printf("1\n");
+        nuevo_archivo -> modo = 0;
+        nuevo_archivo -> entrada = 0;
+        dir* direccion = malloc(sizeof(dir));
+        direccion = recorrer_path(path);
+        FILE* archivo = fopen(DISK_PATH, "r");
+        printf("2\n");
+        if(cr_exists(path) && direccion -> tipo == 4)
         {
+<<<<<<< HEAD
 
         }
         else
@@ -187,11 +145,75 @@ crFILE* cr_open(char* path, char mode)
 
         }
 
+=======
+            printf("2\n");
+            int bloq_indice = direccion -> bloque;
+            fseek(archivo, bloq_indice*1024, SEEK_SET);
+            unsigned char* tamano = malloc(4*sizeof(unsigned char));
+            fread(tamano,sizeof(unsigned char),4,archivo);
+            nuevo_archivo -> tamano = tamano[3] + (tamano[2] << 8) + (tamano[1] << 16) + (tamano[0] << 24);
+            nuevo_archivo -> num_bloques = nuevo_archivo -> tamano/1024;
+            nuevo_archivo -> directos = calloc(nuevo_archivo -> num_bloques,sizeof(int));
+            for(int i = 0; i < nuevo_archivo -> num_bloques; i++) //considerar dir indirecto;
+            {
+                printf("3\n");
+                unsigned char* bloque_ingresado = malloc(4*sizeof(unsigned char));
+                if(i < 252)
+                {
+                  printf("4\n");
+                  fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
+                  nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                                 (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+                  free(bloque_ingresado);
+                }
+                if(i == 252)
+                {
+                    printf("5\n");
+                    fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
+                    nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                                 (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+                    i = indirecto_simple(nuevo_archivo, nuevo_archivo -> directos[i],i);
+                    printf("6\n");
+                    if(i == nuevo_archivo -> num_bloques)
+                    { 
+                        free(bloque_ingresado);
+                        break;
+                    }
+                    else
+                    {
+                        fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
+                        nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                                    (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+                        i = indirecto_doble(nuevo_archivo,nuevo_archivo -> directos[i],i);
+                        if(i == nuevo_archivo -> num_bloques)
+                        { 
+                            free(bloque_ingresado);
+                            break;
+                        }
+                        else
+                        {
+                            fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
+                            nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                                        (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+                            i = indirecto_triple(nuevo_archivo,nuevo_archivo -> directos[i],i);
+                            free(bloque_ingresado);
+                            break;
+                        }    
+                    }  
+                }
+            }
+        }
+        fclose(archivo);
+        free(direccion);
+        return nuevo_archivo;
+>>>>>>> agregar exist
     }
+
     else if('w' == mode)
     {
 
     }
+    
     return NULL;
 }
 
@@ -205,10 +227,16 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
 
     int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
-    FILE* archivo = fopen(DISK_PATH, "rb");
+    if(file_desc -> modo == 0) //reviso modo lectura
+    {
+        FILE* archivo = fopen(DISK_PATH,"rb");
+        //fseek(archivo, file_desc -> posicion * 1024 + 4, SEEK_SET);
 
-    fclose(archivo);
 
+        fclose(archivo);
+    }
+    return byte_read;
+    
 
 
 

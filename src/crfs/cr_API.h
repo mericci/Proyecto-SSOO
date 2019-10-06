@@ -8,7 +8,14 @@
 
 typedef struct
 {
-    /* data */
+    int modo;
+    int tamano;
+    int entrada;
+    int num_bloques;
+    int* directos;
+    int dir1; //1 si se usa primer dir indirecto
+    int dir2; //1 si se usa segundo dir indirecto
+    int dir3; //1 si se usa tercer dir indirecto
 } crFILE;
 
 char* DISK_PATH;
@@ -27,4 +34,3 @@ int cr_rm(char* path);
 int cr_unload(char* orig, char* dest);
 int cr_load(char* orig);
 
-int first_free_block();
