@@ -26,3 +26,5 @@ int cr_close(crFILE* file_desc);
 int cr_rm(char* path);
 int cr_unload(char* orig, char* dest);
 int cr_load(char* orig);
+
+int first_free_block();

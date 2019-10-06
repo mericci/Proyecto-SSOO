@@ -7,6 +7,58 @@
 #include "cr_API.h"
 #include "../util/util.h"
 
+
+//FUNCIONES EXTRA
+
+//toma un numero base 10 y lo guarda en binario en bin_array
+void dec_to_bin(int decimal, int* bin_array){
+    int current_result = decimal;
+    for (int i = 0; i < 8; i++) {
+  
+        if (current_result == 1) {
+            bin_array[i] = 1;
+        } else if (current_result == 0) {
+            bin_array[i] = 0;
+        } else {
+            bin_array[i] = current_result % 2;
+            current_result = current_result / 2;
+
+        }
+    }
+}
+
+//retorna el numero del primer bloque que esta libre
+int first_free_block() {
+    FILE* disk_file = fopen(DISK_PATH, "rb");
+    unsigned char buffer[1024];
+    int current_block = 0;
+    int byte_number;
+    int bin_array[8];
+    fseek(disk_file, 1024, SEEK_SET);
+    for (int bitmap_index = 1; bitmap_index <= 128; bitmap_index++) {
+        fread(buffer, 1, 1024, disk_file);
+        for (int i = 0; i < 1024; i++) {
+            byte_number = buffer[i];
+            dec_to_bin(byte_number, bin_array);
+            for (int b = 7; b >= 0; b--) {
+                if (bin_array[b] == 0) {
+                    fclose(disk_file);
+                    return current_block;
+                }
+                current_block ++;
+            }
+        }
+
+        fseek(disk_file, 1024, SEEK_CUR);
+
+    }
+
+    fclose(disk_file);
+
+    return -1;
+
+}
+
 // FUNCIONES GENERALES
 
 void cr_mount(char* diskname)
@@ -26,6 +78,62 @@ void cr_bitmap(unsigned block, bool hex)
     (bitmap block ∈ {1, ..., 129}), ya sea en binario (si hex es false) o en hexadecimal (si hex es true). Si
     se ingresa block = 0, se debe imprimir el bitmap completo, imprimiendo ademas una l ´ ´ınea con la cantidad
     de bloques ocupados, y una segunda lınea con la cantidad de bloques libres. */
+    FILE* disk_file = fopen(DISK_PATH, "rb");
+    
+    if (hex) {
+    }
+    else {
+    }
+    unsigned char buffer[1024];
+
+    if (block == 0) {
+        //imprimo el bitmap completo
+        fseek(disk_file, 1024, SEEK_SET);
+        int current_block = 0;
+        int byte_number;
+        int bin_array[8];
+        for (int bitmap_index = 1; bitmap_index <= 128; bitmap_index++) {
+            fread(buffer, 1, 1024, disk_file);
+            //imprimo
+            for (int i = 0; i < 1024; i++) {
+                byte_number = buffer[i];
+                dec_to_bin(byte_number, bin_array);
+                for(int b = 7; b >= 0; b--) {
+                    fprintf(stderr, "curent block: %d; state %d\n", current_block, bin_array[b]);
+                    current_block += 1;
+                }
+            }
+            //muevo el puntero al siguiente bloque de bitmap
+            fseek(disk_file, 1024, SEEK_CUR);
+
+        }
+        fclose(disk_file);
+        return;
+
+    }
+    
+    //current_block is the block to be represented by the bitmap
+    int current_block = 1024 * (block - 1);
+    int byte_offset = block * 1024;
+    fseek(disk_file, byte_offset, SEEK_SET);
+    fread(buffer, 1, 1024, disk_file);
+
+    //imprimo
+    int byte_number;
+    int bin_arrray[8];
+    for (int i = 0; i < 1024; i++) {
+        byte_number = buffer[i];
+        dec_to_bin(byte_number, bin_arrray);
+        for (int b = 7; b >= 0; b--) {
+            fprintf(stderr, "current block: %d; state: %d\n", current_block, bin_arrray[b]);
+            current_block += 1;
+        }
+        
+    }
+    
+    
+
+    fclose(disk_file);
 
 
 
