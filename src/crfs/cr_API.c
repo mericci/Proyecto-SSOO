@@ -67,7 +67,6 @@ void cr_bitmap(unsigned block, bool hex)
     int byte_offset = block * 1024;
     fseek(disk_file, byte_offset, SEEK_SET);
     fread(buffer, 1, 1024, disk_file);
-
     //imprimo
     int byte_number;
     int bin_arrray[8];
@@ -78,15 +77,8 @@ void cr_bitmap(unsigned block, bool hex)
             fprintf(stderr, "current block: %d; state: %d\n", current_block, bin_arrray[b]);
             current_block += 1;
         }
-
     }
-
-
-
     fclose(disk_file);
-
-
-
 }
 
 
@@ -95,7 +87,6 @@ int cr_exists(char* path)
     /*Funcion para ver si un archivo o carpeta existe en la ruta especificada por ´
     path. Retorna 1 si el archivo o carpeta existe y 0 en caso contrario  */
     dir* directorio = recorrer_path(path);
-    printf("Existe en la posicion %p\n", directorio);
     if(directorio == NULL){
         return 0;
     } else {

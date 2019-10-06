@@ -16,7 +16,6 @@ typedef struct
     int bloque_actual;
     int* directos;
     int leido;
-    int* directos;
     int dir1; //1 si se usa primer dir indirecto
     int dir2; //1 si se usa segundo dir indirecto
     int dir3; //1 si se usa tercer dir indirecto
@@ -37,4 +36,3 @@ int cr_close(crFILE* file_desc);
 int cr_rm(char* path);
 int cr_unload(char* orig, char* dest);
 int cr_load(char* orig);
-
