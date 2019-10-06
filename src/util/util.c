@@ -9,9 +9,9 @@
 #include "../crfs/cr_API.h"
 
 
-dir* encontrar_directorio(char* path, int posicion) 
-//recibe nombre y posicion desde donde se busca (bloque) 
-//y retorna directorio de con el nombre del bloque 
+dir* encontrar_directorio(char* path, int posicion)
+//recibe nombre y posicion desde donde se busca (bloque)
+//y retorna directorio de con el nombre del bloque
 {
     FILE* archivo = fopen(DISK_PATH, "rb");
     dir* directorio = malloc(sizeof(dir));
@@ -36,6 +36,7 @@ dir* encontrar_directorio(char* path, int posicion)
             directorio -> tipo = (int)validez;
             return directorio;
         }
+    fclose(archivo)
     }
     return NULL;
 }
@@ -64,13 +65,15 @@ dir* recorrer_path(char* path)
                 posicion = directorio -> bloque;
                 //printf("%d\n",posicion);
                 count = 0;
+
+            } else {
                 free(archivo);
                 char* archivo = malloc(strlen(path)*sizeof(char));
-                
+                break;
             }
         }
         if(i == strlen(path)-1)
-        { 
+        {
             //printf("%s\n",archivo);
             //printf("%d\n",posicion);
             directorio = encontrar_directorio(archivo, posicion);
