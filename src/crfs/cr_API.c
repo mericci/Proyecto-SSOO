@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "cr_API.h"
+#include "../util/util.h"
 
 // FUNCIONES GENERALES
 
@@ -35,7 +36,13 @@ int cr_exists(char* path)
 {
     /*Funcion para ver si un archivo o carpeta existe en la ruta especificada por ´
     path. Retorna 1 si el archivo o carpeta existe y 0 en caso contrario  */
-
+    dir* directorio = recorrer_path(path);
+    printf("%p\n", directorio);
+    if(directorio == NULL){
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 
@@ -47,11 +54,11 @@ void cr_ls(char* path)
 }
 
 
-int cr_mkdir(char *foldername) 
+int cr_mkdir(char *foldername)
 {
     /*Funcion para crear directorios. Crea el directorio vac ´ ´ıo referido
-    por foldername*/  
-} 
+    por foldername*/
+}
 
 
 // FUNCIONES DE MANEJOS DE ARCHIVOS.
@@ -69,9 +76,9 @@ crFILE* cr_open(char* path, char mode)
         }
         else
         {
-            
+
         }
-        
+
     }
     else if('w' == mode)
     {
