@@ -5,3 +5,4 @@
 \BOOKMARK [1][-]{section.3}{Funciones Utiles}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{encontra\137directorio\(char* path, int posici\363n\)}{section.3}% 6
 \BOOKMARK [2][-]{subsection.3.2}{recorrer\137path\(char* path}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.3}{objective\137kind\(char*path\)}{section.3}% 8

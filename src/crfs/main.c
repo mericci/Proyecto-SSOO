@@ -16,8 +16,9 @@ int main(int argc, char** argv)
 	}
 
 	cr_mount(argv[1]);
-	recorrer_path("/memes/sudo1.jpg");
-    printf("%d\n", cr_exists("/dir/subdir/alter.mp4"));
+	recorrer_path("/");
+    printf("%d\n", cr_exists("/memes"));
+    cr_ls("/memes/ack.jpg");
 
 	return 0;
 }

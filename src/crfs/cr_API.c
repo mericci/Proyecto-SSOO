@@ -8,7 +8,7 @@
 #include "../util/util.h"
 
 // FUNCIONES GENERALES
-
+char* ERROR23 =  "-----------------\n    Error 23\nEl Path no existe\n-----------------\n";
 void cr_mount(char* diskname)
 {
     /* Funcion para montar el disco. Establece como variable global la ´
@@ -37,7 +37,7 @@ int cr_exists(char* path)
     /*Funcion para ver si un archivo o carpeta existe en la ruta especificada por ´
     path. Retorna 1 si el archivo o carpeta existe y 0 en caso contrario  */
     dir* directorio = recorrer_path(path);
-    printf("%p\n", directorio);
+    printf("Existe en la posicion %p\n", directorio);
     if(directorio == NULL){
         return 0;
     } else {
@@ -50,7 +50,17 @@ void cr_ls(char* path)
 {
     /*  Funcion para listar los elementos de un directorio del disco. Imprime en pan- ´
     talla los nombres de todos los archivos y directorios contenidos en el directorio indicado por path.*/
-
+    printf("Aqui empieza cr_ls \n" );
+    int is_directory = objective_kind(path);
+    if (is_directory == 23){
+        printf("%s\n", ERROR23);
+    }
+    else if(is_directory == 0){
+        printf("Objetivo es archivo\n");
+    }
+    else if(is_directory == 1){
+        print_ls(path);
+    }
 }
 
 

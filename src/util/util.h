@@ -17,3 +17,4 @@ typedef struct
 
 dir* encontrar_directorio(char* path, int posicion);
 dir* recorrer_path(char* path);
+int objective_kind(char* path);

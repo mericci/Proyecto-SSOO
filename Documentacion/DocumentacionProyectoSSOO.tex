@@ -110,5 +110,14 @@ Recibe el path absoluto desde root a un archivo o directorio especifico.
 Al ser un path absoluto se aprovecha la existencia del caracter "/" como separador y se itera para avanzar por los directorios utilizando los nombres de estos. Una vez encontrado cada nombre de subdirectorio o archivo, se utiliza la función $encontrar\_directorio$ para saber si existe dentro del directorio en el que nos encontramos. En caso de ser un directorio y no ser el objetivo, se procede a guardar su posición para poder comenzar a buscar dentro de este en la proxima iteración. 
 
 Finalmente retorna un puntero al directorio o archivo final.
+
+\subsection{objective\_kind(char*path)}
+Recibe el path absoluto desde root a un archivo o directorio.
+
+Utiliza el bit de validez del directorio o archivo objetivo para saber si es un archivo o un directorio.
+
+Finalmente retorna un 1 si el objetivo es directorio, un 0 si es archivo o imprime un error y retorna 23 en caso de que no exista el path dado.
+
+
 % Fin del documento
 \end{document}
