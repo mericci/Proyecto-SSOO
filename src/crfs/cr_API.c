@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 #include "cr_API.h"
 #include "../util/util.h"
 
@@ -37,7 +38,7 @@ int cr_exists(char* path)
     /*Funcion para ver si un archivo o carpeta existe en la ruta especificada por ´
     path. Retorna 1 si el archivo o carpeta existe y 0 en caso contrario  */
     dir* directorio = recorrer_path(path);
-    printf("%p\n", directorio);
+    //printf("%p\n", directorio);
     if(directorio == NULL){
         return 0;
     } else {
@@ -71,71 +72,46 @@ crFILE* cr_open(char* path, char mode)
     crFILE* nuevo_archivo = malloc(sizeof(crFILE));
     if(mode == 'r')
     {
-        printf("1\n");
+        //printf("1\n");
         nuevo_archivo -> modo = 0;
         nuevo_archivo -> entrada = 0;
+        nuevo_archivo -> leido = 0;
         dir* direccion = malloc(sizeof(dir));
         direccion = recorrer_path(path);
+        nuevo_archivo -> bloque = direccion -> bloque;
+        nuevo_archivo -> bloque_actual = nuevo_archivo -> bloque;
         FILE* archivo = fopen(DISK_PATH, "r");
-        printf("2\n");
+        //printf("hola %d\n",direccion -> tipo);
+        //printf("hola %d\n",cr_exists(path));
         if(cr_exists(path) && direccion -> tipo == 4)
         {
-            printf("2\n");
             int bloq_indice = direccion -> bloque;
             fseek(archivo, bloq_indice*1024, SEEK_SET);
             unsigned char* tamano = malloc(4*sizeof(unsigned char));
             fread(tamano,sizeof(unsigned char),4,archivo);
             nuevo_archivo -> tamano = tamano[3] + (tamano[2] << 8) + (tamano[1] << 16) + (tamano[0] << 24);
             nuevo_archivo -> num_bloques = nuevo_archivo -> tamano/1024;
-            nuevo_archivo -> directos = calloc(nuevo_archivo -> num_bloques,sizeof(int));
-            for(int i = 0; i < nuevo_archivo -> num_bloques; i++) //considerar dir indirecto;
+            nuevo_archivo -> directos = calloc(252,sizeof(int));
+            for(int i = 0; i < 252; i++) //considerar dir indirecto;
             {
-                printf("3\n");
                 unsigned char* bloque_ingresado = malloc(4*sizeof(unsigned char));
-                if(i < 252)
-                {
-                  printf("4\n");
-                  fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
-                  nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
-                                                 (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
-                  free(bloque_ingresado);
-                }
-                if(i == 252)
-                {
-                    printf("5\n");
-                    fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
-                    nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
-                                                 (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
-                    i = indirecto_simple(nuevo_archivo, nuevo_archivo -> directos[i],i);
-                    printf("6\n");
-                    if(i == nuevo_archivo -> num_bloques)
-                    { 
-                        free(bloque_ingresado);
-                        break;
-                    }
-                    else
-                    {
-                        fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
-                        nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
-                                                    (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
-                        i = indirecto_doble(nuevo_archivo,nuevo_archivo -> directos[i],i);
-                        if(i == nuevo_archivo -> num_bloques)
-                        { 
-                            free(bloque_ingresado);
-                            break;
-                        }
-                        else
-                        {
-                            fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
-                            nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
-                                                        (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
-                            i = indirecto_triple(nuevo_archivo,nuevo_archivo -> directos[i],i);
-                            free(bloque_ingresado);
-                            break;
-                        }    
-                    }  
-                }
+                fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
+                nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                               (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+                free(bloque_ingresado);
             }
+            unsigned char* bloque_ingresado = malloc(4*sizeof(unsigned char));
+            fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
+            nuevo_archivo -> dir1 = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                               (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+            fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
+            nuevo_archivo -> dir2 = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                               (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+            fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
+            nuevo_archivo -> dir3 = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
+                                               (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
+            fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
+            free(bloque_ingresado);
         }
         fclose(archivo);
         free(direccion);
@@ -144,7 +120,7 @@ crFILE* cr_open(char* path, char mode)
 
     else if('w' == mode)
     {
-
+        return nuevo_archivo;
     }
     
     return NULL;
@@ -163,7 +139,10 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     if(file_desc -> modo == 0) //reviso modo lectura
     {
         FILE* archivo = fopen(DISK_PATH,"rb");
-        //fseek(archivo, file_desc -> posicion * 1024 + 4, SEEK_SET);
+        fseek(archivo, file_desc -> bloque_actual * 1024 + file_desc -> leido, SEEK_SET);
+
+        unsigned char* bloque_ingresado = malloc(nbytes*sizeof(unsigned char));
+        fread(bloque_ingresado,sizeof(unsigned char),nbytes,archivo);
 
 
         fclose(archivo);

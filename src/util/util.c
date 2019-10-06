@@ -32,7 +32,8 @@ dir* encontrar_directorio(char* path, int posicion)
         {
             directorio -> bloque = bloque;
             directorio -> nombre = (char*)nombre;
-            directorio -> tipo = (int)validez;
+            //int val = (int)validez[3];
+            directorio -> tipo = val;
             return directorio;
         }
     }
@@ -77,10 +78,6 @@ dir* recorrer_path(char* path)
             //printf("%s\n",archivo);
             //printf("%d\n",posicion);
             directorio = encontrar_directorio(archivo, posicion);
-            if(directorio)
-            {
-                printf("%s         %d\n", directorio -> nombre, directorio -> bloque);
-            }
         }
     }
     return directorio;
@@ -95,7 +92,7 @@ int indirecto_simple(crFILE* archivo, int bloque_simple , int bloque_actual)
     for(int j = partida; j < archivo -> num_bloques; j++)
     {
         unsigned char* bloque_ingresado = malloc(4*sizeof(unsigned char));
-        fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
+        fread(bloque_ingresado,sizeof(unsigned char),4,file); 
         archivo -> directos[j] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
                                  (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
         free(bloque_ingresado);
