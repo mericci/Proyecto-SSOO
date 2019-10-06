@@ -146,67 +146,7 @@ int indirecto_triple(crFILE* archivo, int bloque_triple , int bloque_actual)
     return bloque_actual;
 }
 
-int indirecto_simple(crFILE* archivo, int bloque_simple , int bloque_actual)
-{
-    FILE* file = fopen(DISK_PATH, "rb");
-    fseek(file, bloque_simple* 1024, SEEK_SET);
-    int partida = bloque_actual;
-    for(int j = partida; j < archivo -> num_bloques; j++)
-    {
-        unsigned char* bloque_ingresado = malloc(4*sizeof(unsigned char));
-        fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
-        archivo -> directos[j] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
-                                 (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
-        free(bloque_ingresado);
-        bloque_actual++;
-        if(bloque_actual - partida >= 256) break;
-    }
-    fclose(file);
-    return bloque_actual;
-}
 
-int indirecto_doble(crFILE* archivo, int bloque_doble , int bloque_actual)
-{
-    FILE* file = fopen(DISK_PATH, "rb");
-    fseek(file, bloque_doble* 1024, SEEK_SET);
-    int num_simple = 0;
-    while(bloque_actual < archivo->num_bloques && num_simple < 256){
-        unsigned char* bloq_simple_raw = malloc(4*sizeof(unsigned char));
-        int bloq_simple; 
-        fread(bloq_simple_raw,sizeof(unsigned char),4,file);
-        bloq_simple = bloq_simple_raw[3] + (bloq_simple_raw[2] << 8) + 
-                        (bloq_simple_raw[1] << 16) + (bloq_simple_raw[0] << 24);
-        
-        fseek(file, bloq_simple* 1024, SEEK_SET);
-        bloque_actual = indirecto_simple(archivo, bloq_simple, bloque_actual);
-
-        num_simple += 1;
-    }
-    fclose(file);
-    return bloque_actual;
-}
-
-
-int indirecto_triple(crFILE* archivo, int bloque_triple , int bloque_actual)
-{
-    FILE* file = fopen(DISK_PATH, "rb");
-    fseek(file, bloque_triple* 1024, SEEK_SET);
-    int num_doble = 0;
-    while(bloque_actual < archivo->num_bloques && num_doble < 256){
-        unsigned char* bloq_doble_raw = malloc(4*sizeof(unsigned char));
-        int bloq_doble; 
-        fread(bloq_doble_raw,sizeof(unsigned char),4,file);
-        bloq_doble = bloq_doble_raw[3] + (bloq_doble_raw[2] << 8) + 
-                        (bloq_doble_raw[1] << 16) + (bloq_doble_raw[0] << 24);
-        
-        fseek(file, bloq_doble* 1024, SEEK_SET);
-        bloque_actual = indirecto_doble(archivo, bloq_doble, bloque_actual);
-
-        num_doble += 1;
-    }
-    fclose(file);
-    return bloque_actual;
-}
 
 void dec_to_bin(int decimal, int* bin_array){
     int current_result = decimal;
