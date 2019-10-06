@@ -137,15 +137,6 @@ crFILE* cr_open(char* path, char mode)
         printf("2\n");
         if(cr_exists(path) && direccion -> tipo == 4)
         {
-<<<<<<< HEAD
-
-        }
-        else
-        {
-
-        }
-
-=======
             printf("2\n");
             int bloq_indice = direccion -> bloque;
             fseek(archivo, bloq_indice*1024, SEEK_SET);
@@ -206,7 +197,6 @@ crFILE* cr_open(char* path, char mode)
         fclose(archivo);
         free(direccion);
         return nuevo_archivo;
->>>>>>> agregar exist
     }
 
     else if('w' == mode)
