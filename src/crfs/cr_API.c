@@ -59,6 +59,7 @@ void cr_ls(char* path)
         printf("Objetivo es archivo\n");
     }
     else if(is_directory == 1){
+        printf("es un directorio, entre!, %s\n", path );
         print_ls(path);
     }
 }

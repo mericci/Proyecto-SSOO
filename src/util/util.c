@@ -91,6 +91,11 @@ dir* recorrer_path(char* path)
 
 int objective_kind(char* path){
     printf("Empieza objective_kind \n");
+    printf("%s\n", path);
+    char h = path;
+    if(strlen(path)==1){
+        return 1;
+    }
     dir* directorio = recorrer_path(path);
     printf("objective_kind %s\n", directorio -> nombre);
     if (directorio == NULL){
@@ -125,9 +130,7 @@ dir* print_all(int posicion)
         fread(puntero,sizeof(unsigned char),4,archivo);
         bloque = puntero[3] + (puntero[2] << 8) + (puntero[1] << 16) + (puntero[0] << 24);
         //printf("%s\n", (char*)nombre)
-        if (nombre != "." && nombre != "."){
-            printf("%s\n",nombre );
-        }
+        printf("%s\n",nombre );
     }
     fclose(archivo);
     return NULL;
@@ -140,6 +143,11 @@ void print_ls(char* path){
     int count = 0;
     int posicion = 0;
     dir* directorio = malloc(sizeof(dir));
+    if(strlen(path)==1){
+        printf("asdasdasd\n");
+        print_all(0);
+        return;
+    }
     for(int i = 1; i < strlen(path); i++)
     {
         int letra = path[i];
@@ -151,11 +159,12 @@ void print_ls(char* path){
         else
         {
             directorio = encontrar_directorio(archivo, posicion);
+            printf("el directorio es %s\n", posicion);
             if(directorio)
             {
                 printf("%s         %d\n", directorio -> nombre, directorio -> bloque);
                 posicion = directorio -> bloque;
-                //printf("%d\n",posicion);
+                printf("%d\n",posicion);
                 count = 0;
 
             } else {
@@ -166,9 +175,14 @@ void print_ls(char* path){
         }
         if(i == strlen(path)-1)
         {
-            printf("nombre del archivo %s\n", archivo);
-            printf("posicion actual %d\n", posicion);
-            print_all(posicion);
+            directorio = encontrar_directorio(archivo, posicion);
+            if(directorio)
+            {
+                printf("%s         %d\n", directorio -> nombre, directorio -> bloque);
+                printf("nombre del archivo %s\n", archivo);
+                printf("posicion actual %d\n", posicion);
+                print_all(directorio -> bloque);
+            }
         }
     }
 }
