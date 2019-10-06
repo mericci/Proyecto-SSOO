@@ -50,7 +50,6 @@ void cr_ls(char* path)
 {
     /*  Funcion para listar los elementos de un directorio del disco. Imprime en pan- ´
     talla los nombres de todos los archivos y directorios contenidos en el directorio indicado por path.*/
-    printf("Aqui empieza cr_ls \n" );
     int is_directory = objective_kind(path);
     if (is_directory == 23){
         printf("%s\n", ERROR23);
@@ -59,7 +58,6 @@ void cr_ls(char* path)
         printf("Objetivo es archivo\n");
     }
     else if(is_directory == 1){
-        printf("es un directorio, entre!, %s\n", path );
         print_ls(path);
     }
 }

@@ -81,11 +81,19 @@ Función que recibe el nombre del disco.
 Retorna el puntero a la posición local del archivo ".bin" (nuestro disco virtual) a una variable global definida en "cr\_API.h" llamada "DISK\_PATH".
 
 \subsection{cr\_exist(char* path}
-Función que recibe el un path absoluto desde el directorio root.
+Función que recibe el path absoluto desde el directorio root.
 
 Utiliza la función $recorrer\_path$ para saber si existe un directorio o archivo en la ruta especificada en el path entregado.
 
 Retorna 1 si existe y 0 en caso contrario
+
+\subsection{cr\_ls(char* path)}
+Función que recibe el path absoluto desde el directorio root.
+
+Si el objetivo es un directorio, lista en consola todos los archivos y subdirectorios que estan dentro de el. Si es un archivo, retorna un mensaje diciendo que el objetivo es un archivo. Si el path esta malo, retorna un error 23 en consola.
+
+Esta función es de tipo void, por lo que no retorna nada.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%  Fin funciones Generales %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,8 +124,21 @@ Recibe el path absoluto desde root a un archivo o directorio.
 
 Utiliza el bit de validez del directorio o archivo objetivo para saber si es un archivo o un directorio.
 
-Finalmente retorna un 1 si el objetivo es directorio, un 0 si es archivo o imprime un error y retorna 23 en caso de que no exista el path dado.
+Finalmente retorna un 1 si el objetivo es directorio, un 0 si es archivo y un 23 en caso de que no exista el path dado.
 
+\subsection{print\_ls(char* path)}
+Recibe el path absoluto desde root a un archivo o directorio especifico.
+
+Permite avanzar por los directorios hasta encontrar el objetivo y utiliza la función $encontrar\_directorio$ para obtener la posición del directorio dado, una vez que tiene la posicion donde se encuentra el archivo objetivo, entrega dicha posición a $print\_all$.
+
+Esta función es de tipo void, por lo que no retorna nada.
+
+\subsection{print\_all(int posicion)}
+Recibe la posición de un archivo o directorio especifico.
+
+A partir de la posición entregada, retorna todos los subdirectorios y archivos que se encuentran contenidos en el directorio especifico.
+
+Esta función es de tipo void, por lo que no retorna nada.
 
 % Fin del documento
 \end{document}
