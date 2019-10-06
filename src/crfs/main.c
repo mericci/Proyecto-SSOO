@@ -18,10 +18,9 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
     cr_ls("/dir/subdir");
 	crFILE* file = malloc(sizeof(crFILE));
-    printf("%d\n", (cr_exists("/memes")));
 	file = cr_open("/intro.txt",'r');
 	int count = 0;
-	printf("%d\n",file->num_bloques);
+	//printf("%d\n",file->num_bloques);
 	/*for(int i = 0; i < file -> num_bloques; i++)
 	{
 		usleep(50000);

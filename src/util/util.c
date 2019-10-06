@@ -105,16 +105,8 @@ int indirecto_doble(crFILE* archivo, int bloque_doble , int bloque_actual)
         fread(bloq_simple_raw,sizeof(unsigned char),4,file);
         bloq_simple = bloq_simple_raw[3] + (bloq_simple_raw[2] << 8) +
                         (bloq_simple_raw[1] << 16) + (bloq_simple_raw[0] << 24);
-
-        fseek(file, bloq_simple* 1024, SEEK_SET);
-        bloque_actual = indirecto_simple(archivo, bloq_simple, bloque_actual);
-
-        num_simple += 1;
     }
-    fclose(file);
-    return bloque_actual;
 }
-
 
 int indirecto_triple(crFILE* archivo, int bloque_triple , int bloque_actual)
 {
