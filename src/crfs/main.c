@@ -26,6 +26,15 @@ int main(int argc, char** argv)
 		printf("%d\n",file->directos[i]);
 		printf("CONTADOR: %d\n", count);
 		count++;
+	/*
+	recorrer_path("/memes/sudo1.jpg");
+    printf("%d\n", cr_exists("/dir/subdir/alter.mp4"));
+
+	crFILE* file = malloc(sizeof(crFILE));
+	file = cr_open("/memes/hello.jpg",'r');
+	for(int i = 0; i < file -> num_bloques; i++)
+	{
+		printf("%d\n",file->directos[i]);
 	}*/
 	return 0;
 }

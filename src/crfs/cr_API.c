@@ -8,6 +8,7 @@
 #include "cr_API.h"
 #include "../util/util.h"
 
+
 // FUNCIONES GENERALES
 
 void cr_mount(char* diskname)
@@ -27,6 +28,62 @@ void cr_bitmap(unsigned block, bool hex)
     (bitmap block ∈ {1, ..., 129}), ya sea en binario (si hex es false) o en hexadecimal (si hex es true). Si
     se ingresa block = 0, se debe imprimir el bitmap completo, imprimiendo ademas una l ´ ´ınea con la cantidad
     de bloques ocupados, y una segunda lınea con la cantidad de bloques libres. */
+    FILE* disk_file = fopen(DISK_PATH, "rb");
+    
+    if (hex) {
+    }
+    else {
+    }
+    unsigned char buffer[1024];
+
+    if (block == 0) {
+        //imprimo el bitmap completo
+        fseek(disk_file, 1024, SEEK_SET);
+        int current_block = 0;
+        int byte_number;
+        int bin_array[8];
+        for (int bitmap_index = 1; bitmap_index <= 128; bitmap_index++) {
+            fread(buffer, 1, 1024, disk_file);
+            //imprimo
+            for (int i = 0; i < 1024; i++) {
+                byte_number = buffer[i];
+                dec_to_bin(byte_number, bin_array);
+                for(int b = 7; b >= 0; b--) {
+                    fprintf(stderr, "curent block: %d; state %d\n", current_block, bin_array[b]);
+                    current_block += 1;
+                }
+            }
+            //muevo el puntero al siguiente bloque de bitmap
+            fseek(disk_file, 1024, SEEK_CUR);
+
+        }
+        fclose(disk_file);
+        return;
+
+    }
+    
+    //current_block is the block to be represented by the bitmap
+    int current_block = 1024 * (block - 1);
+    int byte_offset = block * 1024;
+    fseek(disk_file, byte_offset, SEEK_SET);
+    fread(buffer, 1, 1024, disk_file);
+
+    //imprimo
+    int byte_number;
+    int bin_arrray[8];
+    for (int i = 0; i < 1024; i++) {
+        byte_number = buffer[i];
+        dec_to_bin(byte_number, bin_arrray);
+        for (int b = 7; b >= 0; b--) {
+            fprintf(stderr, "current block: %d; state: %d\n", current_block, bin_arrray[b]);
+            current_block += 1;
+        }
+        
+    }
+    
+    
+
+    fclose(disk_file);
 
 
 
@@ -122,19 +179,24 @@ crFILE* cr_open(char* path, char mode)
     {
         nuevo_archivo -> modo = 1;
         nuevo_archivo -> entrada = 0;
-        nuevo_archivo -> leido = 0;
-        dir* direccion = malloc(sizeof(dir));
-        direccion = recorrer_path(path);
         if(cr_exists(path))
         {
-            printf("NO SE PUEDE CREAR ARCHIVO\n");
+            printf("NO SE PUEDE CREAR ARCHIVO PORQUE YA EXISTE\n");
             return NULL;
         }
+        int block_to_create = first_free_block();
+        char* nombre_archivo = obtener_nombre(path);
+        if(block_to_create == -1)
+        {
+            printf("NO SE PUEDE CREAR ARCHIVO POR FALTA DE ESPACIO\n");
+            free(nombre_archivo);
+            return NULL;
+        }
+        unsigned char* bytes_to_dir;
 
 
-        free(direccion);
+
         return nuevo_archivo;
-
     }
     
     return NULL;
@@ -157,6 +219,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 
         unsigned char* bloque_ingresado = malloc(nbytes*sizeof(unsigned char));
         fread(bloque_ingresado,sizeof(unsigned char),nbytes,archivo);
+        //fseek(archivo, file_desc -> posicion * 1024 + 4, SEEK_SET);
 
 
         fclose(archivo);
