@@ -4,9 +4,8 @@
 #include <stdint.h>
 #include <string.h>
 #include "cr_API.h"
+#include "../util/util.h"
 
-
-void cr_mount(char* diskname);
 
 int main(int argc, char** argv)
 {
@@ -17,5 +16,7 @@ int main(int argc, char** argv)
 	}
 
 	cr_mount(argv[1]);
+	recorrer_path("/dir/subdir");
+	
 	return 0;
 }

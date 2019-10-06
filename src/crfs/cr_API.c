@@ -13,18 +13,19 @@ void cr_mount(char* diskname)
     /* Funcion para montar el disco. Establece como variable global la ´
     ruta local donde se encuentra el archivo .bin correspondiente al disco */
 
-    char* path = realpath(diskname, NULL);
-    DISK_PATH = path;
+    //char* path = realpath(diskname, NULL);
+    DISK_PATH = diskname;
 }
 
 
 void cr_bitmap(unsigned block, bool hex)
 {
-    /*Funcion para imprimir el ´ bitmap. Cada vez que
+    /* Funcion para imprimir el ´ bitmap. Cada vez que
     se llama esta funcion, imprime en ´ stderr el estado actual del bloque de bitmap correspondiente a block
     (bitmap block ∈ {1, ..., 129}), ya sea en binario (si hex es false) o en hexadecimal (si hex es true). Si
     se ingresa block = 0, se debe imprimir el bitmap completo, imprimiendo ademas una l ´ ´ınea con la cantidad
-    de bloques ocupados, y una segunda l´ınea con la cantidad de bloques libres. */
+    de bloques ocupados, y una segunda lınea con la cantidad de bloques libres. */
+
 
 
 }
@@ -60,6 +61,23 @@ crFILE* cr_open(char* path, char mode)
     /*  Funcion para abrir un archivo. Si ´ mode es ‘r’, busca
     el archivo en la ruta path y retorna un crFILE* que lo representa. Si mode es ‘w’, se verifica que el archivo
     no exista en la ruta especificada y se retorna un nuevo crFILE* que lo representa.*/
+    if('r' == mode)
+    {
+        if(cr_exists(DISK_PATH))
+        {
+
+        }
+        else
+        {
+            
+        }
+        
+    }
+    else if('w' == mode)
+    {
+
+    }
+    return NULL;
 }
 
 
@@ -70,6 +88,16 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     por buffer. Debe retornar la cantidad de Byte efectivamente le´ıdos desde el archivo. Esto es importante si
     nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde la posici ´ on´
     del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
+
+    int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
+    FILE* archivo = fopen(DISK_PATH, "rb");
+
+    fclose(archivo);
+
+
+
+
+
 }
 
 

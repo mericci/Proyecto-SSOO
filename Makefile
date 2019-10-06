@@ -11,10 +11,10 @@ PNG=-lpng
 
 LIB=$(MTH) $(GTK) $(PNG)
 
-COMMON=
-PROGRAMS=crfs
+COMMON=util
+PROGRAMS=crfs 
 
-SRCDIR=$(PROGRAMS)
+SRCDIR=$(COMMON) $(PROGRAMS)
 DEPS := $(foreach i, $(COMMON), $(shell find $(SRC)/$(i) -name '*.h'))
 HDRFILES := $(shell find $(SRC) -name '*.h')
 SRCFILES := $(shell find $(SRC) -name '*.c')
@@ -22,7 +22,6 @@ OBJFILES := $(foreach i, $(SRCFILES), $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(i)))
 OBJDIR := $(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC) -type d))
 
 all: $(OBJDIR) $(PROGRAMS)
-	
 	@echo "done compiling"
 
 clean:
