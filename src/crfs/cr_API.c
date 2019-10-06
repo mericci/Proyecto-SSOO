@@ -120,6 +120,19 @@ crFILE* cr_open(char* path, char mode)
 
     else if('w' == mode)
     {
+        nuevo_archivo -> modo = 1;
+        nuevo_archivo -> entrada = 0;
+        nuevo_archivo -> leido = 0;
+        dir* direccion = malloc(sizeof(dir));
+        direccion = recorrer_path(path);
+        if(cr_exists(path))
+        {
+            printf("NO SE PUEDE CREAR ARCHIVO\n");
+            return NULL;
+        }
+
+
+        free(direccion);
         return nuevo_archivo;
     }
     
