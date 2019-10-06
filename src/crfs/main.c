@@ -16,6 +16,7 @@ int main(int argc, char** argv)
 	}
 
 	cr_mount(argv[1]);
+    cr_ls("/dir/subdir");
 	crFILE* file = malloc(sizeof(crFILE));
 	file = cr_open("/intro.txt",'r');
 	int count = 0;

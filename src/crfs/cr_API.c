@@ -10,7 +10,7 @@
 
 
 // FUNCIONES GENERALES
-
+char* ERROR23 =  "-----------------\n    Error 23\nEl Path no existe\n-----------------\n";
 void cr_mount(char* diskname)
 {
     /* Funcion para montar el disco. Establece como variable global la ´
@@ -29,7 +29,7 @@ void cr_bitmap(unsigned block, bool hex)
     se ingresa block = 0, se debe imprimir el bitmap completo, imprimiendo ademas una l ´ ´ınea con la cantidad
     de bloques ocupados, y una segunda lınea con la cantidad de bloques libres. */
     FILE* disk_file = fopen(DISK_PATH, "rb");
-    
+
     if (hex) {
     }
     else {
@@ -61,13 +61,12 @@ void cr_bitmap(unsigned block, bool hex)
         return;
 
     }
-    
+
     //current_block is the block to be represented by the bitmap
     int current_block = 1024 * (block - 1);
     int byte_offset = block * 1024;
     fseek(disk_file, byte_offset, SEEK_SET);
     fread(buffer, 1, 1024, disk_file);
-
     //imprimo
     int byte_number;
     int bin_arrray[8];
@@ -78,15 +77,8 @@ void cr_bitmap(unsigned block, bool hex)
             fprintf(stderr, "current block: %d; state: %d\n", current_block, bin_arrray[b]);
             current_block += 1;
         }
-        
     }
-    
-    
-
     fclose(disk_file);
-
-
-
 }
 
 
@@ -95,7 +87,6 @@ int cr_exists(char* path)
     /*Funcion para ver si un archivo o carpeta existe en la ruta especificada por ´
     path. Retorna 1 si el archivo o carpeta existe y 0 en caso contrario  */
     dir* directorio = recorrer_path(path);
-    //printf("%p\n", directorio);
     if(directorio == NULL){
         return 0;
     } else {
@@ -108,7 +99,16 @@ void cr_ls(char* path)
 {
     /*  Funcion para listar los elementos de un directorio del disco. Imprime en pan- ´
     talla los nombres de todos los archivos y directorios contenidos en el directorio indicado por path.*/
-
+    int is_directory = objective_kind(path);
+    if (is_directory == 23){
+        printf("%s\n", ERROR23);
+    }
+    else if(is_directory == 0){
+        printf("Objetivo es archivo\n");
+    }
+    else if(is_directory == 1){
+        print_ls(path);
+    }
 }
 
 
@@ -152,7 +152,7 @@ crFILE* cr_open(char* path, char mode)
             for(int i = 0; i < 252; i++) //considerar dir indirecto;
             {
                 unsigned char* bloque_ingresado = malloc(4*sizeof(unsigned char));
-                fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
+                fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
                 nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
                                                (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
                 free(bloque_ingresado);
@@ -167,7 +167,7 @@ crFILE* cr_open(char* path, char mode)
             fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
             nuevo_archivo -> dir3 = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
                                                (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
-            fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
+            fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
             free(bloque_ingresado);
         }
         fclose(archivo);
@@ -198,7 +198,7 @@ crFILE* cr_open(char* path, char mode)
 
         return nuevo_archivo;
     }
-    
+
     return NULL;
 }
 
@@ -225,7 +225,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
         fclose(archivo);
     }
     return byte_read;
-    
+
 
 
 
