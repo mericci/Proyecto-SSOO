@@ -79,7 +79,7 @@ dir* recorrer_path(char* path)
             directorio = encontrar_directorio(archivo, posicion);
             if(directorio)
             {
-                printf("%s         %d\n", directorio -> nombre, directorio -> bloque);
+                //printf("%s         %d\n", directorio -> nombre, directorio -> bloque);
             }
         }
     }
@@ -185,13 +185,56 @@ int first_free_block() {
                 current_block ++;
             }
         }
-
         fseek(disk_file, 1024, SEEK_CUR);
-
     }
 
     fclose(disk_file);
 
     return -1;
 
+}
+
+
+char* obtener_nombre(char* path)
+{
+    char* archivo = malloc(strlen(path)*sizeof(char));
+    int count = 0;
+    for(int i = 1; i < strlen(path); i++)
+    {
+        int letra = path[i];
+        if(letra != '/')
+        {
+            archivo[count] = path[i];
+            count++;
+        }
+        else
+        {
+            count = 0;
+            free(archivo);
+            char* archivo = malloc(strlen(path)*sizeof(char));
+        }
+        
+
+    }
+    return archivo;
+}
+
+char* directorio_a_agregar(char* path)
+{
+    char* directorio = malloc(strlen(path)*sizeof(char));
+    int count = 0;
+    for(int i = 1; i < strlen(path); i++)
+    {
+        int letra = path[i];
+        if(letra == '/') count++;
+    }
+    int comp = 0;
+    for(int i = 1; i < strlen(path); i++)
+    {
+        int letra = path[i];
+        if(letra == '/') comp++;
+        if(comp == count) break;
+        directorio[i] = path[i];
+    }
+    return directorio;
 }

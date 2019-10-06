@@ -128,16 +128,16 @@ crFILE* cr_open(char* path, char mode)
     crFILE* nuevo_archivo = malloc(sizeof(crFILE));
     if(mode == 'r')
     {
-        printf("1\n");
+        //printf("1\n");
         nuevo_archivo -> modo = 0;
         nuevo_archivo -> entrada = 0;
         dir* direccion = malloc(sizeof(dir));
         direccion = recorrer_path(path);
         FILE* archivo = fopen(DISK_PATH, "r");
-        printf("2\n");
+        //printf("2\n");
         if(cr_exists(path) && direccion -> tipo == 4)
         {
-            printf("2\n");
+            //printf("2\n");
             int bloq_indice = direccion -> bloque;
             fseek(archivo, bloq_indice*1024, SEEK_SET);
             unsigned char* tamano = malloc(4*sizeof(unsigned char));
@@ -147,11 +147,11 @@ crFILE* cr_open(char* path, char mode)
             nuevo_archivo -> directos = calloc(nuevo_archivo -> num_bloques,sizeof(int));
             for(int i = 0; i < nuevo_archivo -> num_bloques; i++) //considerar dir indirecto;
             {
-                printf("3\n");
+                //printf("3\n");
                 unsigned char* bloque_ingresado = malloc(4*sizeof(unsigned char));
                 if(i < 252)
                 {
-                  printf("4\n");
+                  //printf("4\n");
                   fread(bloque_ingresado,sizeof(unsigned char),4,archivo); 
                   nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
                                                  (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
@@ -159,12 +159,12 @@ crFILE* cr_open(char* path, char mode)
                 }
                 if(i == 252)
                 {
-                    printf("5\n");
+                    //printf("5\n");
                     fread(bloque_ingresado,sizeof(unsigned char),4,archivo);
                     nuevo_archivo -> directos[i] = bloque_ingresado[3] + (bloque_ingresado[2] << 8) +
                                                  (bloque_ingresado[1] << 16) + (bloque_ingresado[0] << 24);
                     i = indirecto_simple(nuevo_archivo, nuevo_archivo -> directos[i],i);
-                    printf("6\n");
+                    //printf("6\n");
                     if(i == nuevo_archivo -> num_bloques)
                     { 
                         free(bloque_ingresado);
@@ -201,7 +201,26 @@ crFILE* cr_open(char* path, char mode)
 
     else if('w' == mode)
     {
+        nuevo_archivo -> modo = 1;
+        nuevo_archivo -> entrada = 0;
+        if(cr_exists(path))
+        {
+            printf("NO SE PUEDE CREAR ARCHIVO PORQUE YA EXISTE\n");
+            return NULL;
+        }
+        int block_to_create = first_free_block();
+        char* nombre_archivo = obtener_nombre(path);
+        if(block_to_create == -1)
+        {
+            printf("NO SE PUEDE CREAR ARCHIVO POR FALTA DE ESPACIO\n");
+            free(nombre_archivo);
+            return NULL;
+        }
+        unsigned char* bytes_to_dir;
 
+
+
+        return nuevo_archivo;
     }
     
     return NULL;
