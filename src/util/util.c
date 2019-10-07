@@ -50,7 +50,6 @@ dir* recorrer_path(char* path)
     //printf("%s\n", path);
     int count = 0;
     int posicion = 0;
-    int total = strlen(path);
     dir* directorio = malloc(sizeof(dir));
     for(int i = 1; i < strlen(path); i++){
         int letra = path[i];
@@ -222,7 +221,7 @@ char* directorio_a_agregar(char* path)
     for(int i = 0; i < strlen(path); i++)
     {
         if(path[i] == '/')
-        { 
+        {
             len+=pivote;
             pivote = 0;
         }
@@ -251,9 +250,24 @@ int objective_kind(char* path){
     return 0;
 }
 
-void print_all(int posicion)
-{
-    
+void print_all(int posicion){
+    FILE* archivo = fopen(DISK_PATH, "rb");
+    dir* directorio = malloc(sizeof(dir));
+    int bloque = 0;
+    fseek(archivo, posicion * 1024, SEEK_SET);
+    unsigned char* validez = malloc(1*sizeof(unsigned char));
+    unsigned char* nombre = malloc(27*sizeof(unsigned char));
+    unsigned char* puntero = malloc(4*sizeof(unsigned char));
+    for(int entrada = 0; entrada < 32; entrada++){
+        fread(validez,1,1,archivo);
+        unsigned int* val = (unsigned int)*validez;
+        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32) continue;
+        fread(nombre,sizeof(unsigned char),27,archivo);
+        fread(puntero,sizeof(unsigned char),4,archivo);
+        bloque = puntero[3] + (puntero[2] << 8) + (puntero[1] << 16) + (puntero[0] << 24);
+        printf("%s\n",nombre );
+    }
+    fclose(archivo);
 }
 
 void change_bitmap_block(int original_block) {
@@ -280,7 +294,7 @@ void change_bitmap_block(int original_block) {
 }
 
 void print_ls(char* path){
-    char* archivo = malloc(strlen(path)*sizeof(char));
+    char* archivo = calloc(strlen(path), sizeof(char));
     int count = 0;
     int posicion = 0;
     dir* directorio = malloc(sizeof(dir));
@@ -314,7 +328,6 @@ void print_ls(char* path){
         }
     }
 }
-
 
 int agregar_primero_invalido(int posicion, char* nombre, int puntero) //falta agregar carpeta bloque del directorio??
 //recibe nombre y posicion desde donde se busca (bloque)
@@ -364,10 +377,20 @@ int agregar_primero_invalido(int posicion, char* nombre, int puntero) //falta ag
             fclose(hola);
             */
             return 1;
-        } 
+        }
         fseek(archivo, 31, SEEK_CUR);
 
     }
     fclose(archivo);
     return 0;
+}
+char* isBin(char* path){
+    char* extension = calloc(4,sizeof(char));
+    int len = strlen(path) - 1;
+    int count = 3;
+    for(int i = len; i > 0; i--){
+        extension[count] = path[i];
+        count = count - 1;
+    }
+    return extension;
 }

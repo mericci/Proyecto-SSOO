@@ -8,16 +8,37 @@
 #include "cr_API.h"
 #include "../util/util.h"
 
+//ERRORES POSIBLES:
+char* ERROR5 = "\n-----------------\n    Error 5:\nNo se puede crear,\nDirectorio ya existente"
+"\n-----------------\n";
+char* ERROR6 = "\n-----------------\n    Error 6:\nNo se puede crear,\nArchivo ya existente"
+"\n-----------------\n";
+char* ERROR23 =  "\n-----------------\n    Error 23:\nRuta invalida\n-----------------\n";
+char* ERROR24 = "\n-----------------\n    Error 24:\nObjetivo no es \n"
+"un disco virtual\n-----------------\n";
+char*ERROR25 = "\n-----------------\n    Error 24:\nObjetivo no es directorio\n-----------------\n";
+char* ERROR30= "\n-----------------\n    Error 30:\nFalta de Espacio\n-----------------\n";
 
 // FUNCIONES GENERALES
-char* ERROR23 =  "-----------------\n    Error 23\nEl Path no existe\n-----------------\n";
+
 void cr_mount(char* diskname)
 {
     /* Funcion para montar el disco. Establece como variable global la ´
     ruta local donde se encuentra el archivo .bin correspondiente al disco */
-
-    //char* path = realpath(diskname, NULL);
-    DISK_PATH = diskname;
+    char* extension = isBin(diskname);
+    const char* bin = ".bin";
+    char* path = realpath(diskname, NULL);
+    if(path == NULL){
+        printf("%s\n", ERROR23);
+        exit(0);
+    }
+    if(strcmp(extension,bin)!=0){
+        printf("%s\n", ERROR24);
+        exit(0);
+    }
+    else {
+        DISK_PATH = diskname;
+    };
 }
 
 
@@ -182,8 +203,7 @@ crFILE* cr_open(char* path, char mode)
         nuevo_archivo -> entrada = 0;
         if(cr_exists(path))
         {
-            printf("NO SE PUEDE CREAR ARCHIVO PORQUE YA EXISTE\n");
-            //fclose(archivo);
+            printf("%s", ERROR6);
             return NULL;
         }
         //printf("\n\n");
@@ -194,7 +214,7 @@ crFILE* cr_open(char* path, char mode)
         direccion = recorrer_path(dir_to_append);
         if(block_to_create == -1)
         {
-            printf("NO SE PUEDE CREAR ARCHIVO POR FALTA DE ESPACIO\n");
+            printf("%s\n", ERROR30);
             free(nombre_archivo);
             free(dir_to_append);
             free(direccion);
@@ -232,7 +252,7 @@ crFILE* cr_open(char* path, char mode)
 
 
 
-    
+
 
         //fclose(archivo);
         return nuevo_archivo;
@@ -247,8 +267,8 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     /*Funcion para leer archivos. ´
     Lee los siguientes nbytes desde el archivo descrito por file desc y los guarda en la direccion apuntada ´
     por buffer. Debe retornar la cantidad de Byte efectivamente le´ıdos desde el archivo. Esto es importante si
-    nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde la posici ´ on´
-    del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
+    nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde
+    la posición del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
 
     int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
     if(file_desc -> modo == 0) //reviso modo lectura
@@ -274,10 +294,11 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 
 int cr_write(crFILE* file_desc, void* buffer, int nbytes)
 {
-    /*Funcion para escribir archivos. Escribe en el archivo descrito por file desc los nbytes que se encuentren en la direccion indicada ´
+    /*Funcion para escribir archivos. Escribe en el archivo descrito por file desc los nbytes que se encuentren
+    en la direccion indicada ´
     por buffer. Retorna la cantidad de Byte escritos en el archivo. Si se produjo un error porque no pudo seguir
-    escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede ser ´
-    menor a nbytes (incluso 0) */
+    escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede
+    ser menor a nbytes (incluso 0) */
 
 }
 
@@ -299,7 +320,8 @@ int cr_rm(char* path)
 int cr_unload(char* orig, char* dest)
 {
     /* Funcion que se encarga de copiar un archivo o un ´ arbol ´
-    de directorios (es decir, un directorio y todos sus contenidos) del disco, referenciado por orig, hacia un nuevo
+    de directorios (es decir, un directorio y todos sus contenidos) del disco, referenciado por orig,
+    hacia un nuevo
     archivo o directorio de ruta dest en su computador  */
 
 }

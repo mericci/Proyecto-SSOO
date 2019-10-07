@@ -76,21 +76,23 @@ IIC2333 - Sistemas Operativos y Redes \\}
 Funciones definidas como generales en el enunciado y se encuentran en "cr\_API.c".
 
 \subsection{cr\_mount(char* diskname)}
-Función que recibe el nombre del disco. 
+Función que recibe la ruta local hacia el disco que se quiere utilizar. 
+
+Se levantan dos errores y se finaliza la ejecución del programa en caso de que la ruta entregada no sea correcta o que el archivo objetivo no sea un archivo con extension binaria (".bin") como espera.
 
 Retorna el puntero a la posición local del archivo ".bin" (nuestro disco virtual) a una variable global definida en "cr\_API.h" llamada "DISK\_PATH".
 
 \subsection{cr\_exist(char* path}
-Función que recibe el path absoluto desde el directorio root.
+Función que recibe el ruta absoluta desde el directorio root.
 
-Utiliza la función $recorrer\_path$ para saber si existe un directorio o archivo en la ruta especificada en el path entregado.
+Utiliza la función $recorrer\_path$ para saber si existe un directorio o archivo en la ruta especificada en la ruta entregada.
 
 Retorna 1 si existe y 0 en caso contrario
 
 \subsection{cr\_ls(char* path)}
-Función que recibe el path absoluto desde el directorio root.
+Función que recibe el ruta absoluta desde el directorio root.
 
-Si el objetivo es un directorio, lista en consola todos los archivos y subdirectorios que estan dentro de el. Si es un archivo, retorna un mensaje diciendo que el objetivo es un archivo. Si el path esta malo, retorna un error 23 en consola.
+Si el objetivo es un directorio, lista en consola todos los archivos y subdirectorios que estan dentro de el. Si es un archivo, retorna un mensaje diciendo que el objetivo es un archivo. Si la ruta esta mala, retorna un error en consola.
 
 Esta función es de tipo void, por lo que no retorna nada.
 
@@ -113,21 +115,28 @@ Dada la posición entregada, es decir, el directorio dentro del cual se quiere b
 Retorna un puntero al directorio o archivo encontrado y NULL en caso de que no exista dicho archivo o directorio.
 
 \subsection{recorrer\_path(char* path}
-Recibe el path absoluto desde root a un archivo o directorio especifico. 
+Recibe el ruta absoluta desde root a un archivo o directorio especifico. 
 
-Al ser un path absoluto se aprovecha la existencia del caracter "/" como separador y se itera para avanzar por los directorios utilizando los nombres de estos. Una vez encontrado cada nombre de subdirectorio o archivo, se utiliza la función $encontrar\_directorio$ para saber si existe dentro del directorio en el que nos encontramos. En caso de ser un directorio y no ser el objetivo, se procede a guardar su posición para poder comenzar a buscar dentro de este en la proxima iteración. 
+Al ser un ruta absoluta se aprovecha la existencia del caracter "/" como separador y se itera para avanzar por los directorios utilizando los nombres de estos. Una vez encontrado cada nombre de subdirectorio o archivo, se utiliza la función $encontrar\_directorio$ para saber si existe dentro del directorio en el que nos encontramos. En caso de ser un directorio y no ser el objetivo, se procede a guardar su posición para poder comenzar a buscar dentro de este en la proxima iteración. 
 
 Finalmente retorna un puntero al directorio o archivo final.
 
+\subsection{directorio\_a\_agregar(char* path)}
+Recibe una ruta absoluta desde root a un archivo o directorio.
+
+Utiliza la estructura de un ruta absoluta para crear un arreglo con la ruta hasta el directorio en el que se encuentra contenido el archivo o directorio objetivo.
+
+Retorna un la ruta hasta el directorio que contiene al objetivo.
+
 \subsection{objective\_kind(char*path)}
-Recibe el path absoluto desde root a un archivo o directorio.
+Recibe el ruta absoluta desde root a un archivo o directorio.
 
 Utiliza el bit de validez del directorio o archivo objetivo para saber si es un archivo o un directorio.
 
-Finalmente retorna un 1 si el objetivo es directorio, un 0 si es archivo y un 23 en caso de que no exista el path dado.
+Finalmente retorna un 1 si el objetivo es directorio, un 0 si es archivo y un 23 en caso de que no exista la ruta dada.
 
 \subsection{print\_ls(char* path)}
-Recibe el path absoluto desde root a un archivo o directorio especifico.
+Recibe el ruta absoluta desde root a un archivo o directorio especifico.
 
 Permite avanzar por los directorios hasta encontrar el objetivo y utiliza la función $encontrar\_directorio$ para obtener la posición del directorio dado, una vez que tiene la posicion donde se encuentra el archivo objetivo, entrega dicha posición a $print\_all$.
 
@@ -139,6 +148,13 @@ Recibe la posición de un archivo o directorio especifico.
 A partir de la posición entregada, retorna todos los subdirectorios y archivos que se encuentran contenidos en el directorio especifico.
 
 Esta función es de tipo void, por lo que no retorna nada.
+
+\subsection{isBin(char* path)}
+Recibe la ruta a un archivo o directorio especifico.
+
+Se preocupa de ver si el archivo objetivo de la ruta es de extensión ".bin", compara las ultimas 4 letras de la ruta para saber esto.
+
+Retorna un char* con un string de los ultimos 4 caracteres de la ruta.
 
 % Fin del documento
 \end{document}

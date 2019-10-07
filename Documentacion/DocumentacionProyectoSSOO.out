@@ -6,6 +6,8 @@
 \BOOKMARK [1][-]{section.3}{Funciones Utiles}{}% 6
 \BOOKMARK [2][-]{subsection.3.1}{encontra\137directorio\(char* path, int posici\363n\)}{section.3}% 7
 \BOOKMARK [2][-]{subsection.3.2}{recorrer\137path\(char* path}{section.3}% 8
-\BOOKMARK [2][-]{subsection.3.3}{objective\137kind\(char*path\)}{section.3}% 9
-\BOOKMARK [2][-]{subsection.3.4}{print\137ls\(char* path\)}{section.3}% 10
-\BOOKMARK [2][-]{subsection.3.5}{print\137all\(int posicion\)}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.3}{directorio\137a\137agregar\(char* path\)}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.4}{objective\137kind\(char*path\)}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.5}{print\137ls\(char* path\)}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.6}{print\137all\(int posicion\)}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.7}{isBin\(char* path\)}{section.3}% 13

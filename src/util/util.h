@@ -17,7 +17,7 @@ typedef struct
 } dir;
 
 
-typedef struct 
+typedef struct
 {
     unsigned char* validez;
     unsigned char* nombre;
@@ -37,3 +37,7 @@ char* obtener_nombre(char* path);
 char* directorio_a_agregar(char* path);
 void change_bitmap_block(int original_block);
 int agregar_primero_invalido(int posicion, char* nombre, int puntero);
+void print_ls(char* path);
+void print_all(int posicion);
+int objective_kind(char* path);
+char* isBin(char* path);
