@@ -20,6 +20,19 @@ int main(int argc, char** argv)
 	crFILE* file = malloc(sizeof(crFILE));
 	file = cr_open("/intro.txt",'r');
 	int count = 0;
+	crFILE* file;
+	//file = cr_open("/intro.txt",'r');
+	//int count = 0;
+	//dir* direct = encontrar_directorio("dir",0);
+	//printf("%s\n",direct -> nombre);
+	//dir* direct = encontrar_directorio("dir",0);
+	//printf("%s\n",direct -> nombre);
+	file = cr_open("/dir/subdir/din.txt",'w');
+	dir* direct = encontrar_directorio("memes",0);
+	printf("%s\n",direct -> nombre);
+	direct = encontrar_directorio("dir",0);
+	printf("%s\n",direct -> nombre);
+	//recorrer_path("/memes");
 	//printf("%d\n",file->num_bloques);
 	/*for(int i = 0; i < file -> num_bloques; i++)
 	{
