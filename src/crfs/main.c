@@ -16,9 +16,13 @@ int main(int argc, char** argv)
 	}
 
 	cr_mount(argv[1]);
-	crFILE* file = malloc(sizeof(crFILE));
-	file = cr_open("/intro.txt",'r');
-	int count = 0;
+	crFILE* file;
+	//file = cr_open("/intro.txt",'r');
+	//int count = 0;
+	//dir* direct = recorrer_path("/memes/hello.jpg");
+	//printf("%d\n",direct);
+	file = cr_open("/dir/subdir",'w');
+	//recorrer_path("/memes");
 	//printf("%d\n",file->num_bloques);
 	/*for(int i = 0; i < file -> num_bloques; i++)
 	{

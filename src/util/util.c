@@ -7,8 +7,6 @@
 #include <math.h>
 #include "util.h"
 
-
-
 dir* encontrar_directorio(char* path, int posicion)
 //recibe nombre y posicion desde donde se busca (bloque)
 //y retorna directorio de con el nombre del bloque
@@ -32,7 +30,6 @@ dir* encontrar_directorio(char* path, int posicion)
         {
             directorio -> bloque = bloque;
             directorio -> nombre = (char*)nombre;
-            //int val = (int)validez[3];
             directorio -> tipo = val;
             return directorio;
         }
@@ -63,7 +60,6 @@ dir* recorrer_path(char* path)
             {
                 //printf("%s         %d\n", directorio -> nombre, directorio -> bloque);
                 posicion = directorio -> bloque;
-                //printf("%d\n",posicion);
                 count = 0;
 
             } else {
@@ -164,6 +160,14 @@ void dec_to_bin(int decimal, int* bin_array){
     }
 }
 
+int bin_to_dec(int* bin_array) {
+    int dec = 0;
+    for (int i = 0; i < 8; i++) {
+        dec += bin_array[i] * (2 ^ i);
+    }
+    return dec;
+}
+
 //retorna el numero del primer bloque que esta libre
 int first_free_block() {
     FILE* disk_file = fopen(DISK_PATH, "rb");
@@ -221,20 +225,71 @@ char* obtener_nombre(char* path)
 
 char* directorio_a_agregar(char* path)
 {
-    char* directorio = malloc(strlen(path)*sizeof(char));
+    char* directorio = calloc(strlen(path),sizeof(char));
     int count = 0;
-    for(int i = 1; i < strlen(path); i++)
+    for(int i = 0; i < strlen(path); i++)
     {
         int letra = path[i];
         if(letra == '/') count++;
     }
     int comp = 0;
-    for(int i = 1; i < strlen(path); i++)
+    for(int i = 0; i < strlen(path); i++)
     {
         int letra = path[i];
         if(letra == '/') comp++;
         if(comp == count) break;
         directorio[i] = path[i];
     }
+    //printf("%s\n",directorio);
     return directorio;
+}
+
+void change_bitmap_block(int original_block) {
+    unsigned char buffer[1] = {1};
+    int bin_array[8];
+    int bitmap_block = 1 + (original_block / 8192);
+    int byte_offset = original_block % 8192 / 8;
+    int bit_to_modify = original_block % 8;
+    FILE* disk_file = fopen(DISK_PATH, "rb");
+    fseek(disk_file, bitmap_block * 1024 + byte_offset, SEEK_SET);
+    fread(buffer, 1, 1, disk_file);
+    int byte_dec = buffer[0];
+    dec_to_bin(byte_dec, bin_array);
+    bin_array[bit_to_modify] = 0;
+    fclose(disk_file);
+
+    disk_file = fopen(DISK_PATH, "wb");
+    int new_byte_dec = bin_to_dec(bin_array);
+    buffer[0] = new_byte_dec;
+    fwrite(buffer, 1, 1, disk_file);
+    fclose(disk_file);
+
+}
+
+
+int agregar_primero_invalido(int posicion, char* nombre, int puntero)
+//recibe nombre y posicion desde donde se busca (bloque)
+//y retorna directorio de con el nombre del bloque
+{
+    FILE* archivo = fopen(DISK_PATH, "rb");
+    //blo* bloque = malloc(sizeof(blo));
+    fseek(archivo, posicion *1024, SEEK_SET);
+    unsigned char* validez = malloc(1*sizeof(unsigned char));
+    for(int entrada = 0; entrada < 32; entrada++)
+    {
+        fread(validez,1,1,archivo);
+        unsigned int* val = (unsigned int)*validez;
+        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32)
+        {
+            int val = 4;
+            fwrite(val,1,1,archivo);
+            fwrite(nombre,sizeof(char),27,archivo);
+            fwrite(puntero,sizeof(int),4,archivo);
+            fclose(archivo);
+            return 1;
+        } 
+        else continue;
+    }
+    fclose(archivo);
+    return 0;
 }

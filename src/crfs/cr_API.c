@@ -177,25 +177,50 @@ crFILE* cr_open(char* path, char mode)
 
     else if('w' == mode)
     {
+        //FILE* archivo = fopen(DISK_PATH,"rb");
         nuevo_archivo -> modo = 1;
         nuevo_archivo -> entrada = 0;
         if(cr_exists(path))
         {
             printf("NO SE PUEDE CREAR ARCHIVO PORQUE YA EXISTE\n");
+            //fclose(archivo);
             return NULL;
         }
-        int block_to_create = first_free_block();
-        char* nombre_archivo = obtener_nombre(path);
+        int block_to_create = first_free_block(); //bloque en el que estará el archivo
+        char* nombre_archivo = obtener_nombre(path); //nombre del archivo a agregar
+        char* dir_to_append = directorio_a_agregar(path); //carpeta a la que se va agregar el archivo (direccion desde root)
+        dir* direccion = malloc(sizeof(dir));
+        direccion = recorrer_path(dir_to_append);
         if(block_to_create == -1)
         {
             printf("NO SE PUEDE CREAR ARCHIVO POR FALTA DE ESPACIO\n");
             free(nombre_archivo);
+            free(dir_to_append);
+            free(direccion);
+            //fclose(archivo);
             return NULL;
         }
-        unsigned char* bytes_to_dir;
+        if(!direccion)
+        {
+            printf("NO SE PUEDE CREAR ARCHIVO POR QUE NO EXISTE DIRECTORIO\n");
+            free(nombre_archivo);
+            free(dir_to_append);
+            free(direccion);
+            //fclose(archivo);
+            return NULL;
+        }
+        FILE* archivo = fopen(DISK_PATH,"rb");
+        int agregar = agregar_primero_invalido(direccion -> bloque, nombre_archivo, block_to_create);
+        if(agregar) change_bitmap_block(block_to_create);
+        dir* prueba = malloc(sizeof(dir));
+        prueba = recorrer_path(path);
+        printf("%s\n", prueba -> nombre);
 
 
 
+    
+
+        fclose(archivo);
         return nuevo_archivo;
     }
     
