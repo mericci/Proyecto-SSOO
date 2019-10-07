@@ -45,13 +45,9 @@ dir* encontrar_directorio(char* path, int posicion)
 
 dir* recorrer_path(char* path)
 {
-<<<<<<< HEAD
-    char* archivo = calloc(strlen(path), sizeof(char));
-=======
     char* archivo = calloc(strlen(path),sizeof(char));
     //printf("%s\n", archivo);
     //printf("%s\n", path);
->>>>>>> develop
     int count = 0;
     int posicion = 0;
     dir* directorio = malloc(sizeof(dir));
@@ -254,9 +250,24 @@ int objective_kind(char* path){
     return 0;
 }
 
-void print_all(int posicion)
-{
-
+void print_all(int posicion){
+    FILE* archivo = fopen(DISK_PATH, "rb");
+    dir* directorio = malloc(sizeof(dir));
+    int bloque = 0;
+    fseek(archivo, posicion * 1024, SEEK_SET);
+    unsigned char* validez = malloc(1*sizeof(unsigned char));
+    unsigned char* nombre = malloc(27*sizeof(unsigned char));
+    unsigned char* puntero = malloc(4*sizeof(unsigned char));
+    for(int entrada = 0; entrada < 32; entrada++){
+        fread(validez,1,1,archivo);
+        unsigned int* val = (unsigned int)*validez;
+        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32) continue;
+        fread(nombre,sizeof(unsigned char),27,archivo);
+        fread(puntero,sizeof(unsigned char),4,archivo);
+        bloque = puntero[3] + (puntero[2] << 8) + (puntero[1] << 16) + (puntero[0] << 24);
+        printf("%s\n",nombre );
+    }
+    fclose(archivo);
 }
 
 void change_bitmap_block(int original_block) {
@@ -283,7 +294,7 @@ void change_bitmap_block(int original_block) {
 }
 
 void print_ls(char* path){
-    char* archivo = malloc(strlen(path)*sizeof(char));
+    char* archivo = calloc(strlen(path), sizeof(char));
     int count = 0;
     int posicion = 0;
     dir* directorio = malloc(sizeof(dir));
@@ -372,7 +383,7 @@ int agregar_primero_invalido(int posicion, char* nombre, int puntero) //falta ag
     }
     fclose(archivo);
     return 0;
-
+}
 char* isBin(char* path){
     char* extension = calloc(4,sizeof(char));
     int len = strlen(path) - 1;
@@ -381,6 +392,5 @@ char* isBin(char* path){
         extension[count] = path[i];
         count = count - 1;
     }
-    printf("%s\n", extension);
     return extension;
 }

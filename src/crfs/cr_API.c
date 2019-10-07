@@ -26,7 +26,6 @@ void cr_mount(char* diskname)
     /* Funcion para montar el disco. Establece como variable global la ´
     ruta local donde se encuentra el archivo .bin correspondiente al disco */
     char* extension = isBin(diskname);
-    printf("%s\n", extension);
     const char* bin = ".bin";
     char* path = realpath(diskname, NULL);
     if(path == NULL){
