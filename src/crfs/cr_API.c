@@ -186,7 +186,7 @@ crFILE* cr_open(char* path, char mode)
             //fclose(archivo);
             return NULL;
         }
-        printf("\n\n");
+        //printf("\n\n");
         int block_to_create = first_free_block(); //bloque en el que estará el archivo
         char* nombre_archivo = obtener_nombre(path); //nombre del archivo a agregar
         char* dir_to_append = directorio_a_agregar(path); //carpeta a la que se va agregar el archivo (direccion desde root)
@@ -211,23 +211,23 @@ crFILE* cr_open(char* path, char mode)
             return NULL;
         }
         dir* prueba;
-        printf("__________________________________________\n");
-        printf("HOLAAA5\n");
+        //printf("__________________________________________\n");
+        //printf("HOLAAA5\n");
         prueba = recorrer_path(path);
-        printf("HOLAAA6\n");
-        printf("%d AUN NO AGREGO EL PATH\n", prueba);
-        printf("__________________________________________\n");
-        printf("1\n");
+        //printf("HOLAAA6\n");
+        //printf("%d AUN NO AGREGO EL PATH\n", prueba);
+        //printf("__________________________________________\n");
+        //printf("1\n");
         //FILE* archivo = fopen(DISK_PATH,"rb");
-        printf("2\n");
+        //printf("2\n");
         int agregar = agregar_primero_invalido(direccion -> bloque, nombre_archivo, block_to_create);
-        printf("3\n");
+        //printf("3\n");
         ///////////////////////////////////////////////////////if(agregar) change_bitmap_block(block_to_create);
-        printf("4\n");
+        //printf("4\n");
         //dir* prueba = malloc(sizeof(dir));
-        printf("5\n");
+        //printf("5\n");
         prueba = recorrer_path(dir_to_append);
-        printf("6\n");
+        //printf("6\n");
         //printf("%s\n", prueba -> nombre);
 
 
