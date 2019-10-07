@@ -18,11 +18,16 @@ dir* encontrar_directorio(char* path, int posicion)
     unsigned char* validez = malloc(1*sizeof(unsigned char));
     unsigned char* nombre = malloc(27*sizeof(unsigned char));
     unsigned char* puntero = malloc(4*sizeof(unsigned char));
+    //unsigned char* salto = malloc(31*sizeof(unsigned char));
     for(int entrada = 0; entrada < 32; entrada++)
     {
         fread(validez,1,1,archivo);
         unsigned int* val = (unsigned int)*validez;
-        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32) continue;
+        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32)
+        {
+            fseek(archivo, 31, SEEK_CUR);
+            continue;
+        }
         fread(nombre,sizeof(unsigned char),27,archivo);
         fread(puntero,sizeof(unsigned char),4,archivo);
         bloque = puntero[3] + (puntero[2] << 8) + (puntero[1] << 16) + (puntero[0] << 24);
@@ -30,7 +35,9 @@ dir* encontrar_directorio(char* path, int posicion)
         {
             directorio -> bloque = bloque;
             directorio -> nombre = (char*)nombre;
+            //int val = (int)validez[3];
             directorio -> tipo = val;
+            fclose(archivo);
             return directorio;
         }
     }
@@ -40,8 +47,9 @@ dir* encontrar_directorio(char* path, int posicion)
 
 dir* recorrer_path(char* path)
 {
-    char* archivo = malloc(strlen(path)*sizeof(char));
-    //printf("%s\n",archivo);
+    char* archivo = calloc(strlen(path),sizeof(char));
+    //printf("%s\n", archivo);
+    printf("%s\n", path);
     int count = 0;
     int posicion = 0;
     dir* directorio = malloc(sizeof(dir));
@@ -51,6 +59,7 @@ dir* recorrer_path(char* path)
         if(letra != '/')
         {
             archivo[count] = path[i];
+            //printf("ARME ES ARCHIVO: %s\n", archivo);
             count++;
         }
         else
@@ -58,11 +67,14 @@ dir* recorrer_path(char* path)
             directorio = encontrar_directorio(archivo, posicion);
             if(directorio)
             {
-                //printf("%s         %d\n", directorio -> nombre, directorio -> bloque);
+                printf("\n%s\n", path);
+                printf("%s\n\n", archivo);
                 posicion = directorio -> bloque;
                 count = 0;
 
             } else {
+                printf("\n error con: %s\n\n", archivo);
+
                 free(archivo);
                 char* archivo = malloc(strlen(path)*sizeof(char));
                 break;
@@ -201,7 +213,7 @@ int first_free_block() {
 
 char* obtener_nombre(char* path)
 {
-    char* archivo = malloc(strlen(path)*sizeof(char));
+    char* archivo = calloc(strlen(path),sizeof(char));
     int count = 0;
     for(int i = 1; i < strlen(path); i++)
     {
@@ -217,30 +229,29 @@ char* obtener_nombre(char* path)
             free(archivo);
             char* archivo = malloc(strlen(path)*sizeof(char));
         }
-        
-
     }
     return archivo;
 }
 
 char* directorio_a_agregar(char* path)
 {
-    char* directorio = calloc(strlen(path),sizeof(char));
-    int count = 0;
+    int len = 0;
+    int pivote = 0;
     for(int i = 0; i < strlen(path); i++)
     {
-        int letra = path[i];
-        if(letra == '/') count++;
+        if(path[i] == '/')
+        { 
+            len+=pivote;
+            pivote = 0;
+        }
+        pivote++;
     }
-    int comp = 0;
-    for(int i = 0; i < strlen(path); i++)
+    char* directorio = calloc(len,sizeof(char));
+    for(int j = 0; j < len; j++)
     {
-        int letra = path[i];
-        if(letra == '/') comp++;
-        if(comp == count) break;
-        directorio[i] = path[i];
+        directorio[j] = path[j];
     }
-    //printf("%s\n",directorio);
+    printf("%d\n",strlen(directorio));
     return directorio;
 }
 
@@ -259,6 +270,7 @@ void change_bitmap_block(int original_block) {
     fclose(disk_file);
 
     disk_file = fopen(DISK_PATH, "wb");
+    fseek(disk_file, bitmap_block * 1024 + byte_offset, SEEK_SET);
     int new_byte_dec = bin_to_dec(bin_array);
     buffer[0] = new_byte_dec;
     fwrite(buffer, 1, 1, disk_file);
@@ -267,7 +279,7 @@ void change_bitmap_block(int original_block) {
 }
 
 
-int agregar_primero_invalido(int posicion, char* nombre, int puntero)
+int agregar_primero_invalido(int posicion, char* nombre, int puntero) //falta agregar carpeta bloque del directorio??
 //recibe nombre y posicion desde donde se busca (bloque)
 //y retorna directorio de con el nombre del bloque
 {
@@ -275,20 +287,49 @@ int agregar_primero_invalido(int posicion, char* nombre, int puntero)
     //blo* bloque = malloc(sizeof(blo));
     fseek(archivo, posicion *1024, SEEK_SET);
     unsigned char* validez = malloc(1*sizeof(unsigned char));
+    unsigned char* name = malloc(27*sizeof(unsigned char));
+    unsigned char* punt = malloc(4*sizeof(unsigned char));
+    //unsigned char* salto = malloc(31*sizeof(unsigned char));
     for(int entrada = 0; entrada < 32; entrada++)
     {
         fread(validez,1,1,archivo);
         unsigned int* val = (unsigned int)*validez;
         if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32)
         {
-            int val = 4;
-            fwrite(val,1,1,archivo);
-            fwrite(nombre,sizeof(char),27,archivo);
-            fwrite(puntero,sizeof(int),4,archivo);
             fclose(archivo);
+            int arch = 4;
+            archivo = fopen(DISK_PATH, "rb+");
+            fseek(archivo, posicion * 1024 + entrada * 32, SEEK_SET);
+            *validez = (unsigned char)arch;
+            int p = puntero;
+            for(int j=3; j >= 0; j--)
+            {
+                punt[j] = (unsigned char) (p % 256);
+                p = p / 256;
+            }
+            strcpy((char*)name,nombre);
+            fwrite(validez,1,1,archivo);
+            fwrite(nombre,1,27,archivo);
+            fwrite(punt,0,4,archivo);
+            fclose(archivo);
+            /*
+            FILE* hola = fopen(DISK_PATH, "rb");
+            fseek(hola, posicion * 1024 + entrada * 32, SEEK_SET);
+            fread(validez,1,1,hola);
+            printf("LA VALIDEZ ES: %d\n", (unsigned int)*validez);
+            fread(name,1,27,hola);
+            printf("EL NOMBRE ES: %d\n", (char)*name);
+            fread(punt,1,4,hola);
+            int bloque;
+            bloque = punt[3] + (punt[2] << 8) + (punt[1] << 16) + (punt[0] << 24);
+            printf("el bloque es: %d\n", puntero);
+            printf("LA POSICION ES: %d\n", bloque);
+            fclose(hola);
+            */
             return 1;
         } 
-        else continue;
+        fseek(archivo, 31, SEEK_CUR);
+
     }
     fclose(archivo);
     return 0;
