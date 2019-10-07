@@ -199,6 +199,7 @@ crFILE* cr_open(char* path, char mode)
 
     else if('w' == mode)
     {
+        //FILE* archivo = fopen(DISK_PATH,"rb");
         nuevo_archivo -> modo = 1;
         nuevo_archivo -> entrada = 0;
         if(cr_exists(path))
@@ -206,18 +207,55 @@ crFILE* cr_open(char* path, char mode)
             printf("%s", ERROR6);
             return NULL;
         }
-        int block_to_create = first_free_block();
-        char* nombre_archivo = obtener_nombre(path);
+        //printf("\n\n");
+        int block_to_create = first_free_block(); //bloque en el que estará el archivo
+        char* nombre_archivo = obtener_nombre(path); //nombre del archivo a agregar
+        char* dir_to_append = directorio_a_agregar(path); //carpeta a la que se va agregar el archivo (direccion desde root)
+        dir* direccion = malloc(sizeof(dir));
+        direccion = recorrer_path(dir_to_append);
         if(block_to_create == -1)
         {
             printf("%s\n", ERROR30);
             free(nombre_archivo);
+            free(dir_to_append);
+            free(direccion);
+            //fclose(archivo);
             return NULL;
         }
-        unsigned char* bytes_to_dir;
+        if(!direccion)
+        {
+            printf("NO SE PUEDE CREAR ARCHIVO POR QUE NO EXISTE DIRECTORIO\n");
+            free(nombre_archivo);
+            free(dir_to_append);
+            free(direccion);
+            //fclose(archivo);
+            return NULL;
+        }
+        dir* prueba;
+        //printf("__________________________________________\n");
+        //printf("HOLAAA5\n");
+        prueba = recorrer_path(path);
+        //printf("HOLAAA6\n");
+        //printf("%d AUN NO AGREGO EL PATH\n", prueba);
+        //printf("__________________________________________\n");
+        //printf("1\n");
+        //FILE* archivo = fopen(DISK_PATH,"rb");
+        //printf("2\n");
+        int agregar = agregar_primero_invalido(direccion -> bloque, nombre_archivo, block_to_create);
+        //printf("3\n");
+        ///////////////////////////////////////////////////////if(agregar) change_bitmap_block(block_to_create);
+        //printf("4\n");
+        //dir* prueba = malloc(sizeof(dir));
+        //printf("5\n");
+        prueba = recorrer_path(dir_to_append);
+        //printf("6\n");
+        //printf("%s\n", prueba -> nombre);
 
 
 
+
+
+        //fclose(archivo);
         return nuevo_archivo;
     }
 
