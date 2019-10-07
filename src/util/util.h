@@ -41,3 +41,4 @@ void print_ls(char* path);
 void print_all(int posicion);
 int objective_kind(char* path);
 char* isBin(char* path);
+int agregar_carpeta_invalido(int posicion, char* nombre, int puntero);

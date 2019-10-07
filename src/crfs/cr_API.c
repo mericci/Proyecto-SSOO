@@ -135,8 +135,35 @@ void cr_ls(char* path)
 
 int cr_mkdir(char *foldername)
 {
-    /*Funcion para crear directorios. Crea el directorio vac ´ ´ıo referido
+    /*Funcion para crear directorios. Crea el directorio vacío referido
     por foldername*/
+    if(cr_exists(foldername))
+    {
+        printf("%s", ERROR6);
+        return 0;
+    }
+    int block_to_create = first_free_block(); //DIFERENCIAR ENTRE INDICI Y DIRECTORIO
+    char* nombre_carpeta = obtener_nombre(foldername);
+    char* dir_to_append = directorio_a_agregar(foldername);
+    dir* direccion = recorrer_path(dir_to_append);
+    if(!direccion)
+    {
+        printf("NO SE PUEDE CREAR ARCHIVO POR QUE NO EXISTE DIRECTORIO\n");
+        free(nombre_carpeta);
+        free(dir_to_append);
+        free(direccion);
+        //fclose(archivo);
+        return 0;
+    }
+    int agregar = agregar_carpeta_invalido(direccion -> bloque, nombre_carpeta, block_to_create);
+    ///////////////////////////////////////////////////////if(agregar) change_bitmap_block(block_to_create); ///REVISAR FUNCION
+    if(agregar)
+    {
+        
+        return 1;
+    }
+    return 0;
+
 }
 
 
@@ -207,7 +234,7 @@ crFILE* cr_open(char* path, char mode)
             return NULL;
         }
         //printf("\n\n");
-        int block_to_create = first_free_block(); //bloque en el que estará el archivo
+        int block_to_create = first_free_block(); //bloque en el que estará el archivo 
         char* nombre_archivo = obtener_nombre(path); //nombre del archivo a agregar
         char* dir_to_append = directorio_a_agregar(path); //carpeta a la que se va agregar el archivo (direccion desde root)
         dir* direccion = malloc(sizeof(dir));
@@ -230,10 +257,10 @@ crFILE* cr_open(char* path, char mode)
             //fclose(archivo);
             return NULL;
         }
-        dir* prueba;
+        //dir* prueba;
         //printf("__________________________________________\n");
         //printf("HOLAAA5\n");
-        prueba = recorrer_path(path);
+        //prueba = recorrer_path(path);
         //printf("HOLAAA6\n");
         //printf("%d AUN NO AGREGO EL PATH\n", prueba);
         //printf("__________________________________________\n");
@@ -246,7 +273,7 @@ crFILE* cr_open(char* path, char mode)
         //printf("4\n");
         //dir* prueba = malloc(sizeof(dir));
         //printf("5\n");
-        prueba = recorrer_path(dir_to_append);
+        //prueba = recorrer_path(dir_to_append);
         //printf("6\n");
         //printf("%s\n", prueba -> nombre);
 
@@ -299,6 +326,7 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
     por buffer. Retorna la cantidad de Byte escritos en el archivo. Si se produjo un error porque no pudo seguir
     escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede
     ser menor a nbytes (incluso 0) */
+
 
 }
 

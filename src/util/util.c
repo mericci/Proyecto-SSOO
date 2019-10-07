@@ -360,7 +360,7 @@ int agregar_primero_invalido(int posicion, char* nombre, int puntero) //falta ag
             strcpy((char*)name,nombre);
             fwrite(validez,1,1,archivo);
             fwrite(nombre,1,27,archivo);
-            fwrite(punt,0,4,archivo);
+            fwrite(punt,1,4,archivo);
             fclose(archivo);
             /*
             FILE* hola = fopen(DISK_PATH, "rb");
@@ -393,4 +393,83 @@ char* isBin(char* path){
         count = count - 1;
     }
     return extension;
+}
+
+
+int agregar_carpeta_invalido(int posicion, char* nombre, int puntero) //falta agregar carpeta bloque del directorio??
+//recibe nombre y posicion desde donde se busca (bloque)
+//y retorna directorio de con el nombre del bloque
+{
+    FILE* archivo = fopen(DISK_PATH, "rb");
+    //blo* bloque = malloc(sizeof(blo));
+    fseek(archivo, posicion *1024, SEEK_SET);
+    unsigned char* validez = malloc(1*sizeof(unsigned char));
+    unsigned char* name = malloc(27*sizeof(unsigned char));
+    unsigned char* punt = malloc(4*sizeof(unsigned char));
+    //unsigned char* salto = malloc(31*sizeof(unsigned char));
+    for(int entrada = 0; entrada < 32; entrada++)
+    {
+        fread(validez,1,1,archivo);
+        unsigned int* val = (unsigned int)*validez;
+        
+        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32)
+        {
+            fclose(archivo);
+            int arch = 2;
+            archivo = fopen(DISK_PATH, "rb+");
+            fseek(archivo, posicion * 1024 + entrada * 32, SEEK_SET);
+            *validez = (unsigned char)arch;
+            int p = puntero;
+            for(int j=3; j >= 0; j--)
+            {
+                punt[j] = (unsigned char) (p % 256);
+                p = p / 256;
+            }
+            strcpy((char*)name,nombre);
+            fwrite(validez,1,1,archivo);
+            fwrite(nombre,1,27,archivo);
+            fwrite(punt,1,4,archivo);
+            fclose(archivo);
+            archivo = fopen(DISK_PATH, "rb+");
+            fseek(archivo, puntero * 1024 + 32, SEEK_SET);
+            char* punto = ".";
+            strcpy((char*)name,punto);
+            fwrite(validez,1,1,archivo);
+            fwrite(name,1,27,archivo);
+            fwrite(punt,1,4,archivo);
+            fclose(archivo);
+            archivo = fopen(DISK_PATH, "rb+");
+            fseek(archivo, puntero * 1024, SEEK_SET);
+            int padre = posicion;
+            punto = "..";
+            strcpy((char*)name,punto);
+            for(int j=3; j >= 0; j--)
+            {
+                punt[j] = (unsigned char) (padre % 256);
+                padre = padre / 256;
+            }
+            fwrite(validez,1,1,archivo);
+            fwrite(name,1,27,archivo);
+            fwrite(punt,1,4,archivo);
+            fclose(archivo);
+            /*
+            FILE* hola = fopen(DISK_PATH, "rb");
+            fseek(hola, posicion * 1024 + entrada * 32, SEEK_SET);
+            fread(validez,1,1,hola);
+            printf("LA VALIDEZ ES: %d\n", (unsigned int)*validez);
+            fread(name,1,27,hola);
+            printf("EL NOMBRE ES: %d\n", (char)*name);
+            fread(punt,1,4,hola);
+            int bloque;
+            bloque = punt[3] + (punt[2] << 8) + (punt[1] << 16) + (punt[0] << 24);
+            printf("el bloque es: %d\n", puntero);
+            printf("LA POSICION ES: %d\n", bloque);
+            fclose(hola);
+            */
+            return 1;
+        }
+        fseek(archivo, 31, SEEK_CUR);
+    }
+    fclose(archivo);
+    return 0;
 }
