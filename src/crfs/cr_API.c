@@ -159,7 +159,7 @@ int cr_mkdir(char *foldername)
     ///////////////////////////////////////////////////////if(agregar) change_bitmap_block(block_to_create); ///REVISAR FUNCION
     if(agregar)
     {
-        
+        ///AGREGAR CHANGE BITMAP BLOCK
         return 1;
     }
     return 0;
