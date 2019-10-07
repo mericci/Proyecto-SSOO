@@ -434,6 +434,8 @@ int agregar_carpeta_invalido(int posicion, char* nombre, int puntero) //falta ag
             fseek(archivo, puntero * 1024 + 32, SEEK_SET);
             char* punto = ".";
             strcpy((char*)name,punto);
+            int arch = 8;
+            *validez = (unsigned char)arch;
             fwrite(validez,1,1,archivo);
             fwrite(name,1,27,archivo);
             fwrite(punt,1,4,archivo);
@@ -448,6 +450,8 @@ int agregar_carpeta_invalido(int posicion, char* nombre, int puntero) //falta ag
                 punt[j] = (unsigned char) (padre % 256);
                 padre = padre / 256;
             }
+            int arch = 16;
+            *validez = (unsigned char)arch;
             fwrite(validez,1,1,archivo);
             fwrite(name,1,27,archivo);
             fwrite(punt,1,4,archivo);
@@ -472,4 +476,99 @@ int agregar_carpeta_invalido(int posicion, char* nombre, int puntero) //falta ag
     }
     fclose(archivo);
     return 0;
+}
+
+int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes)
+{
+    FILE* file = fopen(DISK_PATH, "rb");
+    int leido;
+    leido=0;
+    printf("%d\n", file_desc->bloque_actual);
+    uint8_t lectura = 0;
+    uint8_t dato=0;
+
+    while (file_desc-> bloque_actual < 252 && leido < nbytes)
+    {
+
+        printf("itero");
+        //leer bloque directo
+        //posicionamos en bloque actual y linea actual de ese bloque
+        fseek(file, file_desc->directos[file_desc-> bloque_actual] * 1024 + file_desc->posicion_en_bloque , SEEK_SET);
+
+        //caso podemos terminar con la lectura del restante
+        if ( (1024 - file_desc->posicion_en_bloque) > nbytes  )
+        {
+
+            printf("Posicion de bloque actual es el: %i\n", file_desc->bloque_actual);
+
+            printf("Posicion dentro de bloque: %i\n", file_desc->posicion_en_bloque);
+
+            for (int i = 0; i < nbytes; i++)
+            {
+                fread(lectura,sizeof(uint8_t),1,file);
+                buffer[dato] = lectura;
+                dato+=1;
+
+            }
+            fread(lectura,sizeof(uint8_t),1,file);
+                buffer[dato] = lectura;
+            
+            leido += nbytes;
+            file_desc ->posicion_en_bloque += nbytes;
+            
+            
+            
+            
+            
+
+        }
+        else if ((1024 - file_desc->posicion_en_bloque) == nbytes)
+        {
+            
+            printf("Posicion de bloque actual es el: %i\n", file_desc->bloque_actual);
+            printf("Posicion dentro de bloque: %i\n", file_desc->posicion_en_bloque);
+            for (int i = 0; i < nbytes; i++)
+            {
+                fread(lectura,sizeof(uint8_t),1,file);
+                buffer[dato] = lectura;
+                dato+=1;
+            }
+            leido += nbytes;
+            file_desc ->posicion_en_bloque = 0;
+            file_desc ->bloque_actual += 1;
+            
+            
+
+        }
+        
+
+        else
+        {
+              
+            printf("Posicion de bloque actual es el: %i\n", file_desc->bloque_actual);
+            printf("Posicion dentro de bloque: %i\n", file_desc->posicion_en_bloque);
+            printf("lei %i bytes", leido);
+            int maximo_posible = (1024 - file_desc->posicion_en_bloque);
+            
+            for (int i = 0; i < maximo_posible; i++)
+            {
+                
+                fread(lectura,sizeof(uint8_t),1,file);
+                buffer[dato] = lectura;
+                dato+=1;
+            }
+            leido += maximo_posible;
+            file_desc ->posicion_en_bloque = 0;
+            file_desc ->bloque_actual += 1;
+            
+
+        }
+        
+    
+    }
+
+    printf("-------%i-------\n", file_desc-> bloque_actual);
+
+
+    fclose(file);
 }
