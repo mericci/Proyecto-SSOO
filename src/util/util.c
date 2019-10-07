@@ -42,10 +42,9 @@ dir* encontrar_directorio(char* path, int posicion)
 
 dir* recorrer_path(char* path)
 {
-    char* archivo = malloc(strlen(path)*sizeof(char));
+    char* archivo = calloc(strlen(path), sizeof(char));
     int count = 0;
     int posicion = 0;
-    int total = strlen(path);
     dir* directorio = malloc(sizeof(dir));
     for(int i = 1; i < strlen(path); i++){
         int letra = path[i];
@@ -292,4 +291,16 @@ void print_ls(char* path){
             }
         }
     }
+}
+
+char* isBin(char* path){
+    char* extension = calloc(4,sizeof(char));
+    int len = strlen(path) - 1;
+    int count = 3;
+    for(int i = len; i > 0; i--){
+        extension[count] = path[i];
+        count = count - 1;
+    }
+    printf("%s\n", extension);
+    return extension;
 }

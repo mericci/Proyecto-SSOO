@@ -25,3 +25,7 @@ void dec_to_bin(int decimal, int* bin_array);
 int first_free_block();
 char* obtener_nombre(char* path);
 char* directorio_a_agregar(char* path);
+void print_ls(char* path);
+void print_all(int posicion);
+int objective_kind(char* path);
+char* isBin(char* path);
