@@ -343,6 +343,27 @@ int cr_rm(char* path)
 {
     /* Funcion para borrar archivos. Elimina el archivo referenciado por la ruta ´ path
     del directorio correspondiente. Los bloques que estaban siendo usados por el archivo deben quedar libres */
+    
+    //dir block es el bloque del directorio que referencia al archivo
+    int dir_block = get_dir_block(path);
+    int entry_index = get_entry_index(dir_block, path);
+    int file_pointer = get_file_pointer(dir_block, path);
+    invalidate_entry(dir_block, entry_index);
+
+    
+    //borro los bloques de los archivos
+    change_bitmap_block(file_pointer);
+
+
+    FILE* disk_file = fopen(DISK_PATH, "rb");
+
+    fclose(disk_file);
+
+
+
+
+    return 1;
+
 }
 
 

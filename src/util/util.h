@@ -42,3 +42,7 @@ void print_all(int posicion);
 int objective_kind(char* path);
 char* isBin(char* path);
 int agregar_carpeta_invalido(int posicion, char* nombre, int puntero);
+int get_dir_block(char* path);
+int get_entry_index(int dir_block, char* path);
+int get_file_pointer(int dir_block, char* path);
+void invalidate_entry(int dir_block, int entry_index);
