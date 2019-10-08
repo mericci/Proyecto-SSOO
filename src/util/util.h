@@ -52,3 +52,8 @@ void invalidate_entry(int dir_block, int entry_index);
 void free_simple_indirect(int block);
 void free_double_indirect(int block);
 void free_triple_indirect(int block);
+char* actual_locals(char* path);
+char* locals_to_create(char* path);
+char* get_first_folder(char* path);
+void create_local_directory(char* path);
+char* next_folder(char* real_path, char* new_folder);

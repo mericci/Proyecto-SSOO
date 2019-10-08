@@ -6,8 +6,16 @@
 \BOOKMARK [1][-]{section.3}{Funciones Utiles}{}% 6
 \BOOKMARK [2][-]{subsection.3.1}{encontra\137directorio\(char* path, int posici\363n\)}{section.3}% 7
 \BOOKMARK [2][-]{subsection.3.2}{recorrer\137path\(char* path}{section.3}% 8
-\BOOKMARK [2][-]{subsection.3.3}{directorio\137a\137agregar\(char* path\)}{section.3}% 9
-\BOOKMARK [2][-]{subsection.3.4}{objective\137kind\(char*path\)}{section.3}% 10
-\BOOKMARK [2][-]{subsection.3.5}{print\137ls\(char* path\)}{section.3}% 11
-\BOOKMARK [2][-]{subsection.3.6}{print\137all\(int posicion\)}{section.3}% 12
-\BOOKMARK [2][-]{subsection.3.7}{isBin\(char* path\)}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.3}{dec\137to\137bin\(int decimal, int* bin\137array\)}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.4}{bin\137to\137dec\(int* bin\137array\)}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.5}{first\137free\137block\(\)}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.6}{obtener\137nombre\(char* path\)}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.7}{directorio\137a\137agregar\(char* path\)}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.8}{objective\137kind\(char*path\)}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.9}{print\137all\(int posicion\)}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.10}{change\137bitmap\137block\(int original\137block\)}{section.3}% 16
+\BOOKMARK [2][-]{subsection.3.11}{print\137ls\(char* path\)}{section.3}% 17
+\BOOKMARK [2][-]{subsection.3.12}{agregar\137primero\137invalido\(int posicion, char* nombre, int puntero\)}{section.3}% 18
+\BOOKMARK [2][-]{subsection.3.13}{isBin\(char* path\)}{section.3}% 19
+\BOOKMARK [2][-]{subsection.3.14}{agregar\137carpeta\137invalido\(int posicion, char* nombre, int puntero\)}{section.3}% 20
+\BOOKMARK [2][-]{subsection.3.15}{leer\137bloques\137directos\( crFILE* file\137desc, uint8\137t* buffer, int nbytes\)}{section.3}% 21

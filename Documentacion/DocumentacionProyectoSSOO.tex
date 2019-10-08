@@ -83,14 +83,14 @@ Se levantan dos errores y se finaliza la ejecución del programa en caso de que 
 Retorna el puntero a la posición local del archivo ".bin" (nuestro disco virtual) a una variable global definida en "cr\_API.h" llamada "DISK\_PATH".
 
 \subsection{cr\_exist(char* path}
-Función que recibe el ruta absoluta desde el directorio root.
+Función que recibe la ruta absoluta desde el directorio root a un archivo o directorio especifico.
 
 Utiliza la función $recorrer\_path$ para saber si existe un directorio o archivo en la ruta especificada en la ruta entregada.
 
 Retorna 1 si existe y 0 en caso contrario
 
 \subsection{cr\_ls(char* path)}
-Función que recibe el ruta absoluta desde el directorio root.
+Función que recibe la ruta absoluta desde el directorio root a un archivo o directorio especifico.
 
 Si el objetivo es un directorio, lista en consola todos los archivos y subdirectorios que estan dentro de el. Si es un archivo, retorna un mensaje diciendo que el objetivo es un archivo. Si la ruta esta mala, retorna un error en consola.
 
@@ -108,25 +108,53 @@ Funciones definidas como de manejo de archivos en el enunciado y se encuentran e
 Funciones definidas en "Util.c".
 
 \subsection{encontra\_directorio(char* path, int posición)}
-Función que recibe el nombre del archivo o directorio a buscar y la posición del bloque de directorio en el que se realizará la busqueda. 
+Función que recibe la ruta absoluta desde el directorio root a un archivo o directorio especifico y la posición del bloque de directorio en el que se realizará la busqueda. 
 
 Dada la posición entregada, es decir, el directorio dentro del cual se quiere buscar, se compara cada entrada del directorio con el nombre del archivo, para saber si existe dicho archivo o directorio dentro del directorio en el que se quiere buscar. 
 
 Retorna un puntero al directorio o archivo encontrado y NULL en caso de que no exista dicho archivo o directorio.
 
 \subsection{recorrer\_path(char* path}
-Recibe el ruta absoluta desde root a un archivo o directorio especifico. 
+Función que recibe la ruta absoluta desde el directorio root a un archivo o directorio especifico.
 
 Al ser un ruta absoluta se aprovecha la existencia del caracter "/" como separador y se itera para avanzar por los directorios utilizando los nombres de estos. Una vez encontrado cada nombre de subdirectorio o archivo, se utiliza la función $encontrar\_directorio$ para saber si existe dentro del directorio en el que nos encontramos. En caso de ser un directorio y no ser el objetivo, se procede a guardar su posición para poder comenzar a buscar dentro de este en la proxima iteración. 
 
 Finalmente retorna un puntero al directorio o archivo final.
+
+\subsection{dec\_to\_bin(int decimal, int* bin\_array)}
+Recibe un numero decimal y un puntero a un arreglo de enteros.
+
+Transforma el numero decimal a un numero binario y lo guarda en el arreglo entregado como segundo parametro, por lo que se modifica el interior de dicho arreglo, del cual ya se tiene el puntero.
+
+Esta función es de tipo void, por lo que no retorna nada.
+
+\subsection{bin\_to\_dec(int* bin\_array)}
+Recibe un puntero a un arreglo de int.
+
+Transforma el numero binario alojado dentro del arreglo recibido, transformandolo a su equivalente en número decimal.
+
+Retorna el numero decimal equivalente al binario recibido.
+
+\subsection{first\_free\_block()}
+No recibe ningún argumento.
+
+Recorre los bloques del disco en forma secuencial, revisando las validez de cada bloque por el que pasa en busqueda de un bloque invalido.
+
+Retorna el numero de del primer bloque que se encuentra actualmente invalidado.
+
+\subsection{obtener\_nombre(char* path)}
+Función que recibe la ruta absoluta desde el directorio root a un archivo o directorio especifico.
+
+Utiliza la forma de escritura de un path absoluto, aprovechando la existencia del caracter '/' como separador de carpetas, para obtener el nombre del archivo o directorio objetivo.
+
+Retorna el puntero a un arreglo de caracteres con el nombre del objetivo de la ruta.
 
 \subsection{directorio\_a\_agregar(char* path)}
 Recibe una ruta absoluta desde root a un archivo o directorio.
 
 Utiliza la estructura de un ruta absoluta para crear un arreglo con la ruta hasta el directorio en el que se encuentra contenido el archivo o directorio objetivo.
 
-Retorna un la ruta hasta el directorio que contiene al objetivo.
+Retorna la ruta hasta el directorio que contiene al objetivo.
 
 \subsection{objective\_kind(char*path)}
 Recibe el ruta absoluta desde root a un archivo o directorio.
@@ -135,13 +163,6 @@ Utiliza el bit de validez del directorio o archivo objetivo para saber si es un 
 
 Finalmente retorna un 1 si el objetivo es directorio, un 0 si es archivo y un 23 en caso de que no exista la ruta dada.
 
-\subsection{print\_ls(char* path)}
-Recibe el ruta absoluta desde root a un archivo o directorio especifico.
-
-Permite avanzar por los directorios hasta encontrar el objetivo y utiliza la función $encontrar\_directorio$ para obtener la posición del directorio dado, una vez que tiene la posicion donde se encuentra el archivo objetivo, entrega dicha posición a $print\_all$.
-
-Esta función es de tipo void, por lo que no retorna nada.
-
 \subsection{print\_all(int posicion)}
 Recibe la posición de un archivo o directorio especifico.
 
@@ -149,12 +170,44 @@ A partir de la posición entregada, retorna todos los subdirectorios y archivos 
 
 Esta función es de tipo void, por lo que no retorna nada.
 
+\subsection{change\_bitmap\_block(int original\_block)}
+Recibe el número de un bloque.
+
+Encuentra la entrada correspondiente al numero del bloque ingresado dentro de los bloques de bitmap y cambia su valor a 1 si este estaba en 0 y viceversa, actualizando el bitmap.
+
+Esta función es de tipo void, por lo que no retorna nada.
+
+\subsection{print\_ls(char* path)}
+Recibe el ruta absoluta desde root a un archivo o directorio especifico.
+
+Permite avanzar por los directorios hasta encontrar el objetivo y utiliza la función $encontrar\_directorio$ para obtener la posición del directorio dado, una vez que tiene la posicion donde se encuentra el archivo objetivo, entrega dicha posición a $print\_all$.
+
+Esta función es de tipo void, por lo que no retorna nada.
+
+\subsection{agregar\_primero\_invalido(int posicion, char* nombre, int puntero)}
+Recibe el número del bloque del directorio dentro del cual se creará el archivo, el nombre del archivo a crear y el número del bloque directorio del archivo.
+
+Busca el primer bloque inválido dentro del directorio en el que se va a crear el archivo y asigna un bloque a dicha posición, el bloque tendra como nombre el nombre del archivo que se quiere crear y validez 4.
+
+Retorna un 1 en caso de que se agregue correctamente y un 0 en caso contrario.
+
 \subsection{isBin(char* path)}
 Recibe la ruta a un archivo o directorio especifico.
 
 Se preocupa de ver si el archivo objetivo de la ruta es de extensión ".bin", compara las ultimas 4 letras de la ruta para saber esto.
 
 Retorna un char* con un string de los ultimos 4 caracteres de la ruta.
+
+
+\subsection{agregar\_carpeta\_invalido(int posicion, char* nombre, int puntero)}
+Recibe el número del bloque del directorio dentro del cual se creará el nuevo directorio, el nombre del directorio a crear y el número del bloque directorio de este.
+
+Busca el primer bloque inválido dentro del directorio en el que se va a crear el uno nuevo y asigna un bloque a dicha posición, el bloque tendra como nombre el nombre del directorio que se quiere crear y validez 2.
+
+Retorna un 1 en caso de que se agregue correctamente y un 0 en caso contrario.
+
+\subsection{leer\_bloques\_directos( crFILE* file\_desc, uint8\_t* buffer, int nbytes)}
+
 
 % Fin del documento
 \end{document}

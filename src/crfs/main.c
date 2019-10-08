@@ -18,16 +18,8 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
     //printf("%d\n",cr_exists("/dir"));
     //cr_ls("/memes");
-	cr_mkdir("/memes/martin");
-
-	cr_mkdir("/memes/martin1");
-	cr_mkdir("/memes/martin2");
-	cr_mkdir("/memes/martin3");
-	cr_open("/memes/aga",'w');
-
-
-	cr_ls("/memes");
-	printf("\n\n");
+	cr_ls("/dir");
+    create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
 	//cr_ls("/memes");
 	//dir* direc = recorrer_path("/memes/hacker.jpg");
 	//printf("%s\n", direc -> nombre);
@@ -38,7 +30,7 @@ int main(int argc, char** argv)
 	//cr_ls("/");
 	//dir* direct = recorrer_path("/intro.txt");
 	//printf("%d\n", direct->bloque);
-	
+
 	//crFILE* file = malloc(sizeof(crFILE));
 	//file = cr_open("/intro.txt",'r');
 	//int count = 0;
