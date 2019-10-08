@@ -25,13 +25,11 @@ int main(int argc, char** argv)
 	cr_ls("/");
 	int dir_block = get_dir_block("/intro.txt");
 	int entry_index = get_entry_index(dir_block, "/intro.txt");
-	printf("root block: %d\n", dir_block);
-	printf("entry index: %d\n", entry_index);
-	printf("file pointer: %d\n", get_file_pointer(dir_block, "/intro.txt"));
+	printf("removed: %d\n", cr_rm("/intro.txt"));
 	//invalidate_entry(dir_block, entry_index);
 	cr_ls("/");
 	dir* direct = recorrer_path("/intro.txt");
-	printf("%d\n", direct->bloque);
+	//printf("%d\n", direct->bloque);
 	
 	//crFILE* file = malloc(sizeof(crFILE));
 	//file = cr_open("/intro.txt",'r');

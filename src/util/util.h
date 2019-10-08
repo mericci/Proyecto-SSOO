@@ -46,3 +46,6 @@ int get_dir_block(char* path);
 int get_entry_index(int dir_block, char* path);
 int get_file_pointer(int dir_block, char* path);
 void invalidate_entry(int dir_block, int entry_index);
+void free_simple_indirect(int block);
+void free_double_indirect(int block);
+void free_triple_indirect(int block);
