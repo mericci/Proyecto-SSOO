@@ -160,6 +160,30 @@ int cr_mkdir(char *foldername)
     if(agregar)
     {
         ///AGREGAR CHANGE BITMAP BLOCK
+        change_bitmap_block(block_to_create);
+        int block_extension = first_free_block();
+        change_bitmap_block(block_extension);
+        FILE* archivo = fopen(DISK_PATH, "rb+");
+        fseek(archivo, block_to_create * 1024 + 31*32, SEEK_SET);
+        unsigned char* validez = malloc(1*sizeof(unsigned char));
+        unsigned char* name = malloc(27*sizeof(unsigned char));
+        unsigned char* punt = malloc(4*sizeof(unsigned char));
+        int val = 32;
+        *validez = (unsigned char)val;
+        int p = block_to_create;
+        for(int j=3; j >= 0; j--)
+        {
+            punt[j] = (unsigned char) (p % 256);
+            p = p / 256;
+        }
+        char* nombre = calloc(2,sizeof(char));
+        nombre = "";
+        strcpy((char*)name,nombre);
+        fwrite(validez,1,1,archivo);
+        fwrite(nombre,1,27,archivo);
+        fwrite(punt,1,4,archivo);
+        fclose(archivo);
+
         return 1;
     }
     return 0;
@@ -257,31 +281,48 @@ crFILE* cr_open(char* path, char mode)
             //fclose(archivo);
             return NULL;
         }
-        //dir* prueba;
-        //printf("__________________________________________\n");
-        //printf("HOLAAA5\n");
-        //prueba = recorrer_path(path);
-        //printf("HOLAAA6\n");
-        //printf("%d AUN NO AGREGO EL PATH\n", prueba);
-        //printf("__________________________________________\n");
-        //printf("1\n");
-        //FILE* archivo = fopen(DISK_PATH,"rb");
-        //printf("2\n");
         int agregar = agregar_primero_invalido(direccion -> bloque, nombre_archivo, block_to_create);
-        //printf("3\n");
-        ///////////////////////////////////////////////////////if(agregar) change_bitmap_block(block_to_create);
-        //printf("4\n");
-        //dir* prueba = malloc(sizeof(dir));
-        //printf("5\n");
-        //prueba = recorrer_path(dir_to_append);
-        //printf("6\n");
-        //printf("%s\n", prueba -> nombre);
-
-
-
-
-
-        //fclose(archivo);
+        if(agregar) change_bitmap_block(block_to_create);
+        
+        int bloque_a_reservar;
+        
+        FILE* archivo = fopen(DISK_PATH, "rb+");
+        unsigned char* punt = malloc(4*sizeof(unsigned char));
+        for(int k = 1; k < 256; k++)
+        {
+            bloque_a_reservar = first_free_block();
+            if(bloque_a_reservar != -1)
+            {
+                fseek(archivo, block_to_create * 1024 + k * 4, SEEK_SET);
+                change_bitmap_block(bloque_a_reservar);
+                int p = bloque_a_reservar;
+                for(int j=3; j >= 0; j--)
+                {
+                    punt[j] = (unsigned char) (p % 256);
+                    p = p / 256;
+                }
+                fwrite(punt,1,4,archivo);
+            
+            }
+        }
+        free(punt);
+        fclose(archivo);
+        
+        nuevo_archivo -> bloque = block_to_create;
+        nuevo_archivo -> bloque_actual = block_to_create;
+        nuevo_archivo -> modo = 1;
+        nuevo_archivo -> tamano = 0;
+        nuevo_archivo -> posicion_en_bloque = 1; //parto en segunda linea, c/linea tiene 4 bytes.
+        nuevo_archivo -> dir1 = 0;
+        nuevo_archivo -> dir2 = 0;
+        nuevo_archivo -> dir3 = 0;
+        nuevo_archivo -> uso_dir1 = 0;
+        nuevo_archivo -> uso_dir2 = 0;
+        nuevo_archivo -> uso_dir3 = 0;
+        nuevo_archivo -> posicion_en_dir1 = 0;
+        nuevo_archivo -> posicion_en_dir2 = 0;
+        nuevo_archivo -> posicion_en_dir3 = 0;
+        nuevo_archivo -> leido = 0;
         return nuevo_archivo;
     }
 
@@ -309,14 +350,9 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
         //fseek(archivo, file_desc -> posicion * 1024 + 4, SEEK_SET);
 
 
-        fclose(archivo);*/
-    
+        fclose(archivo);
+    }*/
     return byte_read;
-
-
-
-
-
 }
 
 
@@ -327,6 +363,92 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
     por buffer. Retorna la cantidad de Byte escritos en el archivo. Si se produjo un error porque no pudo seguir
     escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede
     ser menor a nbytes (incluso 0) */
+    /*
+    printf("EL BUFFER ES: %s\n",buffer);
+    int bytes_write = 0;
+    int escritura_directa = 0;
+    int escritura_indirecta = 0;
+    //bloque_datos* BD = malloc(sizeof(bloque_datos));
+    //bloque_indice* BI = malloc(sizeof(bloque_indice));
+    //BI -> bloq_dat = BD; 
+    //BI -> entrada = file_desc -> posicion_en_bloque;
+    //printf("1\n");
+    //BI -> bloque = file_desc -> bloque;
+    //printf("1\n");
+    //BD -> offset_datos = 0; 
+    //printf("1\n");
+    if(file_desc -> modo == 1)
+    {
+        int bloque = file_desc -> bloque;
+        if(file_desc -> posicion_en_bloque < 1008) //reviso si queda espacio por escribir
+        {
+            //printf("2\n");
+            if(nbytes - (258048 - (file_desc -> posicion_en_bloque)*1024) < 0) //reviso si voy a escribir todo o no ---- SI CABE TODO EL NBYTES
+            {
+                escritura_directa = nbytes;
+            }
+            else
+            {
+                 escritura_directa = 258048 - file_desc -> posicion_en_bloque;
+                 escritura_indirecta = nbytes - (258048 - file_desc -> posicion_en_bloque);
+                 file_desc -> uso_dir1 = 1;
+                 if(escritura_indirecta > 262144) file_desc -> uso_dir2 = 1;
+                 if(escritura_indirecta > 67108864) file_desc -> uso_dir3 = 1;
+            }
+        }
+        else escritura_indirecta = nbytes;
+        //printf("3\n");
+        while(1)
+        {
+            FILE* archivo = fopen(DISK_PATH, "rb");
+            fseek(archivo, bloque*1024 + file_desc -> posicion_en_bloque, SEEK_SET);
+            unsigned char* puntero = malloc(4*(sizeof(unsigned char)));
+            fread(puntero,sizeof(unsigned char),4,archivo);
+            int bloque_a_ir = encontrar_bloque(puntero);
+            //BD -> bloque = bloque_a_ir;
+            fclose(archivo);
+            printf("4\n");
+            archivo = fopen(DISK_PATH, "w");
+            //fseek(archivo, BD->bloque*1024 + BD -> offset_datos, SEEK_SET); //voy a leer en entrada en la que voy.
+            int escritura_en_datos;
+            if(escritura_directa > 1024)
+            {
+                escritura_en_datos = 1024;
+                escritura_directa -= 1024;
+            }
+            else
+            {
+                escritura_en_datos = escritura_directa;
+                escritura_directa = 0;
+            }
+            if(escritura_directa > 0) //si hay escritura directa
+            {
+                
+                //inicialmente hago solo escritura directa
+                fwrite(buffer, 1, escritura_directa, archivo); //escribo los directos
+                bytes_write+=escritura_en_datos;
+                if(escritura_en_datos == 1024)
+                {
+                    //BD -> offset_datos = 0;
+                    file_desc -> posicion_en_bloque += 1;
+                    //BI -> entrada += 1;
+                    if(!escritura_indirecta) break;
+
+                }
+                //else BD -> offset_datos += escritura_en_datos;
+                //file_desc -> posicion_en_bloque += escritura_directa;
+                if(escritura_indirecta && escritura_directa == 0) //si hay indirecta y ya escribi todo lo directo
+                {
+                    break;   
+                }
+
+            }
+        }
+        
+
+
+    }
+    return bytes_write;  */  
 
 
 }
@@ -336,6 +458,7 @@ int cr_close(crFILE* file_desc)
 {
     /* Funcion para cerrar archivos. Cierra el archivo indicado por ´
     file desc. Debe garantizar que cuando esta funcion retorna, el archivo se encuentra actualizado en disco */
+    
 }
 
 
@@ -361,4 +484,5 @@ int cr_load(char* orig)
     /*Funcion que se encarga de copiar un archivo o ´ arbol de directorios, referen- ´
     ciado por orig al disco. En caso de que un archivo sea demasiado pesado para el disco, se debe escribir todo
     lo posible hasta acabar el espacio disponible */
+
 }
