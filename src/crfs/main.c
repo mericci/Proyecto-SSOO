@@ -18,10 +18,8 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
     //printf("%d\n",cr_exists("/dir"));
     //cr_ls("/memes");
-	
-	cr_mkdir("/dir/martin");
 	cr_ls("/dir");
-	
+    create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
 	//crFILE* file = malloc(sizeof(crFILE));
 	//file = cr_open("/intro.txt",'r');
 	//int count = 0;

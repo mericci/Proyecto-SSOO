@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <dirent.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <math.h>
 #include "util.h"
 
@@ -148,7 +152,6 @@ void dec_to_bin(int decimal, int* bin_array){
         } else {
             bin_array[i] = current_result % 2;
             current_result = current_result / 2;
-
         }
     }
 }
@@ -232,9 +235,9 @@ char* directorio_a_agregar(char* path)
     {
         directorio[j] = path[j];
     }
-    printf("%d\n",strlen(directorio));
     return directorio;
 }
+
 int objective_kind(char* path){
     char h = path;
     if(strlen(path)==1){
@@ -282,14 +285,14 @@ void change_bitmap_block(int original_block) {
 
     int byte_dec = buffer[0];
     dec_to_bin(byte_dec, bin_array);
- 
+
     if (bin_array[7 -bit_to_modify] == 1) {
         bin_array[7 - bit_to_modify] = 0;
     } else {
         bin_array[7 - bit_to_modify] = 1;
 
     }
- 
+
     fclose(disk_file);
     int arch = bin_to_dec(bin_array);
     unsigned char *new_byte_value = malloc(1*sizeof(unsigned char));
@@ -419,7 +422,7 @@ int agregar_carpeta_invalido(int posicion, char* nombre, int puntero) //falta ag
     {
         fread(validez,1,1,archivo);
         unsigned int* val = (unsigned int)*validez;
-        
+
         if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32)
         {
             fclose(archivo);
@@ -520,19 +523,19 @@ int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes)
             }
             fread(lectura,sizeof(uint8_t),1,file);
                 buffer[dato] = lectura;
-            
+
             leido += nbytes;
             file_desc ->posicion_en_bloque += nbytes;
-            
-            
-            
-            
-            
+
+
+
+
+
 
         }
         else if ((1024 - file_desc->posicion_en_bloque) == nbytes)
         {
-            
+
             printf("Posicion de bloque actual es el: %i\n", file_desc->bloque_actual);
             printf("Posicion dentro de bloque: %i\n", file_desc->posicion_en_bloque);
             for (int i = 0; i < nbytes; i++)
@@ -544,23 +547,23 @@ int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes)
             leido += nbytes;
             file_desc ->posicion_en_bloque = 0;
             file_desc ->bloque_actual += 1;
-            
-            
+
+
 
         }
-        
+
 
         else
         {
-              
+
             printf("Posicion de bloque actual es el: %i\n", file_desc->bloque_actual);
             printf("Posicion dentro de bloque: %i\n", file_desc->posicion_en_bloque);
             printf("lei %i bytes", leido);
             int maximo_posible = (1024 - file_desc->posicion_en_bloque);
-            
+
             for (int i = 0; i < maximo_posible; i++)
             {
-                
+
                 fread(lectura,sizeof(uint8_t),1,file);
                 buffer[dato] = lectura;
                 dato+=1;
@@ -568,15 +571,105 @@ int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes)
             leido += maximo_posible;
             file_desc ->posicion_en_bloque = 0;
             file_desc ->bloque_actual += 1;
-            
+
 
         }
-        
-    
+
+
     }
 
     printf("-------%i-------\n", file_desc-> bloque_actual);
 
 
     fclose(file);
+}
+
+char* actual_locals(char* path){
+    /*Retorna el path de directorios que ya existen en el local.
+    Retorna NULL si no hay ningun directorio real.*/
+    bool checked = false;
+    char* actual;
+    DIR* direccion = opendir(path);
+    if(direccion){
+        return path;
+    }
+    actual = directorio_a_agregar(path);
+    while(!checked){
+        direccion = opendir(actual);
+        if(direccion){
+            return actual;
+        } if(strcmp(actual,"")==0){
+            checked = true;
+            printf("estamos en nulo\n" );
+            return NULL;
+        }
+        actual = directorio_a_agregar(actual);
+    }
+}
+
+char* locals_to_create(char* path){
+    /* Retorna la parte del path que no existe en local*/
+    char* existent = actual_locals(path);
+    int path_len = strlen(path);
+    int exist_len = strlen(existent);
+    char* aux = calloc(path_len - exist_len, sizeof(char));
+    int count = 0;
+    for(int i=0; i<path_len; i++){
+        if(i>exist_len - 1){
+            aux[count] = path[i];
+            count++;
+        }
+    }
+    return aux;
+}
+
+char* get_first_folder(char* path){
+    int count = 1;
+    int len = strlen(path);
+    for(int i=1; i < len; i++){
+        if(path[i]!='/'){
+            count++;
+        }
+        else break;
+    }
+    char* aux = calloc(count,sizeof(char));
+    for(int i=0; i<count;i++){
+        aux[i]=path[i];
+    }
+    return aux;
+}
+
+char* next_folder(char* real_path, char* new_folder){
+    int path_len = strlen(real_path);
+    int folder_len = strlen(new_folder);
+    printf("%s\n",new_folder );
+    int total = path_len + folder_len;
+    int count = 0;
+    char* aux = calloc(total, sizeof(char));
+    for(int i = 0; i < path_len; i++){
+        aux[i] = real_path[i];
+        count++;
+    }
+    for(int i = 0; i < folder_len; i++){
+        aux[count] = new_folder[count];
+        count++;
+    }
+    printf("%s\n",aux );
+    return aux;
+}
+
+void create_local_directory(char* path){
+    /* Recibe el path absoluto en el local donde se quiere crear*/
+    char* existent = actual_locals(path);
+    if(existent){
+        if(strcmp(existent,path)==0){
+            printf("El path completo existe\n%s\n%s\n", existent, path);
+        }else{
+            char* new = locals_to_create(path);
+            char* first = get_first_folder(new);
+            char* new_folder_path = next_folder(existent, first);
+            int status;
+            status = mkdir(new_folder_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        }
+    }
 }
