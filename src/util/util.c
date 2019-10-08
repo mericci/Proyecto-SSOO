@@ -938,9 +938,6 @@ void free_double_indirect(int double_block) {
             free_simple_indirect(block_array[i]);
         }
     }
-
-
-
 }
 
 void free_triple_indirect(int triple_block) {
@@ -1025,23 +1022,30 @@ char* next_folder(char* real_path, char* new_folder){
     int path_len = strlen(real_path);
     int folder_len = strlen(new_folder);
     printf("%s\n",new_folder );
+    printf("%d\n",folder_len );
+    printf("%s\n",real_path );
+    printf("%d\n",path_len );
     int total = path_len + folder_len;
+    printf("%d\n", total);
     int count = 0;
     char* aux = calloc(total, sizeof(char));
     for(int i = 0; i < path_len; i++){
         aux[i] = real_path[i];
         count++;
     }
+    printf("%d\n", count);
     for(int i = 0; i < folder_len; i++){
-        aux[count] = new_folder[count];
+        aux[count] = new_folder[i];
+        printf("%c\n",new_folder[i]);
         count++;
     }
+    printf("%d\n", count);
     printf("%s\n",aux );
     return aux;
 }
 
 void create_local_directory(char* path){
-    /* Recibe el path absoluto en el local donde se quiere crear*/
+    /* Recibe el path absoluto en el local donde se quiere crear un nuevo directorio*/
     char* existent = actual_locals(path);
     if(existent){
         if(strcmp(existent,path)==0){
@@ -1052,6 +1056,7 @@ void create_local_directory(char* path){
             char* new_folder_path = next_folder(existent, first);
             int status;
             status = mkdir(new_folder_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+            create_local_directory(path);
         }
     }
 }
