@@ -343,6 +343,70 @@ int cr_rm(char* path)
 {
     /* Funcion para borrar archivos. Elimina el archivo referenciado por la ruta ´ path
     del directorio correspondiente. Los bloques que estaban siendo usados por el archivo deben quedar libres */
+    
+    //dir block es el bloque del directorio que referencia al archivo
+    int dir_block = get_dir_block(path);
+    int entry_index = get_entry_index(dir_block, path);
+    if (entry_index == -1) {
+        printf("%s", ERROR23);
+    }
+    int file_pointer = get_file_pointer(dir_block, path);
+    invalidate_entry(dir_block, entry_index);
+
+    
+    //borro los bloques de los archivos
+    change_bitmap_block(file_pointer);
+    //veo los punteros del bloque indice
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    fseek(disk_file, file_pointer * 1024, SEEK_SET);
+    int block;
+    int block_array[252];
+    unsigned char* pointer = malloc(4*sizeof(unsigned char));
+    for (int i = 0; i < 252; i++) {
+        fread(pointer, 1, 4, disk_file);
+        block = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+        block_array[i] = block;
+    }
+    free(pointer);
+    
+    int arch = 0;
+    unsigned char *byte_cero = malloc(1*sizeof(unsigned char));
+    *byte_cero = (unsigned char)arch;
+    for (int i = 0; i < 252; i++) {
+        //convierto a 0 las entradas
+        if (block_array[i] != 0){
+            change_bitmap_block(block_array[i]);
+            fseek(disk_file, block_array[i] * 1024, SEEK_SET);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+        }
+        
+    }
+
+    fclose(disk_file);
+
+
+    fread(pointer, 1, 4, disk_file);
+    int simple_indirect = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+    fread(pointer, 1, 4, disk_file);
+    int double_indirect = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+    fread(pointer, 1, 4, disk_file);
+    int triple_indirect = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+    if (simple_indirect != 0) {
+       free_simple_indirect(simple_indirect);
+    }
+    if (double_indirect != 0) {
+        free_double_indirect(double_indirect);
+    }
+    if (triple_indirect != 0) {
+        free_triple_indirect(triple_indirect);
+    }
+
+    
+    return 1;
+
 }
 
 

@@ -261,7 +261,10 @@ void print_all(int posicion){
     for(int entrada = 0; entrada < 32; entrada++){
         fread(validez,1,1,archivo);
         unsigned int* val = (unsigned int)*validez;
-        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32) continue;
+        if(val != 2 && val != 4 && val != 8 && val != 16 && val != 32) {
+            fseek(archivo, 31, SEEK_CUR);
+            continue;
+        }
         fread(nombre,sizeof(unsigned char),27,archivo);
         fread(puntero,sizeof(unsigned char),4,archivo);
         bloque = puntero[3] + (puntero[2] << 8) + (puntero[1] << 16) + (puntero[0] << 24);
@@ -298,6 +301,8 @@ void change_bitmap_block(int original_block) {
     fseek(disk_file, bitmap_block * 1024 + byte_offset, SEEK_SET);
     fwrite(new_byte_value, 1, 1, disk_file);
     fclose(disk_file);
+    free(new_byte_value);
+    return;
 
 }
 
@@ -579,4 +584,210 @@ int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes)
 
 
     fclose(file);
+}
+
+
+//obtengo el bloque del directorio con la entrada al archivo
+int get_dir_block(char* path) {
+    char* archivo = malloc(strlen(path)*sizeof(char));
+    int count = 0;
+    int posicion = 0;
+    int total = strlen(path);
+    dir* directorio = malloc(sizeof(dir));
+
+    //leo las letras uno a uno
+    for(int i = 1; i < strlen(path); i++){
+        int letra = path[i];
+        if(letra != '/'){
+            //agrego la letra al archivo
+            archivo[count] = path[i];
+            count++;
+            
+        }
+        else{
+            //en este caso es un /
+            //tengo que buscar el directorio
+            //busco la ruta que tengo hasta el momento
+            directorio = encontrar_directorio(archivo, posicion);
+            if(directorio)
+            {
+                posicion = directorio->bloque;
+                count = 0;
+            } else {
+                free(archivo);
+                char* archivo = malloc(strlen(path)*sizeof(char));
+                break;
+            }
+
+        }
+        if(i == strlen(path)-1){
+            directorio = encontrar_directorio(archivo, posicion);
+            return posicion;
+        }
+    }
+    return -1;
+}
+
+//obtengo el indice de la entrada en la que esta el archivo
+int get_entry_index(int dir_block, char* path) {
+    FILE* disk_file = fopen(DISK_PATH, "rb");
+    char *file_name = obtener_nombre(path);
+    unsigned char* name = malloc(27*sizeof(unsigned char));
+    unsigned char* pointer = malloc(4*sizeof(unsigned char));
+    unsigned char buffer[1];
+    fseek(disk_file, dir_block * 1024, SEEK_SET);
+    //busco en las 32 entradas
+    for (int entry = 0; entry < 32; entry++) {
+        
+        fread(buffer, 1, 1, disk_file);
+        fread(name, 1, 27, disk_file);
+        fread(pointer, 1, 4, disk_file);
+        if (strcmp(file_name,(char*)name) == 0) {
+            free(name);
+            free(pointer);
+            fclose(disk_file);
+            if (buffer[0] == 1) {
+                return -1;
+            }
+            return entry;
+        }
+        
+    }
+    free(name);
+    free(pointer);
+
+    fclose(disk_file);
+    return -1;
+}
+
+
+int get_file_pointer(int dir_block, char* path) {
+    FILE* disk_file = fopen(DISK_PATH, "rb");
+
+    char *file_name = obtener_nombre(path);
+    unsigned char* name = malloc(27*sizeof(unsigned char));
+    unsigned char* pointer = malloc(4*sizeof(unsigned char));
+    unsigned char* buffer = malloc(sizeof(unsigned char));
+    int bloque = 0;
+
+    fseek(disk_file, dir_block * 1024, SEEK_SET);
+    //busco en las 32 entradas
+    for (int entry = 0; entry < 32; entry++) {
+        fread(buffer, 1, 1, disk_file);
+        fread(name, 1, 27, disk_file);
+        fread(pointer, 1, 4, disk_file);
+        if (strcmp(file_name,(char*)name) == 0) {
+            free(name);
+            fclose(disk_file);
+            bloque = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+
+            return bloque;
+        }
+        
+    }
+    free(name);
+    free(pointer);
+
+    fclose(disk_file);
+    return -1;
+
+}
+
+void invalidate_entry(int dir_block, int entry_index) {
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    fseek(disk_file, dir_block * 1024 + entry_index * 32, SEEK_SET);
+    int arch = 1;
+    unsigned char *invalidation_byte = malloc(1*sizeof(unsigned char));
+    *invalidation_byte = (unsigned char)arch;
+    fwrite(invalidation_byte, 1, 1, disk_file);
+    free(invalidation_byte);
+
+    fclose(disk_file);
+
+}
+
+void free_simple_indirect(int simple_block){
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    change_bitmap_block(simple_block);
+    
+    int block;
+    int block_array[256];
+    unsigned char* pointer = malloc(4*sizeof(unsigned char));
+    fseek(disk_file, simple_block * 1024, SEEK_SET);
+    for (int i = 0; i < 256; i++) {
+        fread(pointer, 1, 4, disk_file);
+        block = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+        block_array[i] = block;
+    }
+
+
+    int arch = 0;
+    unsigned char *byte_cero = malloc(1*sizeof(unsigned char));
+    *byte_cero = (unsigned char)arch;
+    for (int i = 0; i < 256; i++) {
+        //convierto a 0 las entradas
+        if (block_array[i] != 0){
+            change_bitmap_block(block_array[i]);
+            fseek(disk_file, block_array[i] * 1024, SEEK_SET);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+        }
+        
+    }
+
+    fclose(disk_file);
+
+    
+}
+
+void free_double_indirect(int double_block) {
+
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    change_bitmap_block(double_block);
+    
+    int simple_block;
+    int block_array[256];
+    unsigned char* pointer = malloc(4*sizeof(unsigned char));
+    fseek(disk_file, double_block * 1024, SEEK_SET);
+    for (int i = 0; i < 256; i++) {
+        fread(pointer, 1, 4, disk_file);
+        simple_block = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+        block_array[i] = simple_block;
+    }
+
+    fclose(disk_file);
+    for (int i = 0; i < 256; i++) {
+        if (block_array[i] != 0) {
+            free_simple_indirect(block_array[i]);
+        }
+    }
+
+    
+
+}
+
+void free_triple_indirect(int triple_block) {
+
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    change_bitmap_block(triple_block);
+    
+    int double_block;
+    int block_array[256];
+    unsigned char* pointer = malloc(4*sizeof(unsigned char));
+    fseek(disk_file, triple_block * 1024, SEEK_SET);
+    for (int i = 0; i < 256; i++) {
+        fread(pointer, 1, 4, disk_file);
+        double_block = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+        block_array[i] = double_block;
+    }
+
+    fclose(disk_file);
+    for (int i = 0; i < 256; i++) {
+        if (block_array[i] != 0) {
+            free_double_indirect(block_array[i]);
+        }
+    }
+
 }
