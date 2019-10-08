@@ -18,17 +18,25 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
     //printf("%d\n",cr_exists("/dir"));
     //cr_ls("/memes");
+	cr_mkdir("/memes/martin");
 
-	
-	
-	//cr_mkdir("/dir/martin");
-	cr_ls("/");
-	int dir_block = get_dir_block("/intro.txt");
-	int entry_index = get_entry_index(dir_block, "/intro.txt");
-	printf("removed: %d\n", cr_rm("/intro.txt"));
+	cr_mkdir("/memes/martin1");
+	cr_mkdir("/memes/martin2");
+	cr_mkdir("/memes/martin3");
+	cr_open("/memes/aga",'w');
+
+
+	cr_ls("/memes");
+	printf("\n\n");
+	//cr_ls("/memes");
+	//dir* direc = recorrer_path("/memes/hacker.jpg");
+	//printf("%s\n", direc -> nombre);
+	//int dir_block = get_dir_block("/intro.txt");
+	//int entry_index = get_entry_index(dir_block, "/intro.txt");
+	//printf("removed: %d\n", cr_rm("/intro.txt"));
 	//invalidate_entry(dir_block, entry_index);
-	cr_ls("/");
-	dir* direct = recorrer_path("/intro.txt");
+	//cr_ls("/");
+	//dir* direct = recorrer_path("/intro.txt");
 	//printf("%d\n", direct->bloque);
 	
 	//crFILE* file = malloc(sizeof(crFILE));

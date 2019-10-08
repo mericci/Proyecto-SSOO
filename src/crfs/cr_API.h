@@ -12,6 +12,7 @@ typedef struct
     int modo;
     int tamano;
     int entrada;
+    int leido;
     int num_bloques;
     int bloque_actual; //bloque directo registrado lectura
     int* directos;
