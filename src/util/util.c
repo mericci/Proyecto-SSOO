@@ -156,7 +156,7 @@ void dec_to_bin(int decimal, int* bin_array){
 int bin_to_dec(int* bin_array) {
     int dec = 0;
     for (int i = 0; i < 8; i++) {
-        dec += bin_array[i] * (2 ^ i);
+        dec += bin_array[i] * pow(2, i);
     }
     return dec;
 }
@@ -279,16 +279,24 @@ void change_bitmap_block(int original_block) {
     FILE* disk_file = fopen(DISK_PATH, "rb");
     fseek(disk_file, bitmap_block * 1024 + byte_offset, SEEK_SET);
     fread(buffer, 1, 1, disk_file);
+
     int byte_dec = buffer[0];
     dec_to_bin(byte_dec, bin_array);
-    bin_array[bit_to_modify] = 0;
-    fclose(disk_file);
+ 
+    if (bin_array[7 -bit_to_modify] == 1) {
+        bin_array[7 - bit_to_modify] = 0;
+    } else {
+        bin_array[7 - bit_to_modify] = 1;
 
-    disk_file = fopen(DISK_PATH, "wb");
+    }
+ 
+    fclose(disk_file);
+    int arch = bin_to_dec(bin_array);
+    unsigned char *new_byte_value = malloc(1*sizeof(unsigned char));
+    *new_byte_value = (unsigned char)arch;
+    disk_file = fopen(DISK_PATH, "rb+");
     fseek(disk_file, bitmap_block * 1024 + byte_offset, SEEK_SET);
-    int new_byte_dec = bin_to_dec(bin_array);
-    buffer[0] = new_byte_dec;
-    fwrite(buffer, 1, 1, disk_file);
+    fwrite(new_byte_value, 1, 1, disk_file);
     fclose(disk_file);
 
 }
@@ -434,7 +442,7 @@ int agregar_carpeta_invalido(int posicion, char* nombre, int puntero) //falta ag
             fseek(archivo, puntero * 1024 + 32, SEEK_SET);
             char* punto = ".";
             strcpy((char*)name,punto);
-            int arch = 8;
+            arch = 8;
             *validez = (unsigned char)arch;
             fwrite(validez,1,1,archivo);
             fwrite(name,1,27,archivo);
@@ -450,7 +458,7 @@ int agregar_carpeta_invalido(int posicion, char* nombre, int puntero) //falta ag
                 punt[j] = (unsigned char) (padre % 256);
                 padre = padre / 256;
             }
-            int arch = 16;
+            arch = 16;
             *validez = (unsigned char)arch;
             fwrite(validez,1,1,archivo);
             fwrite(name,1,27,archivo);
