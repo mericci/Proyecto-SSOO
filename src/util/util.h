@@ -24,6 +24,14 @@ typedef struct
     unsigned char* puntero;
 } blo;
 
+typedef struct
+{
+    int puntero;
+    int posicion;
+    int* directos;
+
+} ind_simple;
+
 
 dir* encontrar_segundo_directorio(char* path, int posicion);
 dir* encontrar_directorio(char* path, int posicion);
@@ -45,6 +53,8 @@ int objective_kind(char* path);
 char* isBin(char* path);
 int agregar_carpeta_invalido2(int posicion, char* nombre, int puntero);
 int agregar_carpeta_invalido(int posicion, char* nombre, int puntero);
+int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes, int maximo);
+int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes);
 int get_dir_block(char* path);
 int get_entry_index(int dir_block, char* path);
 int get_file_pointer(int dir_block, char* path);

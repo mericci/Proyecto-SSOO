@@ -212,11 +212,11 @@ crFILE* cr_open(char* path, char mode)
         }
         nuevo_archivo -> modo = 0;
         nuevo_archivo -> entrada = 0;
-        //nuevo_archivo -> leido = 0;
+        nuevo_archivo -> leido = 0;
         dir* direccion = malloc(sizeof(dir));
         direccion = recorrer_path(path);
         nuevo_archivo -> bloque = direccion -> bloque;
-        nuevo_archivo -> bloque_actual = nuevo_archivo -> bloque;
+        nuevo_archivo -> bloque_actual = 0;
         FILE* archivo = fopen(DISK_PATH, "r");
         //printf("hola %d\n",direccion -> tipo);
         if(cr_exists(path)==1 && direccion -> tipo == 4)
@@ -339,6 +339,10 @@ crFILE* cr_open(char* path, char mode)
 
 int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 {
+    int leido = nueva_leer(file_desc,buffer, nbytes);
+    
+    return leido;
+
     /*Funcion para leer archivos. ´
     Lee los siguientes nbytes desde el archivo descrito por file desc y los guarda en la direccion apuntada ´
     por buffer. Debe retornar la cantidad de Byte efectivamente le´ıdos desde el archivo. Esto es importante si

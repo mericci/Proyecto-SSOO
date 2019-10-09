@@ -9,10 +9,10 @@
 typedef struct
 {
     int bloque; //
+    int leido;
     int modo;
     int tamano;
     int entrada;
-    int leido;
     int num_bloques;
     int bloque_actual; //bloque directo registrado lectura
     int* directos;
@@ -23,11 +23,10 @@ typedef struct
     int uso_dir1;
     int uso_dir2;
     int uso_dir3;
-    int* posicion_en_dir1; //posicion en bloque indirecto
-    int* posicion_en_dir2;
-    int* posicion_en_dir3;
-    
-} crFILE;
+    int posicion_en_dir1; //posicion en bloque indirecto
+    int posicion_en_dir2;
+    int posicion_en_dir3;
+    } crFILE;
 
 char* DISK_PATH;
 
@@ -43,4 +42,3 @@ int cr_close(crFILE* file_desc);
 int cr_rm(char* path);
 int cr_unload(char* orig, char* dest);
 int cr_load(char* orig);
-int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes);
