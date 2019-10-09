@@ -180,11 +180,11 @@ crFILE* cr_open(char* path, char mode)
         //printf("1\n");
         nuevo_archivo -> modo = 0;
         nuevo_archivo -> entrada = 0;
-        //nuevo_archivo -> leido = 0;
+        nuevo_archivo -> leido = 0;
         dir* direccion = malloc(sizeof(dir));
         direccion = recorrer_path(path);
         nuevo_archivo -> bloque = direccion -> bloque;
-        nuevo_archivo -> bloque_actual = nuevo_archivo -> bloque;
+        nuevo_archivo -> bloque_actual = 0;
         FILE* archivo = fopen(DISK_PATH, "r");
         //printf("hola %d\n",direccion -> tipo);
         //printf("hola %d\n",cr_exists(path));
@@ -291,31 +291,9 @@ crFILE* cr_open(char* path, char mode)
 
 int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 {
-    /*Funcion para leer archivos. ´
-    Lee los siguientes nbytes desde el archivo descrito por file desc y los guarda en la direccion apuntada ´
-    por buffer. Debe retornar la cantidad de Byte efectivamente le´ıdos desde el archivo. Esto es importante si
-    nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde
-    la posición del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
+    int leido = nueva_leer(file_desc,buffer, nbytes);
     
-    int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
-    /*
-    if(file_desc -> modo == 0) //reviso modo lectura
-    {
-        FILE* archivo = fopen(DISK_PATH,"rb");
-        fseek(archivo, file_desc -> bloque_actual * 1024 + file_desc -> leido, SEEK_SET);
-
-        unsigned char* bloque_ingresado = malloc(nbytes*sizeof(unsigned char));
-        fread(bloque_ingresado,sizeof(unsigned char),nbytes,archivo);
-        //fseek(archivo, file_desc -> posicion * 1024 + 4, SEEK_SET);
-
-
-        fclose(archivo);*/
-    
-    return byte_read;
-
-
-
-
+    return leido;
 
 }
 
