@@ -28,22 +28,21 @@ int main(int argc, char** argv)
 	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
 	
 	//cr_read( file, buffer, 5000);
-	printf("holaaaaa");
 	int lee = nueva_leer(file, buffer, file->tamano);
 	
-    printf("------- %i ---------ff %i", file->tamano, file->leido);
+    printf("------- %i ---------ff %i\n", file->tamano, file->leido);
 	
 
-	FILE* add = fopen("laa.mkv", "wb");
-	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+	//FILE* add = fopen("laa.mkv", "wb");
+	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
     //printf("%d\n",cr_exists("/dir"));
-    //cr_ls("/memes");
+    cr_ls("/");
 	
 	
-	cr_ls("/dir");
-    cr_mkdir("/asdsadasd/dddsssd");
-    cr_open("/dir/subdir/altera.mp", 'r');
-    create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
+	//cr_ls("/dir");
+    //cr_mkdir("/asdsadasd/dddsssd");
+    //cr_open("/dir/subdir/altera.mp", 'r');
+    //create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
 	//cr_ls("/memes");
 	//dir* direc = recorrer_path("/memes/hacker.jpg");
 	//printf("%s\n", direc -> nombre);

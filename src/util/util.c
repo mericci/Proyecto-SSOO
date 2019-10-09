@@ -1301,3 +1301,130 @@ void create_local_directory(char* path){
         }
     }
 }
+
+
+//returns bytes alocated
+int populate_data_block(FILE* disk_file, int block, 
+  void* buffer, int* current_buffer_pos, int length) 
+{
+    unsigned char* one_byte_buffer[1];
+    fseek(disk_file, block * 1024, SEEK_SET);
+    for (int i = 0; i < 1024; i++) {
+        one_byte_buffer[0] = &buffer[*current_buffer_pos];
+        fwrite(one_byte_buffer, 1, 1, disk_file);
+        current_buffer_pos ++;
+        if (*current_buffer_pos == length) {
+            return -1;
+        }
+    }
+    return 1;
+}
+
+
+int first_free_block_f(FILE* disk_file) {
+    unsigned char buffer[1024];
+    int current_block = 0;
+    int byte_number;
+    int bin_array[8];
+    fseek(disk_file, 1024, SEEK_SET);
+    for (int bitmap_index = 1; bitmap_index <= 128; bitmap_index++) {
+        fread(buffer, 1, 1024, disk_file);
+        for (int i = 0; i < 1024; i++) {
+            byte_number = buffer[i];
+            dec_to_bin(byte_number, bin_array);
+            for (int b = 7; b >= 0; b--) {
+                if (bin_array[b] == 0) {
+                    fclose(disk_file);
+                    return current_block;
+                }
+                current_block ++;
+            }
+        }
+        fseek(disk_file, 1024, SEEK_CUR);
+    }
+
+
+    return -1;
+
+}
+
+int populate_simple_indirect(FILE* disk_file, int si_block, 
+  void* buffer, int *current_buffer_pos, int length) 
+{
+    unsigned char* one_byte_buffer[1];
+    int result;
+    
+    for (int i = 0; i < 256; i++) {
+        int free_block = first_free_block_f(disk_file);
+        if (free_block == -1) {
+            return -1;
+        }
+
+        fseek(disk_file, si_block * 1024 + 4 * i, SEEK_SET);
+        result = populate_data_block(disk_file, free_block, buffer, current_buffer_pos, length);
+        if (result == -1) {
+            return -1;
+        }
+        if (*current_buffer_pos >= length) {
+            return 1;
+        }
+
+    }
+    return 1;
+
+}
+
+
+int populate_double_indirect(FILE* disk_file, int di_block, 
+  void* buffer, int *current_buffer_pos, int length) 
+{
+    unsigned char* one_byte_buffer[1];
+    int result;
+    
+    for (int i = 0; i < 256; i++) {
+        int free_block = first_free_block_f(disk_file);
+        if (free_block == -1) {
+            return -1;
+        }
+
+        fseek(disk_file, di_block * 1024 + 4 * i, SEEK_SET);
+        result = populate_simple_indirect(disk_file, free_block, buffer, current_buffer_pos, length);
+        if (result == -1) {
+            return -1;
+        }
+        if (*current_buffer_pos >= length) {
+            return 1;
+        }
+
+    }
+    return 1;
+
+}
+
+
+int populate_triple_indirect(FILE* disk_file, int ti_block, 
+  void* buffer, int *current_buffer_pos, int length) 
+{
+    unsigned char* one_byte_buffer[1];
+    int result;
+    
+    for (int i = 0; i < 256; i++) {
+        int free_block = first_free_block_f(disk_file);
+        if (free_block == -1) {
+            return -1;
+        }
+
+        fseek(disk_file, ti_block * 1024 + 4 * i, SEEK_SET);
+        result = populate_double_indirect(disk_file, free_block, buffer, current_buffer_pos, length);
+        if (result == -1) {
+            return -1;
+        }
+        if (*current_buffer_pos >= length) {
+            return 1;
+        }
+
+    }
+    return 1;
+
+}
+
