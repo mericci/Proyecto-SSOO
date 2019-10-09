@@ -13,10 +13,11 @@ char* ERROR5 = "\n-----------------\n    Error 5:\nNo se puede crear,\nDirectori
 "\n-----------------\n";
 char* ERROR6 = "\n-----------------\n    Error 6:\nNo se puede crear,\nArchivo ya existente"
 "\n-----------------\n";
-char* ERROR23 =  "\n-----------------\n    Error 23:\nRuta invalida\n-----------------\n";
+char* ERROR22= "\n-----------------\n    Error 22:\nNo existe directorio\n\   especificado\n-----------------\n";
+char* ERROR23 =  "\n-----------------\n    Error 23:\n  Ruta invalida\n-----------------\n";
 char* ERROR24 = "\n-----------------\n    Error 24:\nObjetivo no es \n"
 "un disco virtual\n-----------------\n";
-char*ERROR25 = "\n-----------------\n    Error 24:\nObjetivo no es directorio\n-----------------\n";
+char*ERROR25 = "\n-----------------\n    Error 25:\nObjetivo no es directorio\n-----------------\n";
 char* ERROR30= "\n-----------------\n    Error 30:\nFalta de Espacio\n-----------------\n";
 
 // FUNCIONES GENERALES
@@ -109,8 +110,10 @@ int cr_exists(char* path)
     path. Retorna 1 si el archivo o carpeta existe y 0 en caso contrario  */
     dir* directorio = recorrer_path(path);
     if(directorio == NULL){
+        free(directorio);
         return 0;
     } else {
+        free(directorio);
         return 1;
     }
 }
@@ -125,7 +128,7 @@ void cr_ls(char* path)
         printf("%s\n", ERROR23);
     }
     else if(is_directory == 0){
-        printf("Objetivo es archivo\n");
+        printf("%s\n", ERROR25);
     }
     else if(is_directory == 1){
         print_ls(path);
@@ -148,7 +151,7 @@ int cr_mkdir(char *foldername)
     dir* direccion = recorrer_path(dir_to_append);
     if(!direccion)
     {
-        printf("NO SE PUEDE CREAR ARCHIVO POR QUE NO EXISTE DIRECTORIO\n");
+        printf("%s\n", ERROR22);
         free(nombre_carpeta);
         free(dir_to_append);
         free(direccion);
@@ -202,6 +205,11 @@ crFILE* cr_open(char* path, char mode)
     if(mode == 'r')
     {
         //printf("1\n");
+        if(cr_exists(path)==0){
+            printf("%s\n", ERROR23);
+            free(nuevo_archivo);
+            return NULL;
+        }
         nuevo_archivo -> modo = 0;
         nuevo_archivo -> entrada = 0;
         //nuevo_archivo -> leido = 0;
@@ -211,8 +219,7 @@ crFILE* cr_open(char* path, char mode)
         nuevo_archivo -> bloque_actual = nuevo_archivo -> bloque;
         FILE* archivo = fopen(DISK_PATH, "r");
         //printf("hola %d\n",direccion -> tipo);
-        //printf("hola %d\n",cr_exists(path));
-        if(cr_exists(path) && direccion -> tipo == 4)
+        if(cr_exists(path)==1 && direccion -> tipo == 4)
         {
             int bloq_indice = direccion -> bloque;
             fseek(archivo, bloq_indice*1024, SEEK_SET);
@@ -258,7 +265,7 @@ crFILE* cr_open(char* path, char mode)
             return NULL;
         }
         //printf("\n\n");
-        int block_to_create = first_free_block(); //bloque en el que estará el archivo 
+        int block_to_create = first_free_block(); //bloque en el que estará el archivo
         char* nombre_archivo = obtener_nombre(path); //nombre del archivo a agregar
         char* dir_to_append = directorio_a_agregar(path); //carpeta a la que se va agregar el archivo (direccion desde root)
         dir* direccion = malloc(sizeof(dir));
@@ -274,7 +281,7 @@ crFILE* cr_open(char* path, char mode)
         }
         if(!direccion)
         {
-            printf("NO SE PUEDE CREAR ARCHIVO POR QUE NO EXISTE DIRECTORIO\n");
+            printf("%s\n", ERROR22);
             free(nombre_archivo);
             free(dir_to_append);
             free(direccion);
@@ -283,9 +290,9 @@ crFILE* cr_open(char* path, char mode)
         }
         int agregar = agregar_primero_invalido(direccion -> bloque, nombre_archivo, block_to_create);
         if(agregar) change_bitmap_block(block_to_create);
-        
+
         int bloque_a_reservar;
-        
+
         FILE* archivo = fopen(DISK_PATH, "rb+");
         unsigned char* punt = malloc(4*sizeof(unsigned char));
         for(int k = 1; k < 256; k++)
@@ -302,12 +309,12 @@ crFILE* cr_open(char* path, char mode)
                     p = p / 256;
                 }
                 fwrite(punt,1,4,archivo);
-            
+
             }
         }
         free(punt);
         fclose(archivo);
-        
+
         nuevo_archivo -> bloque = block_to_create;
         nuevo_archivo -> bloque_actual = block_to_create;
         nuevo_archivo -> modo = 1;
@@ -337,7 +344,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     por buffer. Debe retornar la cantidad de Byte efectivamente le´ıdos desde el archivo. Esto es importante si
     nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde
     la posición del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
-    
+
     int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
     /*
     if(file_desc -> modo == 0) //reviso modo lectura
@@ -370,12 +377,12 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
     int escritura_indirecta = 0;
     //bloque_datos* BD = malloc(sizeof(bloque_datos));
     //bloque_indice* BI = malloc(sizeof(bloque_indice));
-    //BI -> bloq_dat = BD; 
+    //BI -> bloq_dat = BD;
     //BI -> entrada = file_desc -> posicion_en_bloque;
     //printf("1\n");
     //BI -> bloque = file_desc -> bloque;
     //printf("1\n");
-    //BD -> offset_datos = 0; 
+    //BD -> offset_datos = 0;
     //printf("1\n");
     if(file_desc -> modo == 1)
     {
@@ -423,7 +430,7 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
             }
             if(escritura_directa > 0) //si hay escritura directa
             {
-                
+
                 //inicialmente hago solo escritura directa
                 fwrite(buffer, 1, escritura_directa, archivo); //escribo los directos
                 bytes_write+=escritura_en_datos;
@@ -439,16 +446,16 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
                 //file_desc -> posicion_en_bloque += escritura_directa;
                 if(escritura_indirecta && escritura_directa == 0) //si hay indirecta y ya escribi todo lo directo
                 {
-                    break;   
+                    break;
                 }
 
             }
         }
-        
+
 
 
     }
-    return bytes_write;  */  
+    return bytes_write;  */
 
 
 }
@@ -458,7 +465,7 @@ int cr_close(crFILE* file_desc)
 {
     /* Funcion para cerrar archivos. Cierra el archivo indicado por ´
     file desc. Debe garantizar que cuando esta funcion retorna, el archivo se encuentra actualizado en disco */
-    
+
 }
 
 

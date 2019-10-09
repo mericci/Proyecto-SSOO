@@ -19,6 +19,8 @@ int main(int argc, char** argv)
     //printf("%d\n",cr_exists("/dir"));
     //cr_ls("/memes");
 	cr_ls("/dir");
+    cr_mkdir("/asdsadasd/dddsssd");
+    cr_open("/dir/subdir/altera.mp", 'r');
     create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
 	//cr_ls("/memes");
 	//dir* direc = recorrer_path("/memes/hacker.jpg");
