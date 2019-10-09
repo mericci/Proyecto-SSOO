@@ -22,13 +22,18 @@ int main(int argc, char** argv)
 	
 	
 	//cr_mkdir("/dir/martin");
+	//cr_ls("/");
+	
+	int dir_block = get_dir_block("/dinko.txt");
+	int entry_index = get_entry_index(dir_block, "/dinko.txt");
+	//printf("first free block: %d\n", first_free_block());
+
+	crFILE* file = cr_open("/dinko.txt", 'r');
+	void* buffer;
+	cr_write(file, buffer, 65);
+	free(file);	
 	cr_ls("/");
-	int dir_block = get_dir_block("/intro.txt");
-	int entry_index = get_entry_index(dir_block, "/intro.txt");
-	printf("removed: %d\n", cr_rm("/intro.txt"));
-	//invalidate_entry(dir_block, entry_index);
-	cr_ls("/");
-	dir* direct = recorrer_path("/intro.txt");
+	//dir* direct = recorrer_path("/intro.txt");
 	//printf("%d\n", direct->bloque);
 	
 	//crFILE* file = malloc(sizeof(crFILE));

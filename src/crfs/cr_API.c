@@ -177,7 +177,6 @@ crFILE* cr_open(char* path, char mode)
     crFILE* nuevo_archivo = malloc(sizeof(crFILE));
     if(mode == 'r')
     {
-        //printf("1\n");
         nuevo_archivo -> modo = 0;
         nuevo_archivo -> entrada = 0;
         //nuevo_archivo -> leido = 0;
@@ -186,8 +185,7 @@ crFILE* cr_open(char* path, char mode)
         nuevo_archivo -> bloque = direccion -> bloque;
         nuevo_archivo -> bloque_actual = nuevo_archivo -> bloque;
         FILE* archivo = fopen(DISK_PATH, "r");
-        //printf("hola %d\n",direccion -> tipo);
-        //printf("hola %d\n",cr_exists(path));
+        
         if(cr_exists(path) && direccion -> tipo == 4)
         {
             int bloq_indice = direccion -> bloque;
@@ -233,7 +231,6 @@ crFILE* cr_open(char* path, char mode)
             printf("%s", ERROR6);
             return NULL;
         }
-        //printf("\n\n");
         int block_to_create = first_free_block(); //bloque en el que estará el archivo 
         char* nombre_archivo = obtener_nombre(path); //nombre del archivo a agregar
         char* dir_to_append = directorio_a_agregar(path); //carpeta a la que se va agregar el archivo (direccion desde root)
@@ -257,31 +254,54 @@ crFILE* cr_open(char* path, char mode)
             //fclose(archivo);
             return NULL;
         }
-        //dir* prueba;
-        //printf("__________________________________________\n");
-        //printf("HOLAAA5\n");
-        //prueba = recorrer_path(path);
-        //printf("HOLAAA6\n");
-        //printf("%d AUN NO AGREGO EL PATH\n", prueba);
-        //printf("__________________________________________\n");
-        //printf("1\n");
-        //FILE* archivo = fopen(DISK_PATH,"rb");
-        //printf("2\n");
         int agregar = agregar_primero_invalido(direccion -> bloque, nombre_archivo, block_to_create);
-        //printf("3\n");
-        ///////////////////////////////////////////////////////if(agregar) change_bitmap_block(block_to_create);
-        //printf("4\n");
-        //dir* prueba = malloc(sizeof(dir));
-        //printf("5\n");
-        //prueba = recorrer_path(dir_to_append);
-        //printf("6\n");
-        //printf("%s\n", prueba -> nombre);
+        if(agregar) change_bitmap_block(block_to_create);
 
+        
+        
+        int bloque_a_reservar;
+        
+        FILE* archivo = fopen(DISK_PATH, "rb+");
+        unsigned char* punt = malloc(4*sizeof(unsigned char));
+        /*
+        for(int k = 1; k < 256; k++)
+        {
+            bloque_a_reservar = first_free_block();
+            if(bloque_a_reservar != -1)
+            {
+            
+                fseek(archivo, block_to_create * 1024 + k * 4, SEEK_SET);
+                change_bitmap_block(bloque_a_reservar);
+                int p = bloque_a_reservar;
+                for(int j=3; j >= 0; j--)
+                {
+                    punt[j] = (unsigned char) (p % 256);
+                    p = p / 256;
+                }
+                fwrite(punt,1,4,archivo);
+            
+            }
+            
 
-
-
-
-        //fclose(archivo);
+        }*/
+        free(punt);
+        fclose(archivo);
+        
+        
+        nuevo_archivo -> bloque = block_to_create;
+        nuevo_archivo -> bloque_actual = block_to_create;
+        nuevo_archivo -> modo = 1;
+        nuevo_archivo -> tamano = 0;
+        nuevo_archivo -> posicion_en_bloque = 1; //parto en segunda linea, c/linea tiene 4 bytes.
+        nuevo_archivo -> dir1 = 0;
+        nuevo_archivo -> dir2 = 0;
+        nuevo_archivo -> dir3 = 0;
+        nuevo_archivo -> uso_dir1 = 0;
+        nuevo_archivo -> uso_dir2 = 0;
+        nuevo_archivo -> uso_dir3 = 0;
+        nuevo_archivo -> posicion_en_dir1 = 0;
+        nuevo_archivo -> posicion_en_dir2 = 0;
+        nuevo_archivo -> posicion_en_dir3 = 0;
         return nuevo_archivo;
     }
 
@@ -327,6 +347,87 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
     por buffer. Retorna la cantidad de Byte escritos en el archivo. Si se produjo un error porque no pudo seguir
     escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede
     ser menor a nbytes (incluso 0) */
+
+    unsigned char* one_byte_char = malloc(sizeof(unsigned char));
+    int* current_byte = 0;
+    int index_block = file_desc->bloque;
+    int remaining_bytes = nbytes;
+    unsigned char* file_size = malloc(4*sizeof(unsigned char));
+
+    for(int j=3; j >= 0; j--)
+    {
+        file_size[j] = (unsigned char) (nbytes % 256);
+        nbytes = nbytes / 256;
+    }
+
+
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    fseek(disk_file, index_block * 1024, SEEK_SET);
+    fwrite(file_size, 1, 4, disk_file);
+
+    
+    
+    //creo los punteros en el bloque indice
+    int new_block;
+    int result;
+    for (int i = 0; i < 252; i++) {
+        fseek(disk_file, index_block * 1024 + 4 *(1 + i), SEEK_SET);
+        if (*current_byte == nbytes) {
+            //ya termine
+            return nbytes;
+        }
+        new_block = first_free_block();
+        if (new_block == -1) {
+            printf("%s\n", ERROR30);
+            //hay que liberar los bloques ya ocupados pero me da paja ahora
+            return *current_byte;
+        }
+        result = populate_data_block(disk_file, new_block, buffer,
+          current_byte, nbytes);
+
+        if (result == -1) {
+            printf("%s\n", ERROR30);
+            return *current_byte;
+        }
+                
+    }
+
+    if (*current_byte < nbytes) {
+        //indirecto simple
+        new_block = first_free_block();
+        result = populate_simple_indirect(disk_file, new_block, buffer,
+          current_byte, nbytes);
+        if (result == -1) {
+            printf("%s\n", ERROR30);
+            return *current_byte;
+        }
+
+    }
+
+    if (*current_byte < nbytes) {
+        //indirecto doble
+        new_block = first_free_block();
+        result = populate_double_indirect(disk_file, new_block, buffer,
+          current_byte, nbytes);
+        if (result == -1) {
+            printf("%s\n", ERROR30);
+            return *current_byte;
+        }
+    }
+
+    if (*current_byte < nbytes) {
+        //indirecto triple
+        new_block = first_free_block();
+        result = populate_triple_indirect(disk_file, new_block, buffer,
+          current_byte, nbytes);
+        if (result == -1) {
+            printf("%s\n", ERROR30);
+            return *current_byte;
+        }
+    }
+    return nbytes;
+
+    fclose(disk_file);
 
 
 }

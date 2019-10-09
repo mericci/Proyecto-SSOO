@@ -28,6 +28,17 @@ typedef struct
     
 } crFILE;
 
+
+typedef struct
+{
+    int index_block;
+    int simple_indirect;
+    int double_indirect;
+    int triple_indirect;
+    int byte_size;
+
+} crFILE2;
+
 char* DISK_PATH;
 
 void cr_mount(char* diskname);

@@ -49,3 +49,9 @@ void invalidate_entry(int dir_block, int entry_index);
 void free_simple_indirect(int block);
 void free_double_indirect(int block);
 void free_triple_indirect(int block);
+int populate_data_block(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+int populate_simple_indirect(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+int populate_double_indirect(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+int populate_triple_indirect(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+
+
