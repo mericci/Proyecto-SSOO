@@ -40,6 +40,21 @@ int main(int argc, char** argv)
     //cr_ls("/memes");
 	
 	
+	cr_ls("/dir");
+    cr_mkdir("/asdsadasd/dddsssd");
+    cr_open("/dir/subdir/altera.mp", 'r');
+    create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
+	//cr_ls("/memes");
+	//dir* direc = recorrer_path("/memes/hacker.jpg");
+	//printf("%s\n", direc -> nombre);
+	//int dir_block = get_dir_block("/intro.txt");
+	//int entry_index = get_entry_index(dir_block, "/intro.txt");
+	//printf("removed: %d\n", cr_rm("/intro.txt"));
+	//invalidate_entry(dir_block, entry_index);
+	//cr_ls("/");
+	//dir* direct = recorrer_path("/intro.txt");
+	//printf("%d\n", direct->bloque);
+
 	//crFILE* file = malloc(sizeof(crFILE));
 	//file = cr_open("/intro.txt",'r');
 	//int count = 0;

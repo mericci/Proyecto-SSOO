@@ -33,6 +33,7 @@ typedef struct
 } ind_simple;
 
 
+dir* encontrar_segundo_directorio(char* path, int posicion);
 dir* encontrar_directorio(char* path, int posicion);
 dir* recorrer_path(char* path);
 int indirecto_simple(crFILE* archivo, int bloque_simple , int bloque_actual);
@@ -44,13 +45,25 @@ int first_free_block();
 char* obtener_nombre(char* path);
 char* directorio_a_agregar(char* path);
 void change_bitmap_block(int original_block);
+int agregar_primero_invalido2(int posicion, char* nombre, int puntero);
 int agregar_primero_invalido(int posicion, char* nombre, int puntero);
 void print_ls(char* path);
 void print_all(int posicion);
 int objective_kind(char* path);
 char* isBin(char* path);
+int agregar_carpeta_invalido2(int posicion, char* nombre, int puntero);
 int agregar_carpeta_invalido(int posicion, char* nombre, int puntero);
 int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes, int maximo);
 int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes);
-
-
+int get_dir_block(char* path);
+int get_entry_index(int dir_block, char* path);
+int get_file_pointer(int dir_block, char* path);
+void invalidate_entry(int dir_block, int entry_index);
+void free_simple_indirect(int block);
+void free_double_indirect(int block);
+void free_triple_indirect(int block);
+char* actual_locals(char* path);
+char* locals_to_create(char* path);
+char* get_first_folder(char* path);
+void create_local_directory(char* path);
+char* next_folder(char* real_path, char* new_folder);
