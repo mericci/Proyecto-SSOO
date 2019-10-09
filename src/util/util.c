@@ -1021,26 +1021,17 @@ char* get_first_folder(char* path){
 char* next_folder(char* real_path, char* new_folder){
     int path_len = strlen(real_path);
     int folder_len = strlen(new_folder);
-    printf("%s\n",new_folder );
-    printf("%d\n",folder_len );
-    printf("%s\n",real_path );
-    printf("%d\n",path_len );
     int total = path_len + folder_len;
-    printf("%d\n", total);
     int count = 0;
     char* aux = calloc(total, sizeof(char));
     for(int i = 0; i < path_len; i++){
         aux[i] = real_path[i];
         count++;
     }
-    printf("%d\n", count);
     for(int i = 0; i < folder_len; i++){
         aux[count] = new_folder[i];
-        printf("%c\n",new_folder[i]);
         count++;
     }
-    printf("%d\n", count);
-    printf("%s\n",aux );
     return aux;
 }
 
