@@ -19,31 +19,31 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
 
 	crFILE* file = malloc(sizeof(crFILE));
-	
+
 	file = cr_open("/C.mkv",'r');
-	
+
 	int count = 0;
 	//printf("%d....\n",file->num_bloques);
-	
+
 	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
-	
+
 	//cr_read( file, buffer, 5000);
 	printf("holaaaaa");
 	int lee = cr_read(file, buffer, file->tamano);
-	
-    printf("------- %i ---------ff %i", file->tamano, file->leido);
-	
 
-	FILE* add = fopen("laa.mkv", "wb");
-	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+    printf("------- %i ---------ff %i\n", file->tamano, file->leido);
+
+
+	//FILE* add = fopen("laa.mkv", "wb");
+	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
     //printf("%d\n",cr_exists("/dir"));
-    //cr_ls("/memes");
-	
-	
-	cr_ls("/dir");
-    cr_mkdir("/asdsadasd/dddsssd");
-    cr_open("/dir/subdir/altera.mp", 'r');
-    create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
+    cr_ls("/");
+
+
+	//cr_ls("/dir");
+    //cr_mkdir("/asdsadasd/dddsssd");
+    //cr_open("/dir/subdir/altera.mp", 'r');
+    //create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
 	//cr_ls("/memes");
 	//dir* direc = recorrer_path("/memes/hacker.jpg");
 	//printf("%s\n", direc -> nombre);

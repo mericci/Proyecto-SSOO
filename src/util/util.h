@@ -67,3 +67,8 @@ char* locals_to_create(char* path);
 char* get_first_folder(char* path);
 void create_local_directory(char* path);
 char* next_folder(char* real_path, char* new_folder);
+int populate_data_block(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+int populate_simple_indirect(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+int populate_double_indirect(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+int populate_triple_indirect(FILE* disk_file, int block, void* buffer, int* current_buffer_pos, int length);
+
