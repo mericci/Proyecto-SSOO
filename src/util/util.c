@@ -673,7 +673,7 @@ int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes, int m
     printf("%d\n", file_desc->bloque_actual);
     uint8_t lectura = 0;
     int dato=0;
-     
+
     while (file_desc-> bloque_actual < maximo && leido < nbytes)
     {   //leer bloque directo
         //posicionamos en bloque actual y linea actual de ese bloque
@@ -748,7 +748,7 @@ int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes, int m
             }
             leido += maximo_posible;
             file_desc ->posicion_en_bloque = 0;
-            file_desc ->bloque_actual += 1;    
+            file_desc ->bloque_actual += 1;
         }
     if (file_desc-> bloque_actual == maximo)
     {
@@ -757,15 +757,15 @@ int leer_bloques_directos( crFILE* file_desc, uint8_t* buffer, int nbytes, int m
     }
     fclose(file);
     }
-    
+
 }
 
 int leer_bloque( FILE* file, crFILE* file_desc, uint8_t* buffer, int toca_leer, int nbytes){
-     
+
      uint8_t lectura = 0;
      int leido = 0;
 
-    if ((1024 - toca_leer) < nbytes && 
+    if ((1024 - toca_leer) < nbytes &&
         (file_desc->tamano - file_desc->leido) <(1024 - toca_leer) )
     {
         for (int i = (file_desc->tamano - file_desc->leido); i < file_desc; i++)
@@ -777,7 +777,7 @@ int leer_bloque( FILE* file, crFILE* file_desc, uint8_t* buffer, int toca_leer, 
         }
     }
 
-    else if ((1024 - toca_leer) > nbytes && 
+    else if ((1024 - toca_leer) > nbytes &&
             (file_desc->tamano - file_desc->leido) <  nbytes )
     {
         for (int i = (file_desc->tamano - file_desc->leido); i < file_desc; i++)
@@ -788,8 +788,8 @@ int leer_bloque( FILE* file, crFILE* file_desc, uint8_t* buffer, int toca_leer, 
             leido += 1;
         }
     }
-    
-   
+
+
     else if ((1024 - toca_leer) < nbytes)
     {
         for (int i = toca_leer; i < 1024; i++)
@@ -810,10 +810,10 @@ int leer_bloque( FILE* file, crFILE* file_desc, uint8_t* buffer, int toca_leer, 
          leido += 1;
      }
     }
-    
-    
-     
-  
+
+
+
+
     return leido;
 }
 
@@ -823,7 +823,7 @@ int* simplificar(int puntero){
     int ingresar;
     int* lista_simple = malloc(256 * sizeof(int));
     for (int i = 0; i < 256; i++)
-    {   
+    {
         fread(ingresar, sizeof(int), 1, file);
         lista_simple[i] = ingresar;
     }
@@ -842,7 +842,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
         }
     printf("NBYTES ------- %i", nbytes);
 
-            
+
     int lectura = 0;
 
     FILE* file = fopen(DISK_PATH, "rb");
@@ -857,24 +857,24 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
         // 252 * 1024 = 258048 bytes de dir directo.
         while (lectura < nbytes && file_desc->leido < file_desc->tamano
                  && file_desc->leido <= 258048 && bloque_relativo < 252)
-        {   
+        {
             puntero = file_desc->directos[bloque_relativo];
             fseek(file, (puntero * 1024) + toca_leer , SEEK_SET);
 
             lectura += leer_bloque( file, file_desc, buffer, toca_leer, nbytes);
-            
+
             bloque_relativo = file_desc->leido/1024;
-            toca_leer = file_desc->leido % 1024;       
+            toca_leer = file_desc->leido % 1024;
         }
 
     }
-      
+
 
     if ( bloque_relativo >= 252 && bloque_relativo < 508 )
     {
         while (lectura < nbytes && file_desc->leido < file_desc->tamano
                  && file_desc->leido <= 520192 && bloque_relativo < 508)
-        {  
+        {
             puntero = bloque_relativo - 252;
             fseek(file, file_desc->dir1 * 1024 , SEEK_SET);
             fseek(file, (puntero * 4) , SEEK_CUR);
@@ -888,17 +888,17 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
             // 252 * 1024 = 258048 bytes de dir directo.
             while (lectura < nbytes && file_desc->leido < file_desc->tamano
                     && file_desc->leido <= 520192 && bloque_relativo < 508)
-            {   
+            {
                 lectura += leer_bloque( file, file_desc, buffer, toca_leer, nbytes);
-                
+
                 bloque_relativo = file_desc->leido/1024;
-                toca_leer = file_desc->leido % 1024; 
+                toca_leer = file_desc->leido % 1024;
 
                 if (lectura < nbytes && file_desc->leido < file_desc->tamano
                     && file_desc->leido <= 520192 && bloque_relativo < 508)
                 {
                     if (toca_leer == 0)
-                    {   
+                    {
                         int var = bloque_relativo - 252;
                         fseek(file, file_desc->dir1 * 1024 , SEEK_SET);
                         fseek(file, (var * 4) , SEEK_CUR);
@@ -911,16 +911,16 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                     }
                 }
                 else
-                {   
+                {
                     break;
-                }          
+                }
             }
         }
-    } 
+    }
 
     if (  bloque_relativo >= 50008 && 66044 > bloque_relativo )
     {
-        
+
         fseek(file, file_desc->dir2 * 1024 , SEEK_SET);
         int pos_indirecto_simple = ((file_desc->leido/1024) - 508)/256;
         fseek(file, (pos_indirecto_simple * 4) , SEEK_CUR);
@@ -939,23 +939,23 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
         int inicio_3;
         fread(raw_directo,sizeof(unsigned char),4,file);
         inicio_3 = raw[3] + (raw[2] << 8) + (raw[1] << 16) + (raw[0] << 24);
-        //en directo 
+        //en directo
         fseek(file, (inicio_3 * 1024) + toca_leer, SEEK_SET);
-        
+
         while (file_desc->leido < nbytes && file_desc->leido < file_desc->tamano
                     && file_desc->leido <= 67629056  && bloque_relativo < 66044)
 
-            {   
+            {
                 lectura += leer_bloque( file, file_desc, buffer, toca_leer, nbytes);
                 int pos_indirecto_simple = ((file_desc->leido/1024) - 508)/256;
                 bloque_relativo= ((file_desc->leido - 520192)  - ((pos_indirecto_simple) * 256*1024))/1024;
                 printf("AAAAAAAAAAAA: %i\n", bloque_relativo);
-                toca_leer = file_desc->leido % 1024; 
-                
+                toca_leer = file_desc->leido % 1024;
+
                 if (file_desc->leido < nbytes && file_desc->leido < file_desc->tamano
                     && file_desc->leido <= 67629056  && bloque_relativo < 66044)
                 {
-                
+
                     fseek(file, file_desc->dir2 * 1024 , SEEK_SET);
                     int pos_indirecto_simple = ((file_desc->leido/1024) - 508)/256;
                     fseek(file, (pos_indirecto_simple * 4) , SEEK_CUR);
@@ -976,7 +976,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                     int inicio_3;
                     fread(raw,sizeof(unsigned char),4,file);
                     inicio_3 = raw[3] + (raw[2] << 8) + (raw[1] << 16) + (raw[0] << 24);
-                    //en directo 
+                    //en directo
                     fseek(file, (inicio_3 * 1024) + toca_leer, SEEK_SET);
 
                     printf("posicion indirecto simple: %i\n", pos_indirecto_simple);
@@ -989,8 +989,8 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                 {
                     break;
                 }
-                
-        
+
+
             }
     }
 
@@ -1009,7 +1009,7 @@ int leer_bloque_ind_1( crFILE* file_desc, uint8_t* buffer, int nbytes, int read)
              * 1024 + file_desc->posicion_en_dir1 , SEEK_SET);
 
 
-    
+
 }
 
 //obtengo el bloque del directorio con la entrada al archivo
