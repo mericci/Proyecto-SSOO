@@ -288,6 +288,9 @@ int objective_kind(char* path){
     if (directorio->tipo == 2){
         return 1;
     }
+    if (directorio->tipo == 4){
+        return 4;
+    }
     return 0;
 }
 
@@ -918,7 +921,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
         }
     }
 
-    if (  bloque_relativo >= 50008 && 66044 > bloque_relativo )
+    if (  bloque_relativo >= 50998 && 66044 > bloque_relativo )
     {
 
         fseek(file, file_desc->dir2 * 1024 , SEEK_SET);
@@ -967,8 +970,8 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                     //en indirecto simple
                     fseek(file, (inicio * 1024), SEEK_SET);
                     int entero = ((file_desc->leido/1024) - 508 - 1)/256;
-                    //int directo_actual = (file_desc->leido / 1024) - (508 + 256*( (file_desc->leido/1024) - 508 )/256);
-                    int directo_actual = ((file_desc->leido - 520192)  - ((pos_indirecto_simple) * 256*1024))/1024;
+                    int directo_actual = (file_desc->leido / 1024) - (508 + 256*( (file_desc->leido/1024) - 508 )/256);
+                    //int directo_actual = ((file_desc->leido - 520192)  - ((pos_indirecto_simple) * 256*1024))/1024;
                     printf("leido actual::: %i", file_desc->leido);
                     fseek(file, (directo_actual * 4) , SEEK_CUR);
 
@@ -1204,7 +1207,6 @@ void free_triple_indirect(int triple_block) {
         double_block = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
         block_array[i] = double_block;
     }
-
     fclose(disk_file);
     for (int i = 0; i < 256; i++) {
         if (block_array[i] != 0) {
@@ -1298,6 +1300,10 @@ void create_local_directory(char* path){
             int status;
             status = mkdir(new_folder_path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
             create_local_directory(path);
+            free(new);
+            free(first);
+            free(new_folder_path);
+            free(existent);
         }
     }
 }

@@ -130,6 +130,9 @@ void cr_ls(char* path)
     else if(is_directory == 0){
         printf("%s\n", ERROR25);
     }
+    else if(is_directory == 4){
+        printf("%s\n", ERROR25);
+    }
     else if(is_directory == 1){
         print_ls(path);
     }
@@ -340,7 +343,6 @@ crFILE* cr_open(char* path, char mode)
 int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 {
     int leido = nueva_leer(file_desc,buffer, nbytes);
-    
     return leido;
 
     /*Funcion para leer archivos. ´
@@ -349,7 +351,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde
     la posición del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
 
-    int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
+    //int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
     /*
     if(file_desc -> modo == 0) //reviso modo lectura
     {
@@ -363,7 +365,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 
         fclose(archivo);
     }*/
-    return byte_read;
+    //return byte_read;
 }
 
 
@@ -486,6 +488,25 @@ int cr_unload(char* orig, char* dest)
     de directorios (es decir, un directorio y todos sus contenidos) del disco, referenciado por orig,
     hacia un nuevo
     archivo o directorio de ruta dest en su computador  */
+
+    int tipo = objective_kind(orig);
+    printf("\n %d Es el tipo\n", tipo);
+    if( tipo== 4){
+        char* directorios = directorio_a_agregar(dest);
+        printf("quedara dentro de %s\n", directorios);
+        create_local_directory(directorios);
+        crFILE* file = malloc(sizeof(crFILE));
+    	file = cr_open(orig,'r');
+    	int count = 0;
+    	//printf("%d....\n",file->num_bloques);
+    	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
+    	//cr_read( file, buffer, 5000);
+    	printf("holaaaaa");
+    	int lee = cr_read(file, buffer, file->tamano);
+        printf("------- %i ---------ff %i", file->tamano, file->leido);
+    	FILE* add = fopen(dest, "wb");
+    	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+    }
 
 }
 
