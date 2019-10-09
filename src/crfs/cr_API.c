@@ -417,11 +417,7 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
         result = populate_data_block(disk_file, new_block, buffer,
           current_byte, nbytes);
 
-        if (result == -1) {
-            printf("%s\n", ERROR30);
-            fclose(disk_file);
-            return *current_byte;
-        }
+        
                 
     }
 
