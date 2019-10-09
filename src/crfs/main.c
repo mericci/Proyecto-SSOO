@@ -34,16 +34,16 @@ int main(int argc, char** argv)
     printf("------- %i ---------ff %i", file->tamano, file->leido);
 	
 
-	FILE* add = fopen("laa.mkv", "wb");
+	FILE* add = fopen("progra.mkv", "wb");
 	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
     //printf("%d\n",cr_exists("/dir"));
     //cr_ls("/memes");
 	
 	
-	cr_ls("/dir");
-    cr_mkdir("/asdsadasd/dddsssd");
-    cr_open("/dir/subdir/altera.mp", 'r');
-    create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
+	//cr_ls("/dir");
+    //cr_mkdir("/asdsadasd/dddsssd");
+    //cr_open("/dir/subdir/altera.mp", 'r');
+    //create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
 	//cr_ls("/memes");
 	//dir* direc = recorrer_path("/memes/hacker.jpg");
 	//printf("%s\n", direc -> nombre);
