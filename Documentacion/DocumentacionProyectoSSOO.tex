@@ -119,6 +119,9 @@ Dado el modo entregado, cambia la funcionalidad general. Primero se crea un crFI
 En cambio, si el modo es 'w', primero verifica que no exista un archivo con el mismo nombre en la ruta especificada y genera una representación de un nuevo archivo por medio de la creacion de un crFILE que lo represente. Retorna un puntero al struct crFILE creado.
 
 \subsection{cr\_read(crFILE* file\_desc, void* buffer, int nbytes)}
+Recibe una estructura tipo file, buffer (que es un puntero de uint_8) y el numero de bytes. 
+
+El programa comienza con la lectura de los punteros a bloques de datos y los lee hasta que acaba todos los bloques disponibles para los mismos (252). Inmediatamente despues, ingresa a los punteros indirectos simples y se dirige a la ubicación. La función avanza por las direcciones de los punteros leyendo de a 4 bytes. Luego, ingresa a estas direcciones y comienza a leer los datos del bloque de datos, itera de esta forma hasta terminar los 256 bloques. Finalmente, la función ingresa a la dirección del bloque indirecto doble. Con información del numero de bytes leídos, obtiene la posicion del bloque indirecto simple actual y del bloque de datos que se debe acceder para llegar a la posicion de la proxima lectura. Itera obteniendo la proxima dirección y lee bytes hasta que termina de leer los nbytes ingresados en la funcion.
 
 
 \subsection{cr\_write(crFILE* file\_desc, void* buffer, int nbytes)}
@@ -129,6 +132,8 @@ El algoritmo busca dinamicamente bloques libres para ocuparlos para almacenar lo
 
 
 \subsection{cr\_close(crFILE* file\_desc)}
+Recibe una estructura de archivo y la cierra.
+
 
 \subsection{cr\_rm(char* path)}
 Recibe el path de un archivo para que este sea eliminado del disco virtual. El algoritmo invalida la entrada del directorio que contiene el puntero a su bloque indice y libera los bloques involucrados con el archivo (deja los bytes en 0). Revisa tanto los punteros del índice como los bloques involucrados en el direccionamiento indirecto. Además actualiza el bitmap.
