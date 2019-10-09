@@ -889,6 +889,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
 
             fseek(file, (inicio * 1024) + toca_leer, SEEK_SET);
             // 252 * 1024 = 258048 bytes de dir directo.
+            free(raw_directo);
             while (lectura < nbytes && file_desc->leido < file_desc->tamano
                     && file_desc->leido <= 520192 && bloque_relativo < 508)
             {
@@ -911,6 +912,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                         inicio_2 = raw_directo_2[3] + (raw_directo_2[2] << 8) +
                                             (raw_directo_2[1] << 16) + (raw_directo_2[0] << 24);
                         fseek(file, (inicio_2 * 1024) + toca_leer , SEEK_SET);
+                        free(raw_directo_2);
                     }
                 }
                 else
@@ -944,7 +946,8 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
         inicio_3 = raw[3] + (raw[2] << 8) + (raw[1] << 16) + (raw[0] << 24);
         //en directo
         fseek(file, (inicio_3 * 1024) + toca_leer, SEEK_SET);
-
+        free(raw_directo);
+        free(raw);
         while (file_desc->leido < nbytes && file_desc->leido < file_desc->tamano
                     && file_desc->leido <= 67629056  && bloque_relativo < 66044)
 
@@ -969,6 +972,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                                                 (raw_directo[1] << 16) + (raw_directo[0] << 24);
                     //en indirecto simple
                     fseek(file, (inicio * 1024), SEEK_SET);
+                    free(raw_directo);
                     int entero = ((file_desc->leido/1024) - 508 - 1)/256;
                     int directo_actual = (file_desc->leido / 1024) - (508 + 256*( (file_desc->leido/1024) - 508 )/256);
                     //int directo_actual = ((file_desc->leido - 520192)  - ((pos_indirecto_simple) * 256*1024))/1024;
@@ -981,7 +985,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                     inicio_3 = raw[3] + (raw[2] << 8) + (raw[1] << 16) + (raw[0] << 24);
                     //en directo
                     fseek(file, (inicio_3 * 1024) + toca_leer, SEEK_SET);
-
+                    free(raw);
                     printf("posicion indirecto simple: %i\n", pos_indirecto_simple);
                     printf("Puntero simple: %i\n", inicio);
                     printf("Directo Actual: %i\n", directo_actual);

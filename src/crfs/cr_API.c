@@ -19,6 +19,7 @@ char* ERROR24 = "\n-----------------\n    Error 24:\nObjetivo no es \n"
 "un disco virtual\n-----------------\n";
 char*ERROR25 = "\n-----------------\n    Error 25:\nObjetivo no es directorio\n-----------------\n";
 char* ERROR30= "\n-----------------\n    Error 30:\nFalta de Espacio\n-----------------\n";
+char* FUT1="\n-----------------\nFeature Futura:\nEstamos trabajando\n  para poder \n  hacer esto ;)\n-----------------\n";
 
 // FUNCIONES GENERALES
 
@@ -493,7 +494,6 @@ int cr_unload(char* orig, char* dest)
     printf("\n %d Es el tipo\n", tipo);
     if( tipo== 4){
         char* directorios = directorio_a_agregar(dest);
-        printf("quedara dentro de %s\n", directorios);
         create_local_directory(directorios);
         crFILE* file = malloc(sizeof(crFILE));
     	file = cr_open(orig,'r');
@@ -501,13 +501,16 @@ int cr_unload(char* orig, char* dest)
     	//printf("%d....\n",file->num_bloques);
     	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
     	//cr_read( file, buffer, 5000);
-    	printf("holaaaaa");
     	int lee = cr_read(file, buffer, file->tamano);
-        printf("------- %i ---------ff %i", file->tamano, file->leido);
     	FILE* add = fopen(dest, "wb");
     	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
     }
-
+    if(tipo == 1){
+        printf("%s\n", FUT1);
+    }
+    else{
+        printf("%s\n", ERROR23);
+    }
 }
 
 

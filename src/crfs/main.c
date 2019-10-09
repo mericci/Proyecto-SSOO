@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
 
 
-    cr_unload("/C.mkv", "/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque/salsa/dds.mkv"); //#ESTE ENTRA EN LA DEMO SI O SI:
+    cr_unload("/dir/subdi", "/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque/salsa/dds.mkv"); //#ESTE ENTRA EN LA DEMO SI O SI:
 	//cr_ls("/dir");
     //cr_mkdir("/asdsadasd/dddsssd");
     //cr_open("/dir/subdir/altera.mp", 'r');
