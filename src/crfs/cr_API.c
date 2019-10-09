@@ -299,6 +299,7 @@ crFILE* cr_open(char* path, char mode)
 
         FILE* archivo = fopen(DISK_PATH, "rb+");
         unsigned char* punt = malloc(4*sizeof(unsigned char));
+        /*
         for(int k = 1; k < 256; k++)
         {
             bloque_a_reservar = first_free_block();
@@ -316,6 +317,7 @@ crFILE* cr_open(char* path, char mode)
 
             }
         }
+        */
         free(punt);
         fclose(archivo);
 
