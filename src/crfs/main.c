@@ -9,7 +9,6 @@
 
 int main(int argc, char** argv)
 {
-	printf("eihff");
     if(argc < 2)
 	{
 		printf("Los parametros no fueron entregados de manera correcta");
@@ -20,23 +19,32 @@ int main(int argc, char** argv)
 
 	crFILE* file = malloc(sizeof(crFILE));
 	
-	file = cr_open("/C.mkv",'r');
+	file = cr_open("/intro.txt",'r');
 	
 	int count = 0;
 	//printf("%d....\n",file->num_bloques);
 	
 	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
+	printf("size: %d\n", file->tamano);
 	
 	//cr_read( file, buffer, 5000);
 	int lee = nueva_leer(file, buffer, file->tamano);
 	
     printf("------- %i ---------ff %i\n", file->tamano, file->leido);
+	/*crFILE* filew = malloc(sizeof(crFILE));
+	filew = cr_open("/dinko.txt", 'w');
+	cr_write(filew, buffer, file->tamano);
+	free(filew);
 	
-
-	//FILE* add = fopen("laa.mkv", "wb");
-	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
-    //printf("%d\n",cr_exists("/dir"));
-    cr_ls("/");
+	
+	FILE* add = fopen(".txt", "wb");
+	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+	fclose(add);
+    cr_ls("/dir");
+	*/
+	
+	free(file);
+	
 	
 	
 	//cr_ls("/dir");
