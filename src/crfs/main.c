@@ -33,6 +33,14 @@ int main(int argc, char** argv)
 	printf("holaaaaa");
 	int lee = cr_read(file, buffer, file->tamano);
 
+	FILE* add = fopen("progra.mkv", "wb");
+	cr_close(file);
+	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+
+    //printf("%d\n",cr_exists("/dir"));
+    //cr_ls("/memes");
+	
+	
     printf("------- %i ---------ff %i\n", file->tamano, file->leido);
 
 

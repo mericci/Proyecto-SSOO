@@ -475,6 +475,12 @@ int cr_close(crFILE* file_desc)
 {
     /* Funcion para cerrar archivos. Cierra el archivo indicado por ´
     file desc. Debe garantizar que cuando esta funcion retorna, el archivo se encuentra actualizado en disco */
+    if (file_desc != NULL) {
+      free(file_desc->directos);
+      free(file_desc);
+      printf("LIBERADO!!");
+    }
+    return 0;
 
 }
 
