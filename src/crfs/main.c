@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	
 	//cr_read( file, buffer, 5000);
 	printf("holaaaaa");
-	int lee = nueva_leer(file, buffer, file->tamano);
+	int lee = cr_read(file, buffer, file->tamano);
 	
     printf("------- %i ---------ff %i", file->tamano, file->leido);
 	

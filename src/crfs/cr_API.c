@@ -349,7 +349,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde
     la posición del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
 
-    int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
+    //valor de retorno, cantidad de byte efectivamente leidos.
     /*
     if(file_desc -> modo == 0) //reviso modo lectura
     {
@@ -362,8 +362,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 
 
         fclose(archivo);
-    }*/
-    return byte_read;
+    */
 }
 
 

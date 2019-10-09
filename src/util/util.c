@@ -918,7 +918,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
         }
     } 
 
-    if (  bloque_relativo >= 50008 && 66044 > bloque_relativo )
+    if (  bloque_relativo >= 50998 && 66044 > bloque_relativo )
     {
         
         fseek(file, file_desc->dir2 * 1024 , SEEK_SET);
@@ -967,8 +967,8 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
                     //en indirecto simple
                     fseek(file, (inicio * 1024), SEEK_SET);
                     int entero = ((file_desc->leido/1024) - 508 - 1)/256;
-                    //int directo_actual = (file_desc->leido / 1024) - (508 + 256*( (file_desc->leido/1024) - 508 )/256);
-                    int directo_actual = ((file_desc->leido - 520192)  - ((pos_indirecto_simple) * 256*1024))/1024;
+                    int directo_actual = (file_desc->leido / 1024) - (508 + 256*( (file_desc->leido/1024) - 508 )/256);
+                    //int directo_actual = ((file_desc->leido - 520192)  - ((pos_indirecto_simple) * 256*1024))/1024;
                     printf("leido actual::: %i", file_desc->leido);
                     fseek(file, (directo_actual * 4) , SEEK_CUR);
 
