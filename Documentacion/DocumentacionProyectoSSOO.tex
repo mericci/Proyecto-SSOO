@@ -83,7 +83,7 @@ Se levantan dos errores y se finaliza la ejecución del programa en caso de que 
 Retorna el puntero a la posición local del archivo ".bin" (nuestro disco virtual) a una variable global definida en "cr\_API.h" llamada "DISK\_PATH".
 
 \subsection{cr\_bitmap(unsigned block, bool hex)}
-
+Recibe block que describe un numero que está entre 1 y 128 (bloques correspondientes a bitmap) e imprime el bitmap del bloque correspondiente. Se señala el número de bloque representado, un 1 indica que esta ocupado y un 0 lo contrario. Si se ingresa un 0 como bloque se imprime el bitmap completo.
 
 
 \subsection{cr\_exist(char* path}
@@ -122,10 +122,18 @@ En cambio, si el modo es 'w', primero verifica que no exista un archivo con el m
 
 
 \subsection{cr\_write(crFILE* file\_desc, void* buffer, int nbytes)}
+Recibe un puntero crFILE que describe el archivo a ser escrito, un arreglo buffer (en nuestro caso ocuparemos un arreglo de uint8\_t) y nbytes describe el largo de buffer.
+
+El algoritmo busca dinamicamente bloques libres para ocuparlos para almacenar los bytes de buffer. Los direccionamientos indirectos se ocupan solo si los bloques de datos por el direccionamiento directo no son suficientes. Entrega el numero de bytes que alcanzo a almacenar, los que seran igual a nbytes a menos que no quede memoria disponible.
+
+
 
 \subsection{cr\_close(crFILE* file\_desc)}
 
 \subsection{cr\_rm(char* path)}
+Recibe el path de un archivo para que este sea eliminado del disco virtual. El algoritmo invalida la entrada del directorio que contiene el puntero a su bloque indice y libera los bloques involucrados con el archivo (deja los bytes en 0). Revisa tanto los punteros del índice como los bloques involucrados en el direccionamiento indirecto. Además actualiza el bitmap.
+
+Indica si el path no corresponde al de un archivo o es incorrecto.
 
 \subsection{cr\_unload(char* orig, char* dest)}
 Recibe una ruta de origen que existe dentro del disco y una ruta dentro del computador.
@@ -263,16 +271,22 @@ Retorna un 1 en caso de que se agregue correctamente y un 0 en caso contrario.
 \subsection{leer\_bloques\_directos( crFILE* file\_desc, uint8\_t* buffer, int nbytes)}
 
 \subsection{get\_entry\_index(int dir\_block, char* path)}
+Recibe un bloque de directorio y un path que está dentro del directorio representado por el bloque. El algoritmo retorna el índice de la entrada del directorio que representa el path, que puede estar entre 0 y 31. Retorna -1 si no se encuentra la entrada.
 
 \subsection{get\_file\_pointer(int dir\_block, char* path)}
+Recibe el bloque de directorio y un path que está dentro del directorio representado por el bloque. El algoritmo retorna el puntero del bloque del archivo representado del path.
 
 \subsection{invalidate\_entry(int dir\_block, int entry\_index)}
+Recibe el número de bloque de directorio e invalida la entrada representada por entry\_index escribiendo un 1 en los primeros bytes de la entrada.
 
 \subsection{free\_simple\_indirect(int simple\_block)}
+Recibe un número correspondiente a un bloque de direccionamiento indirecto simple y libera todos los bloques de los punteros. También libera el bloque simple\_block.
 
 \subsection{free\_double\_indirect(int double\_block)}
+Recibe un número correspondiente a un bloque de direccionamiento indirecto doble y libera todos los bloques de direccionamiento indirecto simple y bloques de datos correspondientes, además del bloque double\_indirect.
 
 \subsection{free\_triple\_indirect(int triple\_block)}
+Recibe un número correspondiente a un bloque de direccionamiento indirecto triple y libera todos los bloques de direccionamiento indirecto doble, simple y bloques de datos correspondientes, además del bloque triple\_indirect.
 
 \subsection{actual\_locals(char* path)}
 Recibe una ruta absoluta de directorios.
@@ -310,5 +324,30 @@ Función que instancia a actual\_locals, locals\_to\_create, get\_first\_folder 
 
 No retorna nada debido a que es void, pero crea en el computador la ruta especificada.
 
+\subsection{populate\_data\_block(FILE* disk\_file, int block, 
+  void* buffer, int* current\_buffer\_pos, int length) }
+Recibe el archivo del disco virtual disk\_file, el numero de bloque de datos block, el arreglo de bytes buffer, el indice que indica la posicion actual con la que se recorre el buffer current\_buffer\_pos y el largo length del buffer.
+
+Se encarga de ir guardando los bytes de buffer segun el indice de posicion en el bloque de datos.
+
+\subsection{first\_free\_block\_f(FILE* disk\_file)}
+Recibe el archivo disk\_file que representa el disco virtual y retorna el menor numero de bloque disponible. Si no hay boques disponibles retorna -1.
+
+\subsection{populate\_simple\_indirect(FILE* disk\_file, int si\_block, void* buffer, int *current\_buffer\_pos, int length)}
+Recibe el archivo que representa el disco virtual disk\_file, el numero de bloque de direccionamiento indirecto simple si\_block, un arreglo de bytes biffer, el indice que indica la posicion actual con la que se recorre el buffer current\_buffer\_pos y el largo length del buffer.
+
+Se encarga de ir guardando los bytes de buffer segun el indice de posicion en el bloque de datos obteniendo dinamicamente los bloques de datos libres e indexandolos en el bloque de direccionamiento indirecto simple.
+
+
+\subsection{populate\_double\_indirect(FILE* disk\_file, int di\_block, void* buffer, int *current\_buffer\_pos, int length)}
+Recibe el archivo que representa el disco virtual disk\_file, el numero de bloque de direccionamiento indirecto doble di\_block, un arreglo de bytes biffer, el indice que indica la posicion actual con la que se recorre el buffer current\_buffer\_pos y el largo length del buffer.
+
+Se encarga de ir guardando los bytes de buffer segun el indice de posicion en bloques de datos y de direccionamiento indirecto simple obtenidos dinamicamente e indexandolos en el bloque de direccionamiento indirecto doble.
+
+
+\subsection{populate\_triple\_indirect(FILE* disk\_file, int ti\_block, void* buffer, int *current\_buffer\_pos, int length)}
+Recibe el archivo que representa el disco virtual disk\_file, el numero de bloque de direccionamiento indirecto triple ti\_block, un arreglo de bytes biffer, el indice que indica la posicion actual con la que se recorre el buffer current\_buffer\_pos y el largo length del buffer.
+
+Se encarga de ir guardando los bytes de buffer segun el indice de posicion en bloques de datos, de direccionamiento indirecto simple y doble obtenidos dinamicamente e indexandolos en el bloque de direccionamiento indirecto triple.
 % Fin del documento
 \end{document}
