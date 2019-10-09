@@ -111,8 +111,6 @@ dir* recorrer_path(char* path)
                 posicion = directorio -> bloque;
                 count = 0;
             } else {
-                printf("\n error con: %s\n\n", archivo);
-
                 free(archivo);
                 char* archivo = malloc(strlen(path)*sizeof(char));
                 break;
@@ -1040,7 +1038,7 @@ void create_local_directory(char* path){
     char* existent = actual_locals(path);
     if(existent){
         if(strcmp(existent,path)==0){
-            printf("El path completo existe\n%s\n%s\n", existent, path);
+            return;
         }else{
             char* new = locals_to_create(path);
             char* first = get_first_folder(new);
