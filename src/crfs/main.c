@@ -18,6 +18,8 @@ int main(int argc, char** argv)
 
 	cr_mount(argv[1]);
 
+
+    cr_unload("/dir/subdi", "/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque/salsa/dds.mkv"); //#ESTE ENTRA EN LA DEMO SI O SI:
 	crFILE* file = malloc(sizeof(crFILE));
 
 	file = cr_open("/C.mkv",'r');
