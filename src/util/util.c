@@ -1317,12 +1317,12 @@ void create_local_directory(char* path){
 int populate_data_block(FILE* disk_file, int block, 
   void* buffer, int* current_buffer_pos, int length) 
 {
-    unsigned char* one_byte_buffer[1];
+    uint8_t * one_byte_buffer = malloc(sizeof(uint8_t));
     fseek(disk_file, block * 1024, SEEK_SET);
     for (int i = 0; i < 1024; i++) {
-        one_byte_buffer[0] = &buffer[*current_buffer_pos];
+        one_byte_buffer = &buffer[*current_buffer_pos];
         fwrite(one_byte_buffer, 1, 1, disk_file);
-        current_buffer_pos ++;
+        *current_buffer_pos += 1;
         if (*current_buffer_pos == length) {
             return -1;
         }
@@ -1373,7 +1373,7 @@ int populate_simple_indirect(FILE* disk_file, int si_block,
         fseek(disk_file, si_block * 1024 + 4 * i, SEEK_SET);
         result = populate_data_block(disk_file, free_block, buffer, current_buffer_pos, length);
         if (result == -1) {
-            return -1;
+            return 1;
         }
         if (*current_buffer_pos >= length) {
             return 1;
