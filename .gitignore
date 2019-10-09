@@ -1,3 +1,9 @@
 .vscode/
 *.bin
 /obj
+*.txt
+*.mkv
+*.mp4
+*.jpg
+*.png
+/obj

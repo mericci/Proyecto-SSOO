@@ -19,6 +19,7 @@ char* ERROR24 = "\n-----------------\n    Error 24:\nObjetivo no es \n"
 "un disco virtual\n-----------------\n";
 char*ERROR25 = "\n-----------------\n    Error 25:\nObjetivo no es directorio\n-----------------\n";
 char* ERROR30= "\n-----------------\n    Error 30:\nFalta de Espacio\n-----------------\n";
+char* FUT1="\n-----------------\nFeature Futura:\nEstamos trabajando\n  para poder \n  hacer esto ;)\n-----------------\n";
 
 // FUNCIONES GENERALES
 
@@ -128,6 +129,9 @@ void cr_ls(char* path)
         printf("%s\n", ERROR23);
     }
     else if(is_directory == 0){
+        printf("%s\n", ERROR25);
+    }
+    else if(is_directory == 4){
         printf("%s\n", ERROR25);
     }
     else if(is_directory == 1){
@@ -295,6 +299,7 @@ crFILE* cr_open(char* path, char mode)
 
         FILE* archivo = fopen(DISK_PATH, "rb+");
         unsigned char* punt = malloc(4*sizeof(unsigned char));
+        /*
         for(int k = 1; k < 256; k++)
         {
             bloque_a_reservar = first_free_block();
@@ -312,6 +317,7 @@ crFILE* cr_open(char* path, char mode)
 
             }
         }
+        */
         free(punt);
         fclose(archivo);
 
@@ -340,7 +346,6 @@ crFILE* cr_open(char* path, char mode)
 int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 {
     int leido = nueva_leer(file_desc,buffer, nbytes);
-    
     return leido;
 
     /*Funcion para leer archivos. ´
@@ -349,7 +354,7 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
     nbytes es mayor a la cantidad de Byte restantes en el archivo. La lectura de read se efectua desde
     la posición del archivo inmediatamente posterior a la ultima posici ´ on le ´ ´ıda por un llamado a read */
 
-    //valor de retorno, cantidad de byte efectivamente leidos.
+    //int byte_read = 0;  //valor de retorno, cantidad de byte efectivamente leidos.
     /*
     if(file_desc -> modo == 0) //reviso modo lectura
     {
@@ -362,7 +367,8 @@ int cr_read(crFILE* file_desc, void* buffer, int nbytes)
 
 
         fclose(archivo);
-    */
+    }*/
+    //return byte_read;
 }
 
 
@@ -373,101 +379,108 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
     por buffer. Retorna la cantidad de Byte escritos en el archivo. Si se produjo un error porque no pudo seguir
     escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede
     ser menor a nbytes (incluso 0) */
-    /*
-    printf("EL BUFFER ES: %s\n",buffer);
-    int bytes_write = 0;
-    int escritura_directa = 0;
-    int escritura_indirecta = 0;
-    //bloque_datos* BD = malloc(sizeof(bloque_datos));
-    //bloque_indice* BI = malloc(sizeof(bloque_indice));
-    //BI -> bloq_dat = BD;
-    //BI -> entrada = file_desc -> posicion_en_bloque;
-    //printf("1\n");
-    //BI -> bloque = file_desc -> bloque;
-    //printf("1\n");
-    //BD -> offset_datos = 0;
-    //printf("1\n");
-    if(file_desc -> modo == 1)
+
+    unsigned char* one_byte_char = malloc(sizeof(unsigned char));
+    int* current_byte = 0;
+    int index_block = file_desc->bloque;
+    int remaining_bytes = nbytes;
+    unsigned char* file_size = malloc(4*sizeof(unsigned char));
+
+    for(int j=3; j >= 0; j--)
     {
-        int bloque = file_desc -> bloque;
-        if(file_desc -> posicion_en_bloque < 1008) //reviso si queda espacio por escribir
-        {
-            //printf("2\n");
-            if(nbytes - (258048 - (file_desc -> posicion_en_bloque)*1024) < 0) //reviso si voy a escribir todo o no ---- SI CABE TODO EL NBYTES
-            {
-                escritura_directa = nbytes;
-            }
-            else
-            {
-                 escritura_directa = 258048 - file_desc -> posicion_en_bloque;
-                 escritura_indirecta = nbytes - (258048 - file_desc -> posicion_en_bloque);
-                 file_desc -> uso_dir1 = 1;
-                 if(escritura_indirecta > 262144) file_desc -> uso_dir2 = 1;
-                 if(escritura_indirecta > 67108864) file_desc -> uso_dir3 = 1;
-            }
+        file_size[j] = (unsigned char) (nbytes % 256);
+        nbytes = nbytes / 256;
+    }
+
+
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    fseek(disk_file, index_block * 1024, SEEK_SET);
+    fwrite(file_size, 1, 4, disk_file);
+
+    
+    
+    //creo los punteros en el bloque indice
+    int new_block;
+    int result;
+    for (int i = 0; i < 252; i++) {
+        fseek(disk_file, index_block * 1024 + 4 *(1 + i), SEEK_SET);
+        if (*current_byte == nbytes) {
+            fclose(disk_file);
+            //ya termine
+            return nbytes;
         }
-        else escritura_indirecta = nbytes;
-        //printf("3\n");
-        while(1)
-        {
-            FILE* archivo = fopen(DISK_PATH, "rb");
-            fseek(archivo, bloque*1024 + file_desc -> posicion_en_bloque, SEEK_SET);
-            unsigned char* puntero = malloc(4*(sizeof(unsigned char)));
-            fread(puntero,sizeof(unsigned char),4,archivo);
-            int bloque_a_ir = encontrar_bloque(puntero);
-            //BD -> bloque = bloque_a_ir;
-            fclose(archivo);
-            printf("4\n");
-            archivo = fopen(DISK_PATH, "w");
-            //fseek(archivo, BD->bloque*1024 + BD -> offset_datos, SEEK_SET); //voy a leer en entrada en la que voy.
-            int escritura_en_datos;
-            if(escritura_directa > 1024)
-            {
-                escritura_en_datos = 1024;
-                escritura_directa -= 1024;
-            }
-            else
-            {
-                escritura_en_datos = escritura_directa;
-                escritura_directa = 0;
-            }
-            if(escritura_directa > 0) //si hay escritura directa
-            {
-
-                //inicialmente hago solo escritura directa
-                fwrite(buffer, 1, escritura_directa, archivo); //escribo los directos
-                bytes_write+=escritura_en_datos;
-                if(escritura_en_datos == 1024)
-                {
-                    //BD -> offset_datos = 0;
-                    file_desc -> posicion_en_bloque += 1;
-                    //BI -> entrada += 1;
-                    if(!escritura_indirecta) break;
-
-                }
-                //else BD -> offset_datos += escritura_en_datos;
-                //file_desc -> posicion_en_bloque += escritura_directa;
-                if(escritura_indirecta && escritura_directa == 0) //si hay indirecta y ya escribi todo lo directo
-                {
-                    break;
-                }
-
-            }
+        new_block = first_free_block();
+        if (new_block == -1) {
+            printf("%s\n", ERROR30);
+            fclose(disk_file);
+            //hay que liberar los bloques ya ocupados pero me da paja ahora
+            return *current_byte;
         }
+        result = populate_data_block(disk_file, new_block, buffer,
+          current_byte, nbytes);
 
+        
+                
+    }
 
+    if (*current_byte < nbytes) {
+        //indirecto simple
+        new_block = first_free_block();
+        file_desc->posicion_en_dir1 = new_block;
+        result = populate_simple_indirect(disk_file, new_block, buffer,
+          current_byte, nbytes);
+        if (result == -1) {
+            printf("%s\n", ERROR30);
+            fclose(disk_file);
+            return *current_byte;
+        }
 
     }
-    return bytes_write;  */
+
+    if (*current_byte < nbytes) {
+        //indirecto doble
+        new_block = first_free_block();
+        file_desc->posicion_en_dir2 = new_block;
+        result = populate_double_indirect(disk_file, new_block, buffer,
+          current_byte, nbytes);
+        if (result == -1) {
+            printf("%s\n", ERROR30);
+            fclose(disk_file);
+            return *current_byte;
+        }
+    }
+
+    if (*current_byte < nbytes) {
+        //indirecto triple
+        new_block = first_free_block();
+        file_desc->posicion_en_dir3 = new_block;
+        result = populate_triple_indirect(disk_file, new_block, buffer,
+          current_byte, nbytes);
+        if (result == -1) {
+            printf("%s\n", ERROR30);
+            fclose(disk_file);
+            return *current_byte;
+        }
+    }
+    return nbytes;
+
+    fclose(disk_file);
 
 
 }
+
 
 
 int cr_close(crFILE* file_desc)
 {
     /* Funcion para cerrar archivos. Cierra el archivo indicado por ´
     file desc. Debe garantizar que cuando esta funcion retorna, el archivo se encuentra actualizado en disco */
+    if (file_desc != NULL) {
+      free(file_desc->directos);
+      free(file_desc);
+      printf("LIBERADO!!");
+    }
+    return 0;
 
 }
 
@@ -476,6 +489,70 @@ int cr_rm(char* path)
 {
     /* Funcion para borrar archivos. Elimina el archivo referenciado por la ruta ´ path
     del directorio correspondiente. Los bloques que estaban siendo usados por el archivo deben quedar libres */
+    
+    //dir block es el bloque del directorio que referencia al archivo
+    int dir_block = get_dir_block(path);
+    int entry_index = get_entry_index(dir_block, path);
+    if (entry_index == -1) {
+        printf("%s", ERROR23);
+    }
+    int file_pointer = get_file_pointer(dir_block, path);
+    invalidate_entry(dir_block, entry_index);
+
+    
+    //borro los bloques de los archivos
+    change_bitmap_block(file_pointer);
+    //veo los punteros del bloque indice
+    FILE* disk_file = fopen(DISK_PATH, "rb+");
+    fseek(disk_file, file_pointer * 1024, SEEK_SET);
+    int block;
+    int block_array[252];
+    unsigned char* pointer = malloc(4*sizeof(unsigned char));
+    for (int i = 0; i < 252; i++) {
+        fread(pointer, 1, 4, disk_file);
+        block = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+        block_array[i] = block;
+    }
+    free(pointer);
+    
+    int arch = 0;
+    unsigned char *byte_cero = malloc(1*sizeof(unsigned char));
+    *byte_cero = (unsigned char)arch;
+    for (int i = 0; i < 252; i++) {
+        //convierto a 0 las entradas
+        if (block_array[i] != 0){
+            change_bitmap_block(block_array[i]);
+            fseek(disk_file, block_array[i] * 1024, SEEK_SET);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+            fwrite(byte_cero, 1, 1, disk_file);
+        }
+        
+    }
+
+    fclose(disk_file);
+
+
+    fread(pointer, 1, 4, disk_file);
+    int simple_indirect = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+    fread(pointer, 1, 4, disk_file);
+    int double_indirect = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+    fread(pointer, 1, 4, disk_file);
+    int triple_indirect = pointer[3] + (pointer[2] << 8) + (pointer[1] << 16) + (pointer[0] << 24);
+    if (simple_indirect != 0) {
+       free_simple_indirect(simple_indirect);
+    }
+    if (double_indirect != 0) {
+        free_double_indirect(double_indirect);
+    }
+    if (triple_indirect != 0) {
+        free_triple_indirect(triple_indirect);
+    }
+
+    
+    return 1;
+
 }
 
 
@@ -486,6 +563,27 @@ int cr_unload(char* orig, char* dest)
     hacia un nuevo
     archivo o directorio de ruta dest en su computador  */
 
+    int tipo = objective_kind(orig);
+    printf("\n %d Es el tipo\n", tipo);
+    if( tipo== 4){
+        char* directorios = directorio_a_agregar(dest);
+        create_local_directory(directorios);
+        crFILE* file = malloc(sizeof(crFILE));
+    	file = cr_open(orig,'r');
+    	int count = 0;
+    	//printf("%d....\n",file->num_bloques);
+    	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
+    	//cr_read( file, buffer, 5000);
+    	int lee = cr_read(file, buffer, file->tamano);
+    	FILE* add = fopen(dest, "wb");
+    	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+    }
+    if(tipo == 1){
+        printf("%s\n", FUT1);
+    }
+    else{
+        printf("%s\n", ERROR23);
+    }
 }
 
 
