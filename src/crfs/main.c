@@ -48,6 +48,7 @@ int main(int argc, char** argv)
 	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
     //printf("%d\n",cr_exists("/dir"));
     cr_ls("/");
+	cr_bitmap(0, 1);
 
 
 	//cr_ls("/dir");

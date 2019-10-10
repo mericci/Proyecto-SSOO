@@ -54,6 +54,90 @@ void cr_bitmap(unsigned block, bool hex)
     FILE* disk_file = fopen(DISK_PATH, "rb");
 
     if (hex) {
+        //codigo para obtener hex obtenido de https://www.geeksforgeeks.org/program-decimal-hexadecimal-conversion/
+        unsigned char buffer[1024];
+        char* Hex = malloc(sizeof(char)*4);
+        if (block == 0) {
+    
+            //imprimo el bitmap completo
+            fseek(disk_file, 1024, SEEK_SET);
+            int current_block = 0;
+            int byte_number;
+            int bin_array[8];
+            int j;
+            int temp;
+            for (int bitmap_index = 1; bitmap_index <= 128; bitmap_index++) {
+                fread(buffer, 1, 1024, disk_file);
+                //imprimo
+                printf("bitmap byte: %d\n", bitmap_index);
+                for (int i = 0; i < 1024; i++) {
+                    byte_number = buffer[i];
+                    j = 0;    
+                     while (byte_number != 0){
+                        temp = 0;
+                        temp = byte_number % 16;
+                        if(temp < 10) 
+                        { 
+                            Hex[j] = (char)(temp + 48); 
+                            j++; 
+                        } 
+                        else
+                        { 
+                            Hex[j] = (char)(temp + 55); 
+                            j++; 
+                        } 
+                      
+                        byte_number = byte_number / 16; 
+        
+        
+                    }
+                printf("byte index: %d   byte: %c%c\n", i, Hex[0], Hex[1]);                
+                }
+                //muevo el puntero al siguiente bloque de bitmap
+                fseek(disk_file, 1024, SEEK_CUR);
+    
+            }
+            fclose(disk_file);
+            free(Hex);
+            return;
+
+        }
+        int current_block = 1024 * (block - 1);
+        int byte_offset = block * 1024;
+        fseek(disk_file, byte_offset, SEEK_SET);
+        fread(buffer, 1, 1024, disk_file);
+        //imprimo
+        int byte_number;
+        int bin_arrray[8];
+        int j;
+        int temp;
+        for (int i = 0; i < 1024; i++) {
+            byte_number = buffer[i];
+            j = 0;
+            while (byte_number != 0){
+                temp = 0;
+                temp = byte_number % 16;
+                if(temp < 10) 
+                { 
+                    Hex[j] = (char)(temp + 48); 
+                    j++; 
+                } 
+                else
+                { 
+                    Hex[j] = (char)(temp + 55); 
+                    j++; 
+                } 
+              
+                byte_number = byte_number / 16; 
+
+
+            }
+          printf("byte index: %d   byte: %c%c\n", i, Hex[0], Hex[1]);
+             
+        }
+        fclose(disk_file);
+        free(Hex);
+        return;
     }
     else {
     }
