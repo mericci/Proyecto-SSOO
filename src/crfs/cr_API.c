@@ -584,6 +584,7 @@ int cr_unload(char* orig, char* dest)
     else{
         printf("%s\n", ERROR23);
     }
+
 }
 
 
@@ -592,5 +593,22 @@ int cr_load(char* orig)
     /*Funcion que se encarga de copiar un archivo o ´ arbol de directorios, referen- ´
     ciado por orig al disco. En caso de que un archivo sea demasiado pesado para el disco, se debe escribir todo
     lo posible hasta acabar el espacio disponible */
+
+    FILE *fileptr;
+    char *buffer;
+    long filelen;
+
+    fileptr = fopen(orig, "rb");  // Open the file in binary mode
+    fseek(fileptr, 0, SEEK_END);          // Jump to the end of the file
+    filelen = ftell(fileptr);             // Get the current byte offset in the file
+    rewind(fileptr);                      // Jump back to the beginning of the file
+
+    buffer = (char *)malloc((filelen+1)*sizeof(char)); // Enough memory for file + \0
+    fread(buffer, filelen, 1, fileptr); // Read in the entire file
+    fclose(fileptr); // Close the file
+    crFILE * archivo = cr_open("/nuevo.txt", 'w');
+    cr_write(archivo, buffer, filelen);
+
+
 
 }
