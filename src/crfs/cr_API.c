@@ -54,6 +54,90 @@ void cr_bitmap(unsigned block, bool hex)
     FILE* disk_file = fopen(DISK_PATH, "rb");
 
     if (hex) {
+        //codigo para obtener hex obtenido de https://www.geeksforgeeks.org/program-decimal-hexadecimal-conversion/
+        unsigned char buffer[1024];
+        char* Hex = malloc(sizeof(char)*4);
+        if (block == 0) {
+    
+            //imprimo el bitmap completo
+            fseek(disk_file, 1024, SEEK_SET);
+            int current_block = 0;
+            int byte_number;
+            int bin_array[8];
+            int j;
+            int temp;
+            for (int bitmap_index = 1; bitmap_index <= 128; bitmap_index++) {
+                fread(buffer, 1, 1024, disk_file);
+                //imprimo
+                printf("bitmap byte: %d\n", bitmap_index);
+                for (int i = 0; i < 1024; i++) {
+                    byte_number = buffer[i];
+                    j = 0;    
+                     while (byte_number != 0){
+                        temp = 0;
+                        temp = byte_number % 16;
+                        if(temp < 10) 
+                        { 
+                            Hex[j] = (char)(temp + 48); 
+                            j++; 
+                        } 
+                        else
+                        { 
+                            Hex[j] = (char)(temp + 55); 
+                            j++; 
+                        } 
+                      
+                        byte_number = byte_number / 16; 
+        
+        
+                    }
+                printf("byte index: %d   byte: %c%c\n", i, Hex[0], Hex[1]);                
+                }
+                //muevo el puntero al siguiente bloque de bitmap
+                fseek(disk_file, 1024, SEEK_CUR);
+    
+            }
+            fclose(disk_file);
+            free(Hex);
+            return;
+
+        }
+        int current_block = 1024 * (block - 1);
+        int byte_offset = block * 1024;
+        fseek(disk_file, byte_offset, SEEK_SET);
+        fread(buffer, 1, 1024, disk_file);
+        //imprimo
+        int byte_number;
+        int bin_arrray[8];
+        int j;
+        int temp;
+        for (int i = 0; i < 1024; i++) {
+            byte_number = buffer[i];
+            j = 0;
+            while (byte_number != 0){
+                temp = 0;
+                temp = byte_number % 16;
+                if(temp < 10) 
+                { 
+                    Hex[j] = (char)(temp + 48); 
+                    j++; 
+                } 
+                else
+                { 
+                    Hex[j] = (char)(temp + 55); 
+                    j++; 
+                } 
+              
+                byte_number = byte_number / 16; 
+
+
+            }
+          printf("byte index: %d   byte: %c%c\n", i, Hex[0], Hex[1]);
+             
+        }
+        fclose(disk_file);
+        free(Hex);
+        return;
     }
     else {
     }
@@ -380,55 +464,96 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
     escribiendo, ya sea porque el disco se lleno o porque el archivo no puede crecer m ´ as, este n ´ umero puede
     ser menor a nbytes (incluso 0) */
 
+    
     unsigned char* one_byte_char = malloc(sizeof(unsigned char));
-    int* current_byte = 0;
+    int* current_byte = malloc(sizeof(int));
+    *current_byte = 0;
+    
     int index_block = file_desc->bloque;
-    int remaining_bytes = nbytes;
+    int nbytes_copy = nbytes;
+    
     unsigned char* file_size = malloc(4*sizeof(unsigned char));
+    unsigned char* new_block_bytes = malloc(4*sizeof(unsigned char));
 
     for(int j=3; j >= 0; j--)
     {
-        file_size[j] = (unsigned char) (nbytes % 256);
-        nbytes = nbytes / 256;
+        file_size[j] = (unsigned char) (nbytes_copy % 256);
+        nbytes_copy = nbytes_copy / 256;
     }
-
+    
+    
 
     FILE* disk_file = fopen(DISK_PATH, "rb+");
     fseek(disk_file, index_block * 1024, SEEK_SET);
     fwrite(file_size, 1, 4, disk_file);
 
+
     
     
     //creo los punteros en el bloque indice
     int new_block;
+    int new_block_copy;
     int result;
     for (int i = 0; i < 252; i++) {
+            
+
         fseek(disk_file, index_block * 1024 + 4 *(1 + i), SEEK_SET);
+       
         if (*current_byte == nbytes) {
+             
             fclose(disk_file);
             //ya termine
             return nbytes;
         }
         new_block = first_free_block();
+        new_block_copy = new_block;
+                
+
         if (new_block == -1) {
             printf("%s\n", ERROR30);
             fclose(disk_file);
             //hay que liberar los bloques ya ocupados pero me da paja ahora
             return *current_byte;
         }
+
+        for(int j=3; j >= 0; j--)
+        {
+            new_block_bytes[j] = (unsigned char) (new_block_copy % 256);
+            new_block_copy = new_block_copy / 256;
+        }
+        fwrite(new_block_bytes, 1, 4, disk_file);
+
         result = populate_data_block(disk_file, new_block, buffer,
           current_byte, nbytes);
 
         
                 
     }
-
+    
+    
     if (*current_byte < nbytes) {
         //indirecto simple
+        
         new_block = first_free_block();
+        if (new_block == -1) {
+            printf("%s\n", ERROR30);
+            fclose(disk_file);
+            return *current_byte;
+        }
+        
+        new_block_copy = new_block;
+        for(int j=3; j >= 0; j--)
+        {
+            new_block_bytes[j] = (unsigned char) (new_block_copy % 256);
+            new_block_copy = new_block_copy / 256;
+        }
+        fseek(disk_file, index_block * 1024 + 1012, SEEK_SET);
+        fwrite(new_block_bytes, 1, 4, disk_file);
         file_desc->posicion_en_dir1 = new_block;
+        
         result = populate_simple_indirect(disk_file, new_block, buffer,
           current_byte, nbytes);
+        
         if (result == -1) {
             printf("%s\n", ERROR30);
             fclose(disk_file);
@@ -436,10 +561,23 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
         }
 
     }
-
+    
     if (*current_byte < nbytes) {
         //indirecto doble
         new_block = first_free_block();
+        if (new_block == -1) {
+            printf("%s\n", ERROR30);
+            fclose(disk_file);
+            return *current_byte;
+        }
+        new_block_copy = new_block;
+        for(int j=3; j >= 0; j--)
+        {
+            new_block_bytes[j] = (unsigned char) (new_block_copy % 256);
+            new_block_copy = new_block_copy / 256;
+        }
+        fseek(disk_file, index_block * 1024 + 1016, SEEK_SET);
+        fwrite(new_block_bytes, 1, 4, disk_file);
         file_desc->posicion_en_dir2 = new_block;
         result = populate_double_indirect(disk_file, new_block, buffer,
           current_byte, nbytes);
@@ -450,9 +588,23 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
         }
     }
 
+
     if (*current_byte < nbytes) {
         //indirecto triple
         new_block = first_free_block();
+        if (new_block == -1) {
+            printf("%s\n", ERROR30);
+            fclose(disk_file);
+            return *current_byte;
+        }
+        new_block_copy = new_block;
+        for(int j=3; j >= 0; j--)
+        {
+            new_block_bytes[j] = (unsigned char) (new_block_copy % 256);
+            new_block_copy = new_block_copy / 256;
+        }
+        fseek(disk_file, index_block * 1024 + 1020, SEEK_SET);
+        fwrite(new_block_bytes, 1, 4, disk_file);
         file_desc->posicion_en_dir3 = new_block;
         result = populate_triple_indirect(disk_file, new_block, buffer,
           current_byte, nbytes);
@@ -462,6 +614,7 @@ int cr_write(crFILE* file_desc, void* buffer, int nbytes)
             return *current_byte;
         }
     }
+    
     return nbytes;
 
     fclose(disk_file);
@@ -531,7 +684,7 @@ int cr_rm(char* path)
         
     }
 
-    fclose(disk_file);
+    
 
 
     fread(pointer, 1, 4, disk_file);
@@ -549,6 +702,7 @@ int cr_rm(char* path)
     if (triple_indirect != 0) {
         free_triple_indirect(triple_indirect);
     }
+    fclose(disk_file);
 
     
     return 1;
@@ -595,7 +749,7 @@ int cr_load(char* orig)
     lo posible hasta acabar el espacio disponible */
 
     FILE *fileptr;
-    char *buffer;
+    uint8_t* buffer;
     long filelen;
 
     fileptr = fopen(orig, "rb");  // Open the file in binary mode
@@ -603,11 +757,13 @@ int cr_load(char* orig)
     filelen = ftell(fileptr);             // Get the current byte offset in the file
     rewind(fileptr);                      // Jump back to the beginning of the file
 
-    buffer = (char *)malloc((filelen+1)*sizeof(char)); // Enough memory for file + \0
+    buffer = malloc((filelen+1)*sizeof(uint8_t)); // Enough memory for file + \0
     fread(buffer, filelen, 1, fileptr); // Read in the entire file
     fclose(fileptr); // Close the file
     crFILE * archivo = cr_open("/nuevo.txt", 'w');
     cr_write(archivo, buffer, filelen);
+    cr_close(archivo);
+    
 
 
 
