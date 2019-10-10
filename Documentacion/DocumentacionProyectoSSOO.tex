@@ -42,6 +42,7 @@
 % Cambiar por nombre completo + número de alumno
 \newcommand{\alumno}{Grupo Maniha}
 \rhead{Documentacion - \alumno}
+\lhead{Proyecto SSOO}
 
 \begin{document}
 \thispagestyle{empty}
@@ -119,7 +120,7 @@ Dado el modo entregado, cambia la funcionalidad general. Primero se crea un crFI
 En cambio, si el modo es 'w', primero verifica que no exista un archivo con el mismo nombre en la ruta especificada y genera una representación de un nuevo archivo por medio de la creacion de un crFILE que lo represente. Retorna un puntero al struct crFILE creado.
 
 \subsection{cr\_read(crFILE* file\_desc, void* buffer, int nbytes)}
-Recibe una estructura tipo file, buffer (que es un puntero de uint_8) y el numero de bytes. 
+Recibe una estructura tipo file, buffer (que es un puntero de uint\_8) y el numero de bytes. 
 
 El programa comienza con la lectura de los punteros a bloques de datos y los lee hasta que acaba todos los bloques disponibles para los mismos (252). Inmediatamente despues, ingresa a los punteros indirectos simples y se dirige a la ubicación. La función avanza por las direcciones de los punteros leyendo de a 4 bytes. Luego, ingresa a estas direcciones y comienza a leer los datos del bloque de datos, itera de esta forma hasta terminar los 256 bloques. Finalmente, la función ingresa a la dirección del bloque indirecto doble. Con información del numero de bytes leídos, obtiene la posicion del bloque indirecto simple actual y del bloque de datos que se debe acceder para llegar a la posicion de la proxima lectura. Itera obteniendo la proxima dirección y lee bytes hasta que termina de leer los nbytes ingresados en la funcion.
 
@@ -146,7 +147,6 @@ Recibe una ruta de origen que existe dentro del disco y una ruta dentro del comp
 Si la ruta destino no existe, se crean los directorios necesarios para que la ruta exista, luego se revisa el archivo dentro del disko, se lee y se copia la información dada dentro de los bloques de datos en un nuevo archivo que se encontrará dentro de la ruta entegada como destino.
 
 Retorna un 1 en caso de que se logre realizar la copia correctamente y un 0 en caso contrario
-\subsection{cr\_load(char* orig)}
 
 %%%%%%%%%%%%%%%%%%% Fin Funciones de manejo de archivos %%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Funciones Utiles}
@@ -274,12 +274,18 @@ Busca el primer bloque inválido dentro del directorio en el que se va a crear e
 Retorna un 1 en caso de que se agregue correctamente y un 0 en caso contrario.
 
 \subsection{leer\_bloques\_directos( crFILE* file\_desc, uint8\_t* buffer, int nbytes)}
+Recibe un ctFile, un buffer de datos y la cantidad de bytes a leer.
+
+Se encarga de obtener la información dentro de los bloques directos, es decir, obtiene directamente la información mapeada en estos. Es una funcion que se llama anidada dentro de otras para la lectura de bloques indirectamente.
+
+Retorna el crFile con la lectura de los bloques directos del archivo.
 
 \subsection{get\_entry\_index(int dir\_block, char* path)}
 Recibe un bloque de directorio y un path que está dentro del directorio representado por el bloque. El algoritmo retorna el índice de la entrada del directorio que representa el path, que puede estar entre 0 y 31. Retorna -1 si no se encuentra la entrada.
 
 \subsection{get\_file\_pointer(int dir\_block, char* path)}
-Recibe el bloque de directorio y un path que está dentro del directorio representado por el bloque. El algoritmo retorna el puntero del bloque del archivo representado del path.
+Recibe el bloque de directorio y un path que está dentro del directorio representado por el bloque. 
+El algoritmo retorna el puntero del bloque del archivo representado del path.
 
 \subsection{invalidate\_entry(int dir\_block, int entry\_index)}
 Recibe el número de bloque de directorio e invalida la entrada representada por entry\_index escribiendo un 1 en los primeros bytes de la entrada.
@@ -329,8 +335,7 @@ Función que instancia a actual\_locals, locals\_to\_create, get\_first\_folder 
 
 No retorna nada debido a que es void, pero crea en el computador la ruta especificada.
 
-\subsection{populate\_data\_block(FILE* disk\_file, int block, 
-  void* buffer, int* current\_buffer\_pos, int length) }
+\subsection{populate\_data\_block(FILE* disk\_file, int block, void* buffer, int* current\_buffer\_pos, int length) }
 Recibe el archivo del disco virtual disk\_file, el numero de bloque de datos block, el arreglo de bytes buffer, el indice que indica la posicion actual con la que se recorre el buffer current\_buffer\_pos y el largo length del buffer.
 
 Se encarga de ir guardando los bytes de buffer segun el indice de posicion en el bloque de datos.
