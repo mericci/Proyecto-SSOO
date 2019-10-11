@@ -19,88 +19,145 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
 
 
-    //cr_unload("/dir/subdir", "/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque/salsa/dds.mkv"); //#ESTE ENTRA EN LA DEMO SI O SI:
-	crFILE* file = malloc(sizeof(crFILE));
 
 	
 
-	//FILE* add = fopen("progra.mkv", "wb");
-	//cr_close(file);
-	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+	//LS EXISTS
 
-    //printf("%d\n",cr_exists("/dir"));
-    //cr_ls("/memes");
-	cr_ls("/");
-	//cr_rm("/nuevo.txt");
-	
-	
-    
-    
-	printf("--------------------------------------------\n");
-	cr_ls("/");
-	cr_load("/Users/maca/Desktop/Proyecto-SSOO/prueba.txt");
-	cr_ls("/");
-	printf("--------------------------------------------\n");
-	
-	//FILE* add = fopen("progra.mkv", "wb");
-	//cr_close(file);
-	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
-
-    //printf("%d\n",cr_exists("/dir"));
-  
-	
-    printf("------- %i ---------ff %i\n", file->tamano, file->leido);
-
-
-	//FILE* adds = fopen("/Users/maca/Desktop/Proyecto-SSOO/nuevazo.txt", "wb");
-	cr_unload("/nuevo.txt", "/Users/maca/Desktop/Proyecto-SSOO/nuevazo.txt");
-	//cr_ls("/dir");
-    //cr_mkdir("/asdsadasd/dddsssd");
-    //cr_open("/dir/subdir/altera.mp", 'r');
-    //create_local_directory("/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque");
-	//cr_ls("/memes");
-	//dir* direc = recorrer_path("/memes/hacker.jpg");
-	//printf("%s\n", direc -> nombre);
-	//int dir_block = get_dir_block("/intro.txt");
-	//int entry_index = get_entry_index(dir_block, "/intro.txt");
-	//printf("removed: %d\n", cr_rm("/intro.txt"));
-	//invalidate_entry(dir_block, entry_index);
-	//cr_ls("/");
-	//dir* direct = recorrer_path("/intro.txt");
-	//printf("%d\n", direct->bloque);
-
-	//crFILE* file = malloc(sizeof(crFILE));
-	//file = cr_open("/intro.txt",'r');
-	//int count = 0;
-	//crFILE* file;
-	//file = cr_open("/intro.txt",'r');
-	//int count = 0;
-	//dir* direct = encontrar_directorio("dir",0);
-	//printf("%s\n",direct -> nombre);
-	//dir* direct = encontrar_directorio("dir",0);
-	//printf("%s\n",direct -> nombre);
-	//file = cr_open("/dir/subdir/dan.txt",'w');
-	//dir* direct = encontrar_directorio("memes",0);
-	//printf("%s\n",direct -> nombre);
-	//direct = encontrar_directorio("dir",0);
-	//printf("%s\n",direct -> nombre);
-	//recorrer_path("/memes");
-	//printf("%d\n",file->num_bloques);
-	/*for(int i = 0; i < file -> num_bloques; i++)
-	{
-		usleep(50000);
-		printf("%d\n",file->directos[i]);
-		printf("CONTADOR: %d\n", count);
-		count++;
+	//parte1
 	/*
-	recorrer_path("/memes/sudo1.jpg");
-    printf("%d\n", cr_exists("/dir/subdir/alter.mp4"));
+	cr_ls("/");
+	printf("\n");
+	cr_ls("/dir");
+	int exists = cr_exists("/dir");
+	int exists2 = cr_exists("/nivi.txt");
+	printf("\n");
+	printf("existe /dir?: %d\n", exists);
+	printf("existe /nivi?: %d\n", exists2);
+	*/
 
-	crFILE* file = malloc(sizeof(crFILE));
-	file = cr_open("/memes/hello.jpg",'r');
-	for(int i = 0; i < file -> num_bloques; i++)
-	{
-		printf("%d\n",file->directos[i]);
-	}*/
+	//parte2
+	
+	//cr_ls("/memes");
+
+
+	//parte3
+
+	//MKDIR
+	/*
+	cr_ls("/dir");
+	printf("\n");
+	cr_mkdir("/dir/new_folder");
+	cr_ls("/dir");
+	printf("\n");
+	*/
+
+	
+
+	//BITMAP
+	//parte 4
+	//cr_bitmap(1, 0);
+	
+	//parte 5
+	//cr_bitmap(0, 0);
+
+	//parte 6
+	//cr_bitmap(1, 1);
+
+	//parte 7
+	//cr_bitmap(0, 1);
+	
+
+	
+
+
+
+	//CR_OPEN  CR_WRITE  CR_CLOSE CR_READ
+
+	//parte 8
+	/*
+	cr_ls("/");
+	printf("\n");
+	crFILE* file = cr_open("/intro.txt", 'r');
+	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
+	cr_read(file, buffer, file->tamano);
+	crFILE* new_file = cr_open("/dinko.txt", 'w');
+	cr_write(new_file, buffer, file->tamano);
+	cr_ls("/");
+	cr_close(file);
+	cr_close(new_file);
+	free(buffer);*/
+
+	//parte 9
+	/*
+	crFILE* file = cr_open("/dinko.txt", 'r');
+	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
+	cr_read(file, buffer, file->tamano);
+	FILE* add = fopen("test.txt", "wb");
+	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+	fclose(add);
+	cr_close(file);
+	free(buffer);*/
+
+	//parte 10
+
+	/*
+	cr_ls("/");
+	printf("\n");
+	crFILE* file = cr_open("/Withered Leaf.mp3", 'r');
+	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
+	cr_read(file, buffer, file->tamano);
+	crFILE* new_file = cr_open("/music.mp3", 'w');
+	cr_write(new_file, buffer, file->tamano);
+	cr_ls("/");
+	cr_close(file);
+	cr_close(new_file);
+	free(buffer);*/
+
+	//parte 11
+	/*
+	crFILE* file = cr_open("/music.mp3", 'r');
+	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
+	cr_read(file, buffer, file->tamano);
+	FILE* add = fopen("music.mp3", "wb");
+	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+	fclose(add);
+	cr_close(file);
+	free(buffer);*/
+
+	
+	
+
+	
+	
+
+
+	//REMOVE
+	/*
+	cr_ls("/");
+	cr_rm("/intro.txt");
+	cr_ls("/");
+	cr_ls("/dir");
+	cr_rm("/dir/texto.txt");
+	cr_ls("/dir");
+	*/
+	
+	
+	//CR_UNLOAD
+	//probar write con unload, descargar musica que ya existe
+
+	/*
+	cr_unload("/dir/intro.txt", 
+	"/Users/dinko/Proyecto-SSOO/mama/porque/salsa/dds.mkv"); 
+	*/
+
+	//CR_LOAD
+	/*
+	cr_ls("/");
+	cr_load("/Users/dinko/hola.txt");
+	cr_ls("/");*/
+	
+		
+	
 	return 0;
 }
