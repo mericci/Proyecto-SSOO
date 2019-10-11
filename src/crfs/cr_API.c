@@ -684,7 +684,7 @@ int cr_rm(char* path)
         
     }
 
-    fclose(disk_file);
+    
 
 
     fread(pointer, 1, 4, disk_file);
@@ -702,6 +702,7 @@ int cr_rm(char* path)
     if (triple_indirect != 0) {
         free_triple_indirect(triple_indirect);
     }
+    fclose(disk_file);
 
     
     return 1;
@@ -737,6 +738,7 @@ int cr_unload(char* orig, char* dest)
     else{
         printf("%s\n", ERROR23);
     }
+
 }
 
 
@@ -745,5 +747,24 @@ int cr_load(char* orig)
     /*Funcion que se encarga de copiar un archivo o ´ arbol de directorios, referen- ´
     ciado por orig al disco. En caso de que un archivo sea demasiado pesado para el disco, se debe escribir todo
     lo posible hasta acabar el espacio disponible */
+
+    FILE *fileptr;
+    uint8_t* buffer;
+    long filelen;
+
+    fileptr = fopen(orig, "rb");  // Open the file in binary mode
+    fseek(fileptr, 0, SEEK_END);          // Jump to the end of the file
+    filelen = ftell(fileptr);             // Get the current byte offset in the file
+    rewind(fileptr);                      // Jump back to the beginning of the file
+
+    buffer = malloc((filelen+1)*sizeof(uint8_t)); // Enough memory for file + \0
+    fread(buffer, filelen, 1, fileptr); // Read in the entire file
+    fclose(fileptr); // Close the file
+    crFILE * archivo = cr_open("/nuevo.txt", 'w');
+    cr_write(archivo, buffer, filelen);
+    cr_close(archivo);
+    
+
+
 
 }

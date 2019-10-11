@@ -1061,7 +1061,7 @@ int nueva_leer(crFILE* file_desc, uint8_t* buffer, int nbytes){
             }
     }
 
-
+    
     fclose(file);
 
 }

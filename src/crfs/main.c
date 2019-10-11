@@ -19,38 +19,41 @@ int main(int argc, char** argv)
 	cr_mount(argv[1]);
 
 
-    cr_unload("/dir/subdir", "/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque/salsa/dds.mkv"); //#ESTE ENTRA EN LA DEMO SI O SI:
+    //cr_unload("/dir/subdir", "/home/feha/Documents/Semestre12/SSOOyRR/Proyecto-SSOO/mama/porque/salsa/dds.mkv"); //#ESTE ENTRA EN LA DEMO SI O SI:
 	crFILE* file = malloc(sizeof(crFILE));
 
-	file = cr_open("/C.mkv",'r');
+	
 
-	int count = 0;
-	//printf("%d....\n",file->num_bloques);
-
-	uint8_t * buffer = malloc(file->tamano * sizeof(uint8_t));
-
-	//cr_read( file, buffer, 5000);
-	printf("holaaaaa");
-	int lee = cr_read(file, buffer, file->tamano);
-
-	FILE* add = fopen("progra.mkv", "wb");
-	cr_close(file);
-	fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+	//FILE* add = fopen("progra.mkv", "wb");
+	//cr_close(file);
+	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
 
     //printf("%d\n",cr_exists("/dir"));
     //cr_ls("/memes");
+	cr_ls("/");
+	//cr_rm("/nuevo.txt");
 	
+	
+    
+    
+	printf("--------------------------------------------\n");
+	cr_ls("/");
+	cr_load("/Users/maca/Desktop/Proyecto-SSOO/prueba.txt");
+	cr_ls("/");
+	printf("--------------------------------------------\n");
+	
+	//FILE* add = fopen("progra.mkv", "wb");
+	//cr_close(file);
+	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
+
+    //printf("%d\n",cr_exists("/dir"));
+  
 	
     printf("------- %i ---------ff %i\n", file->tamano, file->leido);
 
 
-	//FILE* add = fopen("laa.mkv", "wb");
-	//fwrite(buffer, sizeof(uint8_t), file->tamano, add);
-    //printf("%d\n",cr_exists("/dir"));
-    cr_ls("/");
-	cr_bitmap(0, 1);
-
-
+	//FILE* adds = fopen("/Users/maca/Desktop/Proyecto-SSOO/nuevazo.txt", "wb");
+	cr_unload("/nuevo.txt", "/Users/maca/Desktop/Proyecto-SSOO/nuevazo.txt");
 	//cr_ls("/dir");
     //cr_mkdir("/asdsadasd/dddsssd");
     //cr_open("/dir/subdir/altera.mp", 'r');
