@@ -1,5 +1,11 @@
 {
     "files.associations": {
+<<<<<<< HEAD
         "cr_api.h": "c"
+=======
+        "cr_api.h": "c",
+        "stdint.h": "c",
+        "unistd.h": "c"
+>>>>>>> develop
     }
 }

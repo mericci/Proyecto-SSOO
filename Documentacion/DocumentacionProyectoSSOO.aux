@@ -19,8 +19,57 @@
 \babel@aux{english}{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Funciones Generales}{1}{section.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}cr\_mount(char* diskname)}{1}{subsection.1.1}}
+<<<<<<< HEAD
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}cr\_exist(char* path}{1}{subsection.1.2}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Funciones de Manejo de Archivos}{1}{section.2}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Funciones Utiles}{2}{section.3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}encontra\_directorio(char* path, int posici\IeC {\'o}n)}{2}{subsection.3.1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}recorrer\_path(char* path}{2}{subsection.3.2}}
+=======
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}cr\_bitmap(unsigned block, bool hex)}{1}{subsection.1.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}cr\_exist(char* path}{2}{subsection.1.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}cr\_ls(char* path)}{2}{subsection.1.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}cr\_mkdir(char* foldername)}{2}{subsection.1.5}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Funciones de Manejo de Archivos}{2}{section.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}cr\_open(char* path, char mode)}{2}{subsection.2.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}cr\_read(crFILE* file\_desc, void* buffer, int nbytes)}{3}{subsection.2.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}cr\_write(crFILE* file\_desc, void* buffer, int nbytes)}{3}{subsection.2.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}cr\_close(crFILE* file\_desc)}{3}{subsection.2.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}cr\_rm(char* path)}{3}{subsection.2.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}cr\_unload(char* orig, char* dest)}{4}{subsection.2.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Funciones Utiles}{4}{section.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}encontra\_directorio(char* path, int posici\IeC {\'o}n)}{4}{subsection.3.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}recorrer\_path(char* path}{4}{subsection.3.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}dec\_to\_bin(int decimal, int* bin\_array)}{5}{subsection.3.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}bin\_to\_dec(int* bin\_array)}{5}{subsection.3.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}first\_free\_block()}{5}{subsection.3.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}obtener\_nombre(char* path)}{5}{subsection.3.6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}directorio\_a\_agregar(char* path)}{6}{subsection.3.7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}objective\_kind(char*path)}{6}{subsection.3.8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.9}print\_all(int posicion)}{6}{subsection.3.9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.10}print\_2\_all(int posicion)}{6}{subsection.3.10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.11}change\_bitmap\_block(int original\_block)}{6}{subsection.3.11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.12}print\_ls(char* path)}{7}{subsection.3.12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.13}agregar\_primero\_invalido2(int posicion, char* nombre, int puntero)}{7}{subsection.3.13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.14}agregar\_primero\_invalido(int posicion, char* nombre, int puntero)}{7}{subsection.3.14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.15}isBin(char* path)}{7}{subsection.3.15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.16}agregar\_carpeta\_invalido2(int posicion, char* nombre, int puntero)}{8}{subsection.3.16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.17}agregar\_carpeta\_invalido(int posicion, char* nombre, int puntero)}{8}{subsection.3.17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.18}leer\_bloques\_directos( crFILE* file\_desc, uint8\_t* buffer, int nbytes)}{8}{subsection.3.18}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.19}get\_entry\_index(int dir\_block, char* path)}{9}{subsection.3.19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.20}get\_file\_pointer(int dir\_block, char* path)}{9}{subsection.3.20}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.21}invalidate\_entry(int dir\_block, int entry\_index)}{9}{subsection.3.21}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.22}free\_simple\_indirect(int simple\_block)}{9}{subsection.3.22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.23}free\_double\_indirect(int double\_block)}{9}{subsection.3.23}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.24}free\_triple\_indirect(int triple\_block)}{9}{subsection.3.24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.25}actual\_locals(char* path)}{9}{subsection.3.25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.26}locals\_to\_create(char* path)}{10}{subsection.3.26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.27}get\_first\_folder(char* path)}{10}{subsection.3.27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.28}next\_folder(char* real\_path, char* new\_folder)}{10}{subsection.3.28}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.29}create\_local\_directory(char* path)}{10}{subsection.3.29}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.30}populate\_data\_block(FILE* disk\_file, int block, void* buffer, int* current\_buffer\_pos, int length) }{11}{subsection.3.30}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.31}first\_free\_block\_f(FILE* disk\_file)}{11}{subsection.3.31}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.32}populate\_simple\_indirect(FILE* disk\_file, int si\_block, void* buffer, int *current\_buffer\_pos, int length)}{11}{subsection.3.32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.33}populate\_double\_indirect(FILE* disk\_file, int di\_block, void* buffer, int *current\_buffer\_pos, int length)}{11}{subsection.3.33}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.34}populate\_triple\_indirect(FILE* disk\_file, int ti\_block, void* buffer, int *current\_buffer\_pos, int length)}{12}{subsection.3.34}}
+>>>>>>> develop

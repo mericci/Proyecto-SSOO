@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.7.30)  6 OCT 2019 13:36
+=======
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.7.30)  10 OCT 2019 08:42
+>>>>>>> develop
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -595,6 +599,7 @@ s
 \f@nch@O@olf=\skip55
 \f@nch@O@orf=\skip56
 )
+<<<<<<< HEAD
 No file DocumentacionProyectoSSOO.aux.
 \openout1 = `DocumentacionProyectoSSOO.aux'.
 
@@ -612,6 +617,26 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 46.
 LaTeX Font Info:    ... okay on input line 46.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 46.
 LaTeX Font Info:    ... okay on input line 46.
+=======
+(./DocumentacionProyectoSSOO.aux)
+\openout1 = `DocumentacionProyectoSSOO.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+
+>>>>>>> develop
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count111
@@ -643,7 +668,11 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 \AtBeginShipoutBox=\box29
+<<<<<<< HEAD
 Package hyperref Info: Link coloring OFF on input line 46.
+=======
+Package hyperref Info: Link coloring OFF on input line 47.
+>>>>>>> develop
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -653,6 +682,7 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count117
 )
+<<<<<<< HEAD
 LaTeX Info: Redefining \ref on input line 46.
 LaTeX Info: Redefining \pageref on input line 46.
 LaTeX Info: Redefining \nameref on input line 46.
@@ -665,28 +695,59 @@ File: img/logo.pdf Graphic file (type pdf)
 Package pdftex.def Info: img/logo.pdf  used on input line 51.
 (pdftex.def)             Requested size: 56.9055pt x 75.8741pt.
 LaTeX Font Info:    Try loading font information for U+msa on input line 53.
+=======
+LaTeX Info: Redefining \ref on input line 47.
+LaTeX Info: Redefining \pageref on input line 47.
+LaTeX Info: Redefining \nameref on input line 47.
+
+(./DocumentacionProyectoSSOO.out) (./DocumentacionProyectoSSOO.out)
+\@outlinefile=\write3
+\openout3 = `DocumentacionProyectoSSOO.out'.
+
+<img/logo.pdf, id=196, 240.9pt x 321.2pt>
+File: img/logo.pdf Graphic file (type pdf)
+<use img/logo.pdf>
+Package pdftex.def Info: img/logo.pdf  used on input line 52.
+(pdftex.def)             Requested size: 56.9055pt x 75.8741pt.
+LaTeX Font Info:    Try loading font information for U+msa on input line 54.
+>>>>>>> develop
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
+<<<<<<< HEAD
 LaTeX Font Info:    Try loading font information for U+msb on input line 53.
+=======
+LaTeX Font Info:    Try loading font information for U+msb on input line 54.
+>>>>>>> develop
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
+<<<<<<< HEAD
 Overfull \hbox (68.0525pt too wide) in paragraph at lines 50--60
+=======
+Overfull \hbox (68.0525pt too wide) in paragraph at lines 51--61
+>>>>>>> develop
 []$[]$ $[]$ 
  []
 
 
+<<<<<<< HEAD
 Overfull \hbox (5.37144pt too wide) in paragraph at lines 93--94
 \OT1/cmr/m/n/12 Funciones definidas como de manejo de archivos en el enun-ci-ad
 o y se en-cuen-tran en "cr[]-API.c". 
+=======
+Overfull \hbox (0.92343pt too wide) in paragraph at lines 91--92
+\OT1/cmr/m/n/12 Funci^^Son que recibe la ruta ab-so-luta desde el di-rec-to-rio
+ root a un archivo o di-rec-to-rio es-peci-fico. 
+>>>>>>> develop
  []
 
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./img/logo.pdf>]
+<<<<<<< HEAD
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 114.
 
 [2]
@@ -714,16 +775,124 @@ Here is how much of TeX's memory you used:
  12755 words of font info for 49 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
  30i,10n,43p,541b,338s stack positions out of 5000i,500n,10000p,200000b,80000s
+=======
+Overfull \hbox (0.92343pt too wide) in paragraph at lines 98--99
+\OT1/cmr/m/n/12 Funci^^Son que recibe la ruta ab-so-luta desde el di-rec-to-rio
+ root a un archivo o di-rec-to-rio es-peci-fico. 
+ []
+
+
+Overfull \hbox (5.37144pt too wide) in paragraph at lines 113--114
+\OT1/cmr/m/n/12 Funciones definidas como de manejo de archivos en el enun-ci-ad
+o y se en-cuen-tran en "cr[]-API.c". 
+ []
+
+[2] [3]
+Overfull \hbox (0.92343pt too wide) in paragraph at lines 163--164
+\OT1/cmr/m/n/12 Funci^^Son que recibe la ruta ab-so-luta desde el di-rec-to-rio
+ root a un archivo o di-rec-to-rio es-peci-fico. 
+ []
+
+[4]
+Overfull \hbox (0.92343pt too wide) in paragraph at lines 191--192
+\OT1/cmr/m/n/12 Funci^^Son que recibe la ruta ab-so-luta desde el di-rec-to-rio
+ root a un archivo o di-rec-to-rio es-peci-fico. 
+ []
+
+[5] [6]
+Overfull \hbox (46.70726pt too wide) in paragraph at lines 235--236
+[]\OT1/cmr/m/n/12 Permite avan-zar por los di-rec-to-rios hasta en-con-trar el 
+ob-je-tivo y uti-liza la funci^^Son $\OML/cmm/m/it/12 encontrar[]directorio$
+ []
+
+
+Overfull \hbox (40.70157pt too wide) in paragraph at lines 239--239
+[]\OT1/cmr/bx/n/14.4 agregar[]-primero[]-in-valido2(int posi-cion, char* nom-br
+e, int pun-tero) 
+ []
+
+
+Overfull \hbox (32.60158pt too wide) in paragraph at lines 247--247
+[]\OT1/cmr/bx/n/14.4 agregar[]-primero[]-in-valido(int posi-cion, char* nom-bre
+, int pun-tero) 
+ []
+
+[7]
+Overfull \hbox (37.68489pt too wide) in paragraph at lines 261--261
+[]\OT1/cmr/bx/n/14.4 agregar[]-car-peta[]-in-valido2(int posi-cion, char* nom-b
+re, int pun-tero) 
+ []
+
+
+Overfull \hbox (29.5849pt too wide) in paragraph at lines 269--269
+[]\OT1/cmr/bx/n/14.4 agregar[]-car-peta[]-in-valido(int posi-cion, char* nom-br
+e, int pun-tero) 
+ []
+
+[8]
+Overfull \hbox (20.93294pt too wide) in paragraph at lines 300--301
+\OT1/cmr/m/n/12 to-dos los blo-ques de di-rec-cionamiento in-di-recto doble, si
+m-ple y blo-ques de datos cor-re-spon-di-entes,
+ []
+
+[9] [10]
+Overfull \hbox (19.44907pt too wide) in paragraph at lines 347--348
+\OT1/cmr/m/n/12 Recibe el archivo que rep-re-senta el disco vir-tual disk[]-fil
+e, el nu-mero de bloque de di-rec-cionamiento
+ []
+
+
+Overfull \hbox (19.44907pt too wide) in paragraph at lines 353--354
+\OT1/cmr/m/n/12 Recibe el archivo que rep-re-senta el disco vir-tual disk[]-fil
+e, el nu-mero de bloque de di-rec-cionamiento
+ []
+
+
+Overfull \hbox (19.44907pt too wide) in paragraph at lines 359--360
+\OT1/cmr/m/n/12 Recibe el archivo que rep-re-senta el disco vir-tual disk[]-fil
+e, el nu-mero de bloque de di-rec-cionamiento
+ []
+
+[11]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 363.
+ [12]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 363.
+ (./DocumentacionProyectoSSOO.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 363.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 363.
+Package rerunfilecheck Info: File `DocumentacionProyectoSSOO.out' has not chang
+ed.
+(rerunfilecheck)             Checksum: 58BAADEF67BF0381805CDDC5E629BE7E;4721.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 363.
+ ) 
+Here is how much of TeX's memory you used:
+ 7005 strings out of 494805
+ 97994 string characters out of 6178000
+ 187631 words of memory out of 5000000
+ 10182 multiletter control sequences out of 15000+600000
+ 12403 words of font info for 48 fonts, out of 8000000 for 9000
+ 81 hyphenation exceptions out of 8191
+ 28i,11n,43p,881b,338s stack positions out of 5000i,500n,10000p,200000b,80000s
+>>>>>>> develop
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/te
 xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/amsfonts/cm/cmr7.pfb>
+<<<<<<< HEAD
 Output written on DocumentacionProyectoSSOO.pdf (2 pages, 117196 bytes).
 PDF statistics:
  54 PDF objects out of 1000 (max. 8388607)
  42 compressed objects within 1 object stream
  10 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
+=======
+Output written on DocumentacionProyectoSSOO.pdf (12 pages, 145213 bytes).
+PDF statistics:
+ 295 PDF objects out of 1000 (max. 8388607)
+ 271 compressed objects within 3 object streams
+ 61 named destinations out of 1000 (max. 500000)
+ 390 words of extra memory for PDF output out of 10000 (max. 10000000)
+>>>>>>> develop
 

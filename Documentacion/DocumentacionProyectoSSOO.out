@@ -1,7 +1,56 @@
 \BOOKMARK [1][-]{section.1}{Funciones Generales}{}% 1
 \BOOKMARK [2][-]{subsection.1.1}{cr\137mount\(char* diskname\)}{section.1}% 2
+<<<<<<< HEAD
 \BOOKMARK [2][-]{subsection.1.2}{cr\137exist\(char* path}{section.1}% 3
 \BOOKMARK [1][-]{section.2}{Funciones de Manejo de Archivos}{}% 4
 \BOOKMARK [1][-]{section.3}{Funciones Utiles}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{encontra\137directorio\(char* path, int posici\363n\)}{section.3}% 6
 \BOOKMARK [2][-]{subsection.3.2}{recorrer\137path\(char* path}{section.3}% 7
+=======
+\BOOKMARK [2][-]{subsection.1.2}{cr\137bitmap\(unsigned block, bool hex\)}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{cr\137exist\(char* path}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{cr\137ls\(char* path\)}{section.1}% 5
+\BOOKMARK [2][-]{subsection.1.5}{cr\137mkdir\(char* foldername\)}{section.1}% 6
+\BOOKMARK [1][-]{section.2}{Funciones de Manejo de Archivos}{}% 7
+\BOOKMARK [2][-]{subsection.2.1}{cr\137open\(char* path, char mode\)}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.2}{cr\137read\(crFILE* file\137desc, void* buffer, int nbytes\)}{section.2}% 9
+\BOOKMARK [2][-]{subsection.2.3}{cr\137write\(crFILE* file\137desc, void* buffer, int nbytes\)}{section.2}% 10
+\BOOKMARK [2][-]{subsection.2.4}{cr\137close\(crFILE* file\137desc\)}{section.2}% 11
+\BOOKMARK [2][-]{subsection.2.5}{cr\137rm\(char* path\)}{section.2}% 12
+\BOOKMARK [2][-]{subsection.2.6}{cr\137unload\(char* orig, char* dest\)}{section.2}% 13
+\BOOKMARK [1][-]{section.3}{Funciones Utiles}{}% 14
+\BOOKMARK [2][-]{subsection.3.1}{encontra\137directorio\(char* path, int posici\363n\)}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.2}{recorrer\137path\(char* path}{section.3}% 16
+\BOOKMARK [2][-]{subsection.3.3}{dec\137to\137bin\(int decimal, int* bin\137array\)}{section.3}% 17
+\BOOKMARK [2][-]{subsection.3.4}{bin\137to\137dec\(int* bin\137array\)}{section.3}% 18
+\BOOKMARK [2][-]{subsection.3.5}{first\137free\137block\(\)}{section.3}% 19
+\BOOKMARK [2][-]{subsection.3.6}{obtener\137nombre\(char* path\)}{section.3}% 20
+\BOOKMARK [2][-]{subsection.3.7}{directorio\137a\137agregar\(char* path\)}{section.3}% 21
+\BOOKMARK [2][-]{subsection.3.8}{objective\137kind\(char*path\)}{section.3}% 22
+\BOOKMARK [2][-]{subsection.3.9}{print\137all\(int posicion\)}{section.3}% 23
+\BOOKMARK [2][-]{subsection.3.10}{print\1372\137all\(int posicion\)}{section.3}% 24
+\BOOKMARK [2][-]{subsection.3.11}{change\137bitmap\137block\(int original\137block\)}{section.3}% 25
+\BOOKMARK [2][-]{subsection.3.12}{print\137ls\(char* path\)}{section.3}% 26
+\BOOKMARK [2][-]{subsection.3.13}{agregar\137primero\137invalido2\(int posicion, char* nombre, int puntero\)}{section.3}% 27
+\BOOKMARK [2][-]{subsection.3.14}{agregar\137primero\137invalido\(int posicion, char* nombre, int puntero\)}{section.3}% 28
+\BOOKMARK [2][-]{subsection.3.15}{isBin\(char* path\)}{section.3}% 29
+\BOOKMARK [2][-]{subsection.3.16}{agregar\137carpeta\137invalido2\(int posicion, char* nombre, int puntero\)}{section.3}% 30
+\BOOKMARK [2][-]{subsection.3.17}{agregar\137carpeta\137invalido\(int posicion, char* nombre, int puntero\)}{section.3}% 31
+\BOOKMARK [2][-]{subsection.3.18}{leer\137bloques\137directos\( crFILE* file\137desc, uint8\137t* buffer, int nbytes\)}{section.3}% 32
+\BOOKMARK [2][-]{subsection.3.19}{get\137entry\137index\(int dir\137block, char* path\)}{section.3}% 33
+\BOOKMARK [2][-]{subsection.3.20}{get\137file\137pointer\(int dir\137block, char* path\)}{section.3}% 34
+\BOOKMARK [2][-]{subsection.3.21}{invalidate\137entry\(int dir\137block, int entry\137index\)}{section.3}% 35
+\BOOKMARK [2][-]{subsection.3.22}{free\137simple\137indirect\(int simple\137block\)}{section.3}% 36
+\BOOKMARK [2][-]{subsection.3.23}{free\137double\137indirect\(int double\137block\)}{section.3}% 37
+\BOOKMARK [2][-]{subsection.3.24}{free\137triple\137indirect\(int triple\137block\)}{section.3}% 38
+\BOOKMARK [2][-]{subsection.3.25}{actual\137locals\(char* path\)}{section.3}% 39
+\BOOKMARK [2][-]{subsection.3.26}{locals\137to\137create\(char* path\)}{section.3}% 40
+\BOOKMARK [2][-]{subsection.3.27}{get\137first\137folder\(char* path\)}{section.3}% 41
+\BOOKMARK [2][-]{subsection.3.28}{next\137folder\(char* real\137path, char* new\137folder\)}{section.3}% 42
+\BOOKMARK [2][-]{subsection.3.29}{create\137local\137directory\(char* path\)}{section.3}% 43
+\BOOKMARK [2][-]{subsection.3.30}{populate\137data\137block\(FILE* disk\137file, int block, void* buffer, int* current\137buffer\137pos, int length\) }{section.3}% 44
+\BOOKMARK [2][-]{subsection.3.31}{first\137free\137block\137f\(FILE* disk\137file\)}{section.3}% 45
+\BOOKMARK [2][-]{subsection.3.32}{populate\137simple\137indirect\(FILE* disk\137file, int si\137block, void* buffer, int *current\137buffer\137pos, int length\)}{section.3}% 46
+\BOOKMARK [2][-]{subsection.3.33}{populate\137double\137indirect\(FILE* disk\137file, int di\137block, void* buffer, int *current\137buffer\137pos, int length\)}{section.3}% 47
+\BOOKMARK [2][-]{subsection.3.34}{populate\137triple\137indirect\(FILE* disk\137file, int ti\137block, void* buffer, int *current\137buffer\137pos, int length\)}{section.3}% 48
+>>>>>>> develop
